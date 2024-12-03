@@ -10,6 +10,7 @@ import { NavMenu } from '@/components/Header/NavMenu/NavMenu';
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = React.useState(false);
+	// const { user } = useAuth();
 	return (
 		<>
 			<header className="bg-white text-foreground shadow sticky top-0 z-50 w-full border-b">
@@ -21,24 +22,28 @@ const Header = () => {
 							<ProfileBtn className={'hidden md:flex ml-16'} />
 						</div>
 					</div>
-					<nav className={'self-start hidden md:flex'}>
-						<ul className={`flex flex-row items-center`}>
-							{NavLinks.map((link) => {
-								if (link.href !== Routes.PROFILE) {
-									return (
-										<NavLink href={link.href} key={link.href}>
-											{link.title}
-										</NavLink>
-									);
-								}
-							})}
-						</ul>
-					</nav>
-					<NavMenu
-						isOpen={menuOpen}
-						onChange={() => setMenuOpen((old) => !old)}
-						className={'block md:hidden absolute right-4 top-4'}
-					/>
+					{/*{!!user?.id && (*/}
+					<>
+						<nav className={'self-start hidden md:flex'}>
+							<ul className={`flex flex-row items-center`}>
+								{NavLinks.map((link) => {
+									if (link.href !== Routes.PROFILE) {
+										return (
+											<NavLink href={link.href} key={link.href}>
+												{link.title}
+											</NavLink>
+										);
+									}
+								})}
+							</ul>
+						</nav>
+						<NavMenu
+							isOpen={menuOpen}
+							onChange={() => setMenuOpen((old) => !old)}
+							className={'block md:hidden absolute right-4 top-4'}
+						/>
+					</>
+					{/*)}*/}
 				</div>
 			</header>
 		</>

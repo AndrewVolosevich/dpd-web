@@ -15,7 +15,6 @@ export default function NavLink({
 	isDisabled?: boolean;
 }) {
 	const pathname = usePathname();
-	console.log('===pathname', pathname);
 	const isActive = pathname === href;
 
 	return (

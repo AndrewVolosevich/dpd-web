@@ -5,6 +5,7 @@ export enum Routes {
 	CORPORATE_LIFE = '/corporate-life',
 	NEWS = '/news',
 	PROFILE = '/profile',
+	SIGN_IN = '/sign-in',
 }
 
 export const NavLinks = [
@@ -32,10 +33,13 @@ export const NavLinks = [
 		title: 'Профиль',
 		href: Routes.PROFILE,
 	},
+	{
+		title: 'Войти',
+		href: Routes.SIGN_IN,
+	},
 ];
 
-export const PROTECTED_ROUTES = [];
-export const UNPROTECTED_ROUTES = [
+export const PROTECTED_ROUTES = [
 	Routes.HOME,
 	Routes.ABOUT,
 	Routes.KNOWLEDGE_BASE,
@@ -43,3 +47,4 @@ export const UNPROTECTED_ROUTES = [
 	Routes.NEWS,
 	Routes.PROFILE,
 ];
+export const UNPROTECTED_ROUTES = [Routes.SIGN_IN];
