@@ -6,7 +6,7 @@ export async function POST() {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			Cookie: cookies().toString(),
+			Cookie: cookieStore.toString(),
 		},
 	});
 	cookieStore.set('user', '');

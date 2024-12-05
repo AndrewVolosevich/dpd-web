@@ -5,6 +5,7 @@ import React, {
 	PropsWithChildren,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from 'react';
@@ -116,7 +117,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const refresh = useCallback(async () => {
 		if (!user?.id) {
 			setLoading(true);
-			const resp = await fetch(`/api/auth/refresh`, {
+			const resp = await fetch(`/api/auth/refresh-user`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -124,10 +125,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			});
 			if (resp.ok) {
 				const user = await resp.json();
-
 				if (user?.id) {
 					setUser(user);
 					localStorage.setItem('user', JSON.stringify(user));
+					if (localStorage.getItem(ACCESS_TOKEN)) {
+						setToken(localStorage.getItem(ACCESS_TOKEN) || '');
+					}
 					setLoading(false);
 					router.refresh();
 				} else {
@@ -139,6 +142,15 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			setLoading(false);
 		}
 	}, [logout, toast]);
+
+	useEffect(() => {
+		if (
+			typeof window !== 'undefined' &&
+			!!localStorage.getItem(REFRESH_TOKEN)
+		) {
+			refresh();
+		}
+	}, []);
 
 	const contextValue = useMemo(
 		() => ({

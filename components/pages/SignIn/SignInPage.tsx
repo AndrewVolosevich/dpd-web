@@ -38,11 +38,19 @@ const AboutPage = () => {
 				<div>
 					<div className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="tel">Номер телефона</Label>
+							{/*<label htmlFor="phone">Введите ваш номер телефона:</label>*/}
+							{/*<input*/}
+							{/*	type="tel"*/}
+							{/*	id="phone"*/}
+							{/*	name="phone"*/}
+							{/*	pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"*/}
+							{/*	placeholder="123-45-678"*/}
+							{/*/>*/}
+							<Label htmlFor="phone">Номер телефона</Label>
 							<Input
-								id="tel"
-								type="telephone"
-								placeholder="375291234567"
+								id="phone"
+								type="tel"
+								placeholder="291234567 - 9 знаков"
 								value={tel}
 								onChange={(e) => setTel(e.target.value)}
 								required
