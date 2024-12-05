@@ -20,16 +20,12 @@ const AboutPage = () => {
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 
-	const { login, logout } = useAuth();
+	const { login } = useAuth();
 
 	const handleSubmit = () => {
 		if (!!tel && !!password) {
 			login({ tel, password });
 		}
-	};
-
-	const handleLogout = () => {
-		logout();
 	};
 
 	return (
@@ -78,7 +74,12 @@ const AboutPage = () => {
 							</div>
 						</div>
 					</div>
-					<Button type="button" className="w-full mt-6" onClick={handleSubmit}>
+					<Button
+						type="button"
+						variant={'default'}
+						className="w-full mt-6"
+						onClick={handleSubmit}
+					>
 						Войти
 					</Button>
 				</div>
@@ -86,9 +87,6 @@ const AboutPage = () => {
 			<CardFooter className="flex justify-between">
 				<Button variant="link" size="sm">
 					Забыли пароль?
-				</Button>
-				<Button variant="link" size="sm" onClick={handleLogout}>
-					Logout
 				</Button>
 			</CardFooter>
 		</Card>

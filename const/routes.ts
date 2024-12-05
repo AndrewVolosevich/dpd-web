@@ -33,10 +33,6 @@ export const NavLinks = [
 		title: 'Профиль',
 		href: Routes.PROFILE,
 	},
-	{
-		title: 'Войти',
-		href: Routes.SIGN_IN,
-	},
 ];
 
 export const PROTECTED_ROUTES = [
