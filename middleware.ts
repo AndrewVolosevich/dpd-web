@@ -3,10 +3,10 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
 	const user = request.cookies.get('user');
-	const userId = user?.value ? JSON.parse(user?.value || '')?.user?.id : '';
-	console.log('==userId', userId);
-	// todo /sign-in
-	if (request.nextUrl.pathname.startsWith('/sign-inе') && userId) {
+	const userId = user?.value ? JSON.parse(user?.value || '')?.id : '';
+	console.log('===userId', userId);
+
+	if (request.nextUrl.pathname.startsWith('/sign-in') && userId) {
 		return NextResponse.redirect(new URL('/', request.url));
 	}
 

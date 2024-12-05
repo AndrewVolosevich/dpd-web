@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,8 +13,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/components/providers/global/AuthProvider';
 
 const ProfilePage = () => {
+	const { logout } = useAuth();
 	return (
 		<main className="flex-grow container mx-auto px-4 py-8">
 			<h1 className="text-2xl font-bold mb-6">Профиль пользователя</h1>
@@ -141,7 +144,7 @@ const ProfilePage = () => {
 				</Card>
 			</div>
 
-			<Button variant="destructive" size="sm" className="mt-8">
+			<Button variant="default" size="sm" className="mt-8" onClick={logout}>
 				<LogOut className="mr-2 h-4 w-4" />
 				Выйти из системы
 			</Button>

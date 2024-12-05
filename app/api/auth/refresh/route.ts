@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers';
 
 export async function GET() {
-	const cookieHeader = await cookies();
-	const cookieUser = cookieHeader.get('user')?.value;
+	const cookieStore = await cookies();
+	const cookieUser = cookieStore.get('user')?.value;
 	const userFromCookies = cookieUser ? JSON.parse(cookieUser) : '';
 	const userId = userFromCookies?.id;
 
@@ -12,20 +12,25 @@ export async function GET() {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Cookie: cookieHeader.toString(),
+					Cookie: cookieStore.toString(),
 				},
 				body: JSON.stringify({ userId }),
 			});
 		}
 
+		cookieStore.set('user', '');
+		cookieStore.delete('user');
 		return new Response('Fail', {
 			status: 404,
 			headers: {
-				'Set-Cookie': `user=${''}; Path=/; HttpOnly`,
 				'Content-Type': 'application/json',
 			},
 		});
 	} else {
+		cookieStore.set('user', `${JSON.stringify({ ...userFromCookies }) || ''}`, {
+			path: '/',
+			maxAge: 604800,
+		});
 		return new Response(JSON.stringify({ ...userFromCookies }), {
 			status: 200,
 			headers: {
