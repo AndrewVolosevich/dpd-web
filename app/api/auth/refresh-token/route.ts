@@ -1,18 +1,16 @@
-import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 
-export async function POST(req: NextRequest) {
-	const data = await req.json();
+export async function GET() {
 	const cookieStore = await cookies();
 	const resp = await fetch(
-		`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/login`,
+		`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/refresh-token`,
 		{
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
+				Cookie: cookieStore.toString(),
 			},
 			credentials: 'include',
-			body: JSON.stringify(data),
 		},
 	);
 	const newResp = await resp.json();
@@ -22,16 +20,26 @@ export async function POST(req: NextRequest) {
 		?.match(/refreshToken=([^;]+)/);
 	const refreshToken = refreshTokenMatch ? refreshTokenMatch[1] : null;
 
-	cookieStore.set('user', `${JSON.stringify({ ...newResp?.user }) || ''}`, {
-		path: '/',
-		maxAge: 2592000,
-	});
 	if (refreshToken) {
 		cookieStore.set('refreshToken', refreshToken, {
 			path: '/',
 			maxAge: 2592000,
 		});
 	}
+
+	if (!newResp?.user || !refreshToken) {
+		return new Response(JSON.stringify({ message: 'Can not refresh token' }), {
+			status: 404,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+	}
+
+	cookieStore.set('user', `${JSON.stringify({ ...newResp?.user }) || ''}`, {
+		path: '/',
+		maxAge: 2592000,
+	});
 
 	return new Response(JSON.stringify({ ...newResp }), {
 		status: 200,
