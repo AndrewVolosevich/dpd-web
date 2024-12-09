@@ -11,6 +11,8 @@ export async function POST() {
 	});
 	cookieStore.set('user', '');
 	cookieStore.delete('user');
+	cookieStore.set('refreshToken', '');
+	cookieStore.delete('refreshToken');
 
 	return new Response('Success', {
 		status: 200,
