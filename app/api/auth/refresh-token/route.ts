@@ -15,19 +15,21 @@ export async function GET() {
 	);
 	const newResp = await resp.json();
 
-	const refreshTokenMatch = resp?.headers
-		?.get('set-cookie')
-		?.match(/refreshToken=([^;]+)/);
-	const refreshToken = refreshTokenMatch ? refreshTokenMatch[1] : null;
-
-	if (refreshToken) {
-		cookieStore.set('refreshToken', refreshToken, {
+	if (newResp?.accessToken) {
+		cookieStore.set('accessToken', newResp?.accessToken, {
 			path: '/',
 			maxAge: 2592000,
 		});
 	}
 
-	if (!newResp?.user || !refreshToken) {
+	if (newResp?.refreshToken) {
+		cookieStore.set('refreshToken', newResp?.refreshToken, {
+			path: '/',
+			maxAge: 2592000,
+		});
+	}
+
+	if (!newResp?.user || !newResp?.refreshToken) {
 		return new Response(JSON.stringify({ message: 'Can not refresh token' }), {
 			status: 404,
 			headers: {

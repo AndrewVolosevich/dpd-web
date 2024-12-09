@@ -31,7 +31,7 @@ interface AuthContextInterface {
 	user: AuthUser | null;
 	token: string;
 	login: (_: LoginProps) => void;
-	refreshToken: () => void;
+	refreshToken: () => Promise<string | undefined>;
 	logout: () => void;
 }
 
@@ -168,6 +168,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		localStorage.setItem(REFRESH_TOKEN, refreshToken);
 		localStorage.setItem(ACCESS_TOKEN, accessToken);
 		setLoading(false);
+		return accessToken;
 	}, [toast]);
 
 	useEffect(() => {

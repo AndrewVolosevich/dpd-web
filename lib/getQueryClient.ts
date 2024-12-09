@@ -4,11 +4,21 @@ import {
 	isServer,
 } from '@tanstack/react-query';
 
+interface ErrorWithResponse extends Error {
+	response?: Response;
+}
+
 function makeQueryClient() {
 	return new QueryClient({
 		defaultOptions: {
 			queries: {
 				staleTime: 60 * 1000,
+				retry: (failureCount, error: ErrorWithResponse) => {
+					if (error?.response?.status === 401) {
+						return false;
+					}
+					return failureCount <= 1;
+				},
 			},
 			dehydrate: {
 				// include pending queries in dehydration

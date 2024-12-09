@@ -13,6 +13,8 @@ export async function POST() {
 	cookieStore.delete('user');
 	cookieStore.set('refreshToken', '');
 	cookieStore.delete('refreshToken');
+	cookieStore.set('accessToken', '');
+	cookieStore.delete('accessToken');
 
 	return new Response('Success', {
 		status: 200,
