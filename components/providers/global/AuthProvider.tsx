@@ -93,7 +93,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			localStorage.setItem(REFRESH_TOKEN, refreshToken);
 			localStorage.setItem(ACCESS_TOKEN, accessToken);
 			setLoading(false);
-			router.push(Routes.HOME);
+			router.refresh();
 		},
 		[router],
 	);
