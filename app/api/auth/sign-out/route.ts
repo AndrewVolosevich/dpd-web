@@ -6,11 +6,15 @@ export async function POST() {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			Cookie: cookies().toString(),
+			Cookie: cookieStore.toString(),
 		},
 	});
 	cookieStore.set('user', '');
 	cookieStore.delete('user');
+	cookieStore.set('refreshToken', '');
+	cookieStore.delete('refreshToken');
+	cookieStore.set('accessToken', '');
+	cookieStore.delete('accessToken');
 
 	return new Response('Success', {
 		status: 200,

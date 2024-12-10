@@ -5,6 +5,7 @@ import React, {
 	PropsWithChildren,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from 'react';
@@ -30,7 +31,7 @@ interface AuthContextInterface {
 	user: AuthUser | null;
 	token: string;
 	login: (_: LoginProps) => void;
-	refresh: () => void;
+	refreshToken: () => Promise<string | undefined>;
 	logout: () => void;
 }
 
@@ -40,7 +41,7 @@ const AuthContext = createContext({
 	token: '',
 	login: async () => undefined,
 	logout: async () => undefined,
-	refresh: async () => undefined,
+	refreshToken: async () => undefined,
 } as AuthContextInterface);
 
 export function useAuth() {
@@ -53,8 +54,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [token, setToken] = useState<string>('');
 	const [user, setUser] = useState<AuthUser | null>(null);
 	const { toast } = useToast();
-
-	console.log('===AuthProvider!', user, token);
 
 	const clearUserData = () => {
 		setToken('');
@@ -83,6 +82,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 					description: 'при входе',
 					variant: 'destructive',
 				});
+				setLoading(false);
 				return;
 			}
 			const responseData = await resp?.json();
@@ -113,10 +113,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		router.push(Routes.SIGN_IN);
 	}, [router]);
 
-	const refresh = useCallback(async () => {
+	const refreshUser = useCallback(async () => {
 		if (!user?.id) {
 			setLoading(true);
-			const resp = await fetch(`/api/auth/refresh`, {
+			const resp = await fetch(`/api/auth/refresh-user`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -124,10 +124,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			});
 			if (resp.ok) {
 				const user = await resp.json();
-
 				if (user?.id) {
 					setUser(user);
 					localStorage.setItem('user', JSON.stringify(user));
+					if (localStorage.getItem(ACCESS_TOKEN)) {
+						setToken(localStorage.getItem(ACCESS_TOKEN) || '');
+					}
 					setLoading(false);
 					router.refresh();
 				} else {
@@ -140,6 +142,44 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [logout, toast]);
 
+	const refreshToken = useCallback(async () => {
+		setLoading(true);
+		const resp = await fetch(`/api/auth/refresh-token`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!resp?.ok) {
+			toast({
+				title: 'Ошибка',
+				description: 'при рефреше',
+				variant: 'destructive',
+			});
+			await logout();
+			setLoading(false);
+			return;
+		}
+		const responseData = await resp?.json();
+		const { accessToken, refreshToken, user } = responseData || {};
+		setToken(accessToken);
+		setUser(user);
+		localStorage.setItem('user', JSON.stringify(user));
+		localStorage.setItem(REFRESH_TOKEN, refreshToken);
+		localStorage.setItem(ACCESS_TOKEN, accessToken);
+		setLoading(false);
+		return accessToken;
+	}, [toast]);
+
+	useEffect(() => {
+		if (
+			typeof window !== 'undefined' &&
+			!!localStorage.getItem(REFRESH_TOKEN)
+		) {
+			refreshUser();
+		}
+	}, []);
+
 	const contextValue = useMemo(
 		() => ({
 			loading,
@@ -147,9 +187,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			token,
 			login,
 			logout,
-			refresh,
+			refreshToken,
 		}),
-		[loading, user, token, login, logout, refresh],
+		[loading, user, token, login, logout, refreshToken],
 	);
 	return (
 		<AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

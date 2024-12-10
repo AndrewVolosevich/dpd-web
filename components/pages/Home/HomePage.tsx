@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { PersonalChanges } from '@/components/pages/Home/PersonalChanges';
 import { PersonalBirsdays } from '@/components/pages/Home/PersonalBirsdays';
