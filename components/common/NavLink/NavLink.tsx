@@ -8,7 +8,6 @@ export default function NavLink({
 	href,
 	className,
 	isDisabled,
-	isHighlighted = true,
 	...rest
 }: ComponentProps<typeof Link> & {
 	isHighlighted?: boolean;
@@ -21,8 +20,7 @@ export default function NavLink({
 		<Link
 			aria-current={isActive ? 'page' : undefined}
 			className={cn(
-				'text-gray-600 hover:text-red-600 py-2 px-2 block text-sm',
-				isActive && isHighlighted ? 'bg-secondary' : '',
+				'text-gray-600 hover:text-red-600 px-2 block py-6 text-base transition-colors',
 				isDisabled && 'pointer-events-none opacity-50',
 				className,
 			)}

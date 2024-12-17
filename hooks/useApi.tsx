@@ -9,6 +9,7 @@ const useApi = () => {
 			headers: {
 				...options.headers,
 				'Content-Type': 'application/json',
+				Accept: 'application/json',
 				Authorization: `Bearer ${token}`,
 			},
 		};
@@ -27,6 +28,10 @@ const useApi = () => {
 			} catch (error) {
 				logout();
 			}
+		}
+
+		if (!response.ok) {
+			throw new Error(response?.statusText);
 		}
 
 		return response;

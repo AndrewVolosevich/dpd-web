@@ -4,28 +4,31 @@ import React from 'react';
 import { NavLinks, Routes } from '@/const/routes';
 import NavLink from '@/components/common/NavLink/NavLink';
 import { Logo } from '@/components/Header/Logo/Logo';
-import { Search } from '@/components/Header/Search/Search';
 import { ProfileBtn } from '@/components/Header/ProfileBtn/ProfileBtn';
 import { NavMenu } from '@/components/Header/NavMenu/NavMenu';
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = React.useState(false);
-	// const { user } = useAuth();
+
 	return (
 		<>
 			<header className="bg-white text-foreground shadow sticky top-0 z-50 w-full border-b">
-				<div className="container mx-auto px-4 py-4 flex flex-col items-center justify-between relative">
-					<div className="flex flex-col justify-between items-center w-full md:flex-row">
+				<div className="mx-auto flex flex-col items-center justify-between relative">
+					<div className="container flex flex-col justify-between items-center w-full md:flex-row my-4">
 						<Logo />
 						<div className={'flex w-full mt-2 md:mt-0 md:w-auto'}>
-							<Search />
-							<ProfileBtn className={'hidden md:flex ml-16'} />
+							<ProfileBtn className={'hidden md:flex'} />
 						</div>
 					</div>
-					{/*{!!user?.id && (*/}
-					<>
-						<nav className={'self-start hidden md:flex'}>
-							<ul className={`flex flex-row items-center`}>
+					<div
+						className={'bg-gray-200 w-full flex items-center justify-center'}
+					>
+						<nav
+							className={
+								'container hidden md:flex relative w-full items-center'
+							}
+						>
+							<ul className={`flex flex-row items-center list-none p-0 m-0`}>
 								{NavLinks.map((link) => {
 									if (link.href !== Routes.PROFILE) {
 										return (
@@ -42,8 +45,7 @@ const Header = () => {
 							onChange={() => setMenuOpen((old) => !old)}
 							className={'block md:hidden absolute right-4 top-4'}
 						/>
-					</>
-					{/*)}*/}
+					</div>
 				</div>
 			</header>
 		</>

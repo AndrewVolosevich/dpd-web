@@ -1,29 +1,30 @@
 import React from 'react';
+import UserCard from '@/components/pages/Home/UserCard';
 
 type PersonalBirsdaysProps = React.HTMLAttributes<HTMLElement>;
+const testUser = {
+	name: 'Роман',
+	surname: 'Петров',
+	position: 'Менеджер по продажам',
+};
 
 const PersonalBirsdays = ({ className }: PersonalBirsdaysProps) => {
 	return (
 		<aside className={className}>
-			<div className="bg-white p-2 rounded-lg shadow min-h-full">
-				<h2 className="font-bold mb-2 sm:mb-4 text-sm sm:text-base text-center">
-					Дни Рождения
-				</h2>
+			<h2 className="font-bold mb-2 sm:mb-4 text-sm sm:text-base ml-2">
+				Дни Рождения
+			</h2>
+			<div className="bg-white px-4 py-2 rounded-lg shadow lg:min-h-[calc(100%-40px)]">
 				<div className="mb-2 sm:mb-4 text-center">
-					<p className="font-semibold text-sm">17 марта</p>
-					<p className="text-sm">Роман Петров</p>
-					<p className="text-xs sm:text-sm text-gray-600 mb-2">
-						Подразделение 1
-					</p>
-
-					<p className="text-sm">Петр Романов</p>
-					<p className="text-xs sm:text-sm text-gray-600 mb-4">
-						Подразделение 2
-					</p>
-
-					<p className="font-semibold text-sm">18 марта</p>
-					<p className="text-sm">Семен Иванов</p>
-					<p className="text-xs sm:text-sm text-gray-600">Подразделение 1</p>
+					<p className="font-semibold text-sm mb-4">17 марта</p>
+					<div className={'flex flex-row flex-wrap justify-between'}>
+						<UserCard className={'w-[49%] lg:w-full'} user={testUser} />
+						<UserCard className={'w-[49%] lg:w-full'} user={testUser} />
+						<UserCard className={'w-[49%] lg:w-full'} user={testUser} />
+						<UserCard className={'w-[49%] lg:w-full'} user={testUser} />
+					</div>
+					<p className="font-semibold text-sm mb-4">18 марта</p>
+					<UserCard className={'w-[49%] lg:w-full'} user={testUser} />
 				</div>
 			</div>
 		</aside>
