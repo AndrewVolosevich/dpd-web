@@ -11,6 +11,8 @@
 		"React": "readonly"
 	},
 	"rules": {
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/ban-ts-ignore": "off",
 		"no-unused-vars": [1, { "args": "after-used", "argsIgnorePattern": "^_" }],
 		"semi": "off",
 		"@typescript-eslint/no-empty-interface": [

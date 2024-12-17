@@ -1,7 +1,13 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { AlignJustify } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
 import { NavLinks } from '@/const/routes';
 import NavLink from '@/components/common/NavLink/NavLink';
 
@@ -21,6 +27,9 @@ const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
 				</div>
 			</SheetTrigger>
 			<SheetContent className={'block visible md:hidden md:invisible'}>
+				<SheetHeader>
+					<SheetTitle className={'hidden'}>Мобильное меню</SheetTitle>
+				</SheetHeader>
 				<ul className={`flex flex-col items-center p-2`}>
 					{NavLinks.map((link) => (
 						<NavLink href={link.href} key={link.href} className={'mb-2 w-full'}>

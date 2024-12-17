@@ -12,8 +12,8 @@ const Logo = ({ className }: LogoProps) => {
 			href={Routes.HOME}
 			className={cn('flex items-center self-start', className)}
 		>
-			<LogoIcon className="h-10 w-10 md:h-16 md:w-16 mr-2" />
-			<span className="text-xl md:text-3xl font-bold text-primary">dpd</span>
+			<LogoIcon />
+			<span className="text-xl md:text-2xl ml-4">Корпоративный портал</span>
 		</Link>
 	);
 };

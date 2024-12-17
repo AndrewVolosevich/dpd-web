@@ -1,9 +1,5 @@
-import { NewsPage } from '@/components/pages/News/NewsPage';
+import { NewsListPage } from '@/components/pages/News/NewsListPage';
 
 export default function News() {
-	return (
-		<main>
-			<NewsPage />
-		</main>
-	);
+	return <NewsListPage />;
 }

@@ -12,30 +12,32 @@ import {
 	Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/components/providers/global/AuthProvider';
+import UserCard from '@/components/pages/Home/UserCard';
+const testUser = {
+	name: 'Роман',
+	surname: 'Петров',
+	position: 'Менеджер по продажам',
+};
 
 const ProfilePage = () => {
 	const { logout } = useAuth();
 	return (
 		<main className="flex-grow container mx-auto px-4 py-8">
-			<h1 className="text-2xl font-bold mb-6">Профиль пользователя</h1>
-
+			<div className={'flex flex-row justify-between self-start mb-6'}>
+				<h1 className="text-2xl font-bold">Профиль пользователя</h1>
+				<Button variant="default" onClick={logout}>
+					<LogOut className="mr-2 h-4 w-4" />
+					Выйти из системы
+				</Button>
+			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<Card className="col-span-1">
 					<CardHeader>
 						<CardTitle>Личная информация</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-col items-center">
-						<Avatar className="w-24 h-24 mb-4">
-							<AvatarImage
-								src="https://placehold.co/24x24"
-								alt="Фото профиля"
-							/>
-							<AvatarFallback>ИИ</AvatarFallback>
-						</Avatar>
-						<h2 className="text-xl font-semibold mb-2">Иванов Иван Иванович</h2>
-						<p className="text-sm text-gray-500 mb-4">Менеджер по продажам</p>
+						<UserCard className={'mb-4'} user={testUser} full />
 						<Button variant="outline" size="sm">
 							<Edit2 className="mr-2 h-4 w-4" />
 							Редактировать профиль
@@ -115,39 +117,9 @@ const ProfilePage = () => {
 					<CardHeader>
 						<CardTitle>Активность</CardTitle>
 					</CardHeader>
-					<CardContent>
-						<div className="space-y-4">
-							{[
-								{
-									action: "Завершил курс 'Основы логистики'",
-									date: '28.08.2024',
-								},
-								{
-									action: "Получил награду 'Лучший сотрудник месяца'",
-									date: '15.08.2024',
-								},
-								{
-									action: 'Участвовал в корпоративном мероприятии',
-									date: '05.08.2024',
-								},
-							].map((item, index) => (
-								<div
-									key={index}
-									className="flex items-center justify-between border-b pb-2"
-								>
-									<span className="text-sm">{item.action}</span>
-									<span className="text-xs text-gray-500">{item.date}</span>
-								</div>
-							))}
-						</div>
-					</CardContent>
+					<CardContent></CardContent>
 				</Card>
 			</div>
-
-			<Button variant="default" size="sm" className="mt-8" onClick={logout}>
-				<LogOut className="mr-2 h-4 w-4" />
-				Выйти из системы
-			</Button>
 		</main>
 	);
 };

@@ -29,6 +29,7 @@ export interface AuthUser {
 interface AuthContextInterface {
 	loading: boolean;
 	user: AuthUser | null;
+	isAdmin?: boolean;
 	token: string;
 	login: (_: LoginProps) => void;
 	refreshToken: () => Promise<string | undefined>;
@@ -36,8 +37,9 @@ interface AuthContextInterface {
 }
 
 const AuthContext = createContext({
-	loading: false,
+	loading: true,
 	user: null,
+	isAdmin: false,
 	token: '',
 	login: async () => undefined,
 	logout: async () => undefined,
@@ -54,6 +56,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [token, setToken] = useState<string>('');
 	const [user, setUser] = useState<AuthUser | null>(null);
 	const { toast } = useToast();
+
+	const isAdmin = useMemo(() => {
+		return user?.roles?.some((r) => r === 'ADMIN');
+	}, [user]);
 
 	const clearUserData = () => {
 		setToken('');
@@ -184,12 +190,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		() => ({
 			loading,
 			user,
+			isAdmin,
 			token,
 			login,
 			logout,
 			refreshToken,
 		}),
-		[loading, user, token, login, logout, refreshToken],
+		[loading, user, isAdmin, token, login, logout, refreshToken],
 	);
 	return (
 		<AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

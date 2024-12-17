@@ -10,10 +10,6 @@ export enum Routes {
 
 export const NavLinks = [
 	{
-		title: 'Главная',
-		href: Routes.HOME,
-	},
-	{
 		title: 'О компании',
 		href: Routes.ABOUT,
 	},

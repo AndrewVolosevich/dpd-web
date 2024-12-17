@@ -1,19 +1,25 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { User } from 'lucide-react';
+import { CircleUserRound } from 'lucide-react';
 import { Routes } from '@/const/routes';
+import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 type ProfileBtnProps = React.HTMLAttributes<HTMLElement>;
 
 const ProfileBtn = ({ className }: ProfileBtnProps) => {
+	const router = useRouter();
 	return (
 		<Button
-			variant={'buttonLink'}
+			variant={'default'}
 			href={`${Routes.PROFILE}`}
-			className={className}
+			className={cn('px-4 py-2 h-auto w-auto', className)}
+			onClick={() => {
+				router.push(Routes.PROFILE);
+			}}
 		>
-			<User className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-			Профиль
+			<CircleUserRound className="h-6 w-6 mr-2" />
+			Личный кабинет
 		</Button>
 	);
 };
