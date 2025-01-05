@@ -8,9 +8,9 @@ import useApi from '@/hooks/useApi';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import EditNewsForm from '@/components/pages/News/EditNewsForm';
-import Loader from '@/components/common/Loader/Loader';
+import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 
-const containerClasses = 'container mx-auto p-4';
+const containerClasses = 'container mx-auto p-4 h-full';
 const headerClasses = 'text-2xl font-bold mb-4';
 
 const NewsPage = ({
@@ -26,14 +26,9 @@ const NewsPage = ({
 	const { data, isLoading } = useQuery({
 		queryKey: ['news', { newsId }],
 		queryFn: async () => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/${newsId}`,
-				{
-					method: 'GET',
-				},
-			);
+			const resp = await api.get(`/news/${newsId}`);
 
-			return await resp.json();
+			return await resp?.data;
 		},
 	});
 
@@ -53,7 +48,7 @@ const NewsPage = ({
 	if (isLoading) {
 		return (
 			<div className={containerClasses}>
-				<Loader />
+				<FullPageLoader />
 			</div>
 		);
 	}

@@ -8,7 +8,7 @@ interface LoaderProps {
 
 const Loader = ({ message = 'Загрузка...' }: LoaderProps) => {
 	return (
-		<div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+		<div className="w-full h-full inset-0 flex items-center justify-center">
 			<div className="flex flex-col items-center space-y-4">
 				<Loader2 className="h-12 w-12 text-primary animate-spin" />
 				{message && (

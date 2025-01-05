@@ -73,7 +73,8 @@
 		@apply bg-background text-foreground;
 		overflow-x: hidden;
 	}
-	ul, ol {
+	ul,
+	ol {
 		list-style: revert;
 		margin: revert;
 		padding: revert;

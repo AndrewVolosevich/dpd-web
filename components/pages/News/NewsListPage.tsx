@@ -13,20 +13,16 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/const/routes';
-import {
-	keepPreviousData,
-	useMutation,
-	useQuery,
-	useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { format } from 'date-fns';
-import Loader from '@/components/common/Loader/Loader';
 import { Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { NewsModel } from '@/types/entities';
+import useNewsList from '@/lib/api/queries/News/useNewsList';
+import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 
-const limit = 10;
+const limit = 4;
 
 const NewsListPage = () => {
 	const { isAdmin } = useAuth();
@@ -35,23 +31,11 @@ const NewsListPage = () => {
 	const queryClient = useQueryClient();
 	const [page, setPage] = useState(1);
 
-	const { data, isLoading } = useQuery({
-		queryKey: ['news', 'news-list', { page, limit }],
-		queryFn: async () => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/paginated?page=${page}&limit=${limit}`,
-				{
-					method: 'GET',
-				},
-			);
-			return resp?.json();
-		},
-		placeholderData: keepPreviousData,
-	});
+	const { data, isLoading } = useNewsList({ page, limit });
 
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
-			return api(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/${newsId}`, {
+			return api(`/news/${newsId}`, {
 				method: 'DELETE',
 			});
 		},
@@ -78,19 +62,15 @@ const NewsListPage = () => {
 		setPage((old) => old - 1);
 	};
 	const handleNext = () => {
-		if (page >= data?.total / limit) {
+		if (page >= (data?.total || 1) / limit) {
 			return;
 		}
 		setPage((old) => old + 1);
 	};
 
-	const handleToNews = (id: string) => {
-		router.push(`${Routes.NEWS}/${id}`);
-	};
-
 	const getContent = () => {
 		if (isLoading) {
-			return <Loader />;
+			return <FullPageLoader />;
 		}
 		return (
 			<>
@@ -106,7 +86,7 @@ const NewsListPage = () => {
 										<div className="md:flex-shrink-0">
 											<img
 												className="w-full h-full object-cover md:w-48 "
-												src={'https://placehold.co/100x100'}
+												src={'/images/dpd-image.jpg'}
 												alt={item?.title}
 											/>
 										</div>
@@ -129,9 +109,9 @@ const NewsListPage = () => {
 											<p className="mt-2 text-gray-500">{item?.description}</p>
 											<Button
 												className="mt-4"
-												variant="outline"
+												variant="buttonLink"
 												size="sm"
-												onClick={() => handleToNews(item?.id)}
+												href={`${Routes.NEWS}/${item.id}`}
 											>
 												Читать далее
 											</Button>

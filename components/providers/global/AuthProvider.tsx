@@ -23,12 +23,25 @@ export interface AuthUser {
 	tel: string;
 	id: string;
 	name: string;
+	surname: string;
+	patronymic?: string;
+
 	roles?: string[];
+	department?: string;
+	position?: string;
+	isSupervisor?: boolean;
+
+	endDate?: string;
+	startDate?: string;
+	bornDate?: string;
+	createdAt: string;
+	updatedAt?: string;
 }
 
 interface AuthContextInterface {
 	loading: boolean;
 	user: AuthUser | null;
+	updateUser: (u: AuthUser) => void;
 	isAdmin?: boolean;
 	token: string;
 	login: (_: LoginProps) => void;
@@ -39,6 +52,7 @@ interface AuthContextInterface {
 const AuthContext = createContext({
 	loading: true,
 	user: null,
+	updateUser: () => undefined,
 	isAdmin: false,
 	token: '',
 	login: async () => undefined,
@@ -177,6 +191,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return accessToken;
 	}, [toast]);
 
+	const updateUser = useCallback((user: AuthUser) => {
+		setUser(user);
+	}, []);
+
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
@@ -195,8 +213,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			login,
 			logout,
 			refreshToken,
+			updateUser,
 		}),
-		[loading, user, isAdmin, token, login, logout, refreshToken],
+		[loading, user, isAdmin, token, login, logout, refreshToken, updateUser],
 	);
 	return (
 		<AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
