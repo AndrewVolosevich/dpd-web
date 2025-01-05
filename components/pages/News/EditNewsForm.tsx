@@ -25,6 +25,7 @@ import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
 	title: z.string().max(120).min(1, 'Заголовок не может быть пустым'),
@@ -101,6 +102,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 			title: news?.title ?? '',
 			description: news?.description ?? '',
 			content: news?.content ?? '',
+			isMain: news?.isMain ?? false,
 		},
 	});
 
@@ -137,6 +139,30 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="grid gap-3">
+						<div className="grid gap-1">
+							<FormField
+								control={form.control}
+								name="isMain"
+								render={({ field }) => {
+									console.log('===field', field);
+									return (
+										<FormItem className={'flex flex-row items-center'}>
+											<FormControl>
+												<Checkbox
+													checked={field.value}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+											<div className="leading-none ml-2 !mt-0">
+												<FormLabel>
+													Использовать в качестве главной новости
+												</FormLabel>
+											</div>
+										</FormItem>
+									);
+								}}
+							/>
+						</div>
 						<div className="grid gap-1">
 							<FormField
 								control={form.control}

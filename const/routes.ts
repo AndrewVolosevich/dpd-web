@@ -6,6 +6,7 @@ export enum Routes {
 	NEWS = '/news',
 	PROFILE = '/profile',
 	SIGN_IN = '/sign-in',
+	USERS = '/users',
 }
 
 export const NavLinks = [
@@ -26,8 +27,8 @@ export const NavLinks = [
 		href: Routes.NEWS,
 	},
 	{
-		title: 'Профиль',
-		href: Routes.PROFILE,
+		title: 'Пользователи',
+		href: Routes.USERS,
 	},
 ];
 

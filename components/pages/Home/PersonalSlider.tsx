@@ -9,59 +9,50 @@ import {
 } from '@/components/ui/carousel';
 import { useEffect } from 'react';
 import UserCard from '@/components/pages/Home/UserCard';
-import { userData } from '@/types/userData';
+import { UserData } from '@/types/entities';
 
-const employees: userData[] = [
-	{ name: 'Юлия', surname: 'Марчукова', position: 'Старший специалист' },
-	{ name: 'Александр', surname: 'Халеев', position: 'Специалист' },
-	{ name: 'Лада', surname: 'Чистякова', position: 'Менеджер по продажам' },
-	{ name: 'Иван', surname: 'Петров', position: 'Специалист' },
-	{ name: 'Юлия', surname: 'Марчукова', position: 'Старший специалист' },
-	{ name: 'Александр', surname: 'Халеев', position: 'Специалист' },
-	{ name: 'Лада', surname: 'Чистякова', position: 'Менеджер по продажам' },
-	{ name: 'Иван', surname: 'Петров', position: 'Специалист' },
-	{ name: 'Юлия', surname: 'Марчукова', position: 'Старший специалист' },
-	{ name: 'Александр', surname: 'Халеев', position: 'Специалист' },
-	{ name: 'Лада', surname: 'Чистякова', position: 'Менеджер по продажам' },
-	{ name: 'Иван', surname: 'Петров', position: 'Специалист' },
-];
-
-export default function PersonalSlider() {
+export default function PersonalSlider({
+	personalData,
+}: {
+	personalData: UserData[] | undefined;
+}) {
 	// api init
 	const [current, setCurrent] = React.useState(0);
 	const [count, setCount] = React.useState(0);
-	const [api, setApi] = React.useState<CarouselApi>();
+	const [sliderApi, setSliderApi] = React.useState<CarouselApi>();
+
 	useEffect(() => {
-		if (!api) {
+		if (!sliderApi) {
 			return;
 		}
 
-		setCount(api.scrollSnapList().length);
-		setCurrent(api.selectedScrollSnap() + 1);
+		setCount(sliderApi.scrollSnapList().length);
+		setCurrent(sliderApi.selectedScrollSnap() + 1);
 
-		api.on('select', () => {
-			setCurrent(api.selectedScrollSnap() + 1);
+		sliderApi.on('select', () => {
+			setCurrent(sliderApi.selectedScrollSnap() + 1);
 		});
-	}, [api]);
+	}, [sliderApi, personalData?.length]);
 
 	return (
 		<>
 			<Carousel
-				setApi={setApi}
+				setApi={setSliderApi}
 				opts={{
 					align: 'start',
 				}}
 				className="w-full"
 			>
 				<CarouselContent>
-					{employees.map((employee, index) => (
-						<CarouselItem
-							key={index}
-							className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-						>
-							<UserCard user={employee} full />
-						</CarouselItem>
-					))}
+					{personalData?.length &&
+						personalData?.map((employee, index) => (
+							<CarouselItem
+								key={index}
+								className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+							>
+								<UserCard user={employee as UserData} full />
+							</CarouselItem>
+						))}
 				</CarouselContent>
 			</Carousel>
 
@@ -69,7 +60,7 @@ export default function PersonalSlider() {
 				{Array.from({ length: count }).map((_, index) => (
 					<div
 						key={index}
-						onClick={() => api && api.scrollTo(index)}
+						onClick={() => sliderApi && sliderApi.scrollTo(index)}
 						className={'p-1 cursor-pointer'}
 					>
 						<span

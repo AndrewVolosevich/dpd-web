@@ -4,8 +4,8 @@ import React from 'react';
 import { NavLinks, Routes } from '@/const/routes';
 import NavLink from '@/components/common/NavLink/NavLink';
 import { Logo } from '@/components/Header/Logo/Logo';
-import { ProfileBtn } from '@/components/Header/ProfileBtn/ProfileBtn';
 import { NavMenu } from '@/components/Header/NavMenu/NavMenu';
+import { UserNav } from '@/components/common/UserNav/UserNav';
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = React.useState(false);
@@ -17,7 +17,7 @@ const Header = () => {
 					<div className="container flex flex-col justify-between items-center w-full md:flex-row my-4">
 						<Logo />
 						<div className={'flex w-full mt-2 md:mt-0 md:w-auto'}>
-							<ProfileBtn className={'hidden md:flex'} />
+							<UserNav className={'hidden md:block'} />
 						</div>
 					</div>
 					<div
@@ -29,10 +29,10 @@ const Header = () => {
 							}
 						>
 							<ul className={`flex flex-row items-center list-none p-0 m-0`}>
-								{NavLinks.map((link) => {
+								{NavLinks.map((link, index) => {
 									if (link.href !== Routes.PROFILE) {
 										return (
-											<NavLink href={link.href} key={link.href}>
+											<NavLink href={link.href} key={`${link.href}-${index}`}>
 												{link.title}
 											</NavLink>
 										);

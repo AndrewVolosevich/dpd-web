@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { AlignJustify } from 'lucide-react';
@@ -8,8 +9,9 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/components/ui/sheet';
-import { NavLinks } from '@/const/routes';
+import { NavLinks, Routes } from '@/const/routes';
 import NavLink from '@/components/common/NavLink/NavLink';
+import { useAuth } from '@/components/providers/global/AuthProvider';
 
 type NavMenuProps = React.HTMLAttributes<HTMLDivElement> & {
 	isOpen: boolean;
@@ -17,6 +19,7 @@ type NavMenuProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
+	const { logout } = useAuth();
 	return (
 		<Sheet open={isOpen} onOpenChange={onChange}>
 			<SheetTrigger asChild>
@@ -31,11 +34,33 @@ const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
 					<SheetTitle className={'hidden'}>Мобильное меню</SheetTitle>
 				</SheetHeader>
 				<ul className={`flex flex-col items-center p-2`}>
-					{NavLinks.map((link) => (
-						<NavLink href={link.href} key={link.href} className={'mb-2 w-full'}>
+					{NavLinks.map((link, index) => (
+						<NavLink
+							href={link.href}
+							key={`${index}-${link.href}`}
+							className={'mb-2 w-full'}
+							onClick={() => {
+								onChange(false);
+							}}
+						>
 							{link.title}
 						</NavLink>
 					))}
+					<NavLink href={Routes.PROFILE} className={'mb-2 w-full'}>
+						Профиль
+					</NavLink>
+					<div
+						onClick={() => {
+							logout();
+							onChange(false);
+						}}
+						className={
+							'text-gray-600 hover:text-red-600 px-2 block py-6 text-base transition-colors cursor-pointer mb-2 w-full'
+						}
+						key={Routes.PROFILE}
+					>
+						Выйти
+					</div>
 				</ul>
 			</SheetContent>
 		</Sheet>

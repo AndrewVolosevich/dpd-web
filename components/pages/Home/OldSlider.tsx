@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const Slider = () => {
+const OldSlider = () => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const slides = [
 		'https://placehold.co/400x800',
@@ -59,4 +59,4 @@ const Slider = () => {
 	);
 };
 
-export { Slider };
+export { OldSlider };

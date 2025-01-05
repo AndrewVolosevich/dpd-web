@@ -1,115 +1,84 @@
 'use client';
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-	Building,
-	Calendar,
-	Edit2,
-	LogOut,
-	Mail,
-	Phone,
-	Lock,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useMemo, useState } from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
+import { useQuery } from '@tanstack/react-query';
+import useApi from '@/hooks/useApi';
+import { Button } from '@/components/ui/button';
+import { Building, Calendar, Edit2, Mail, Phone } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import UserCard from '@/components/pages/Home/UserCard';
-const testUser = {
-	name: 'Роман',
-	surname: 'Петров',
-	position: 'Менеджер по продажам',
-};
+import FullPageLoader from '@/components/common/Loader/FullPageLoader';
+import EditUserModal from '@/components/pages/Profile/EditUserModal';
+import { format } from 'date-fns';
+import { UserData } from '@/types/entities';
 
-const ProfilePage = () => {
-	const { logout } = useAuth();
+const ProfilePage = ({ id }: { id?: string }) => {
+	const { user } = useAuth();
+	const [open, setOpen] = useState(false);
+	const api = useApi();
+	const userId = useMemo(() => {
+		return id || user?.id;
+	}, [id, user?.id]);
+
+	const { data: anotherUser, isLoading } = useQuery({
+		queryKey: ['another-user', { userId }],
+		queryFn: async (): Promise<UserData> => {
+			const resp = await api(
+				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/get-another-user?userId=${userId}`,
+				{
+					method: 'GET',
+				},
+			);
+
+			return await resp.json();
+		},
+	});
+
+	if (isLoading || !anotherUser) {
+		return <FullPageLoader />;
+	}
+
 	return (
-		<main className="flex-grow container mx-auto px-4 py-8">
+		<div className="flex-grow container mx-auto px-4 py-8">
 			<div className={'flex flex-row justify-between self-start mb-6'}>
 				<h1 className="text-2xl font-bold">Профиль пользователя</h1>
-				<Button variant="default" onClick={logout}>
-					<LogOut className="mr-2 h-4 w-4" />
-					Выйти из системы
-				</Button>
 			</div>
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<Card className="col-span-1">
-					<CardHeader>
-						<CardTitle>Личная информация</CardTitle>
-					</CardHeader>
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+				<Card className="col-span-1 pt-6">
 					<CardContent className="flex flex-col items-center">
-						<UserCard className={'mb-4'} user={testUser} full />
-						<Button variant="outline" size="sm">
-							<Edit2 className="mr-2 h-4 w-4" />
-							Редактировать профиль
-						</Button>
+						<UserCard user={anotherUser} full />
 					</CardContent>
 				</Card>
 
-				<Card className="col-span-1 md:col-span-2">
-					<CardHeader>
-						<CardTitle>Детали профиля</CardTitle>
-					</CardHeader>
+				<Card className="col-span-1 md:col-span-2 pt-6">
 					<CardContent>
-						<Tabs defaultValue="info" className="w-full">
-							<TabsList className="grid w-full grid-cols-3">
-								<TabsTrigger value="info">Информация</TabsTrigger>
-								<TabsTrigger value="security">Безопасность</TabsTrigger>
-								<TabsTrigger value="notifications">Уведомления</TabsTrigger>
-							</TabsList>
-							<TabsContent value="info">
-								<div className="space-y-4">
-									<div className="flex items-center">
-										<Mail className="mr-2 h-4 w-4 text-gray-400" />
-										<span className="text-sm">ivanov@example.com</span>
-									</div>
-									<div className="flex items-center">
-										<Phone className="mr-2 h-4 w-4 text-gray-400" />
-										<span className="text-sm">+7 (123) 456-7890</span>
-									</div>
-									<div className="flex items-center">
-										<Building className="mr-2 h-4 w-4 text-gray-400" />
-										<span className="text-sm">Отдел продаж</span>
-									</div>
-									<div className="flex items-center">
-										<Calendar className="mr-2 h-4 w-4 text-gray-400" />
-										<span className="text-sm">
-											Дата начала работы: 01.01.2020
-										</span>
-									</div>
-								</div>
-							</TabsContent>
-							<TabsContent value="security">
-								<div className="space-y-4">
-									<Button variant="outline" size="sm">
-										<Lock className="mr-2 h-4 w-4" />
-										Изменить пароль
-									</Button>
-									<p className="text-sm text-gray-500">
-										Последний вход: 01.09.2024 10:30
-									</p>
-								</div>
-							</TabsContent>
-							<TabsContent value="notifications">
-								<div className="space-y-2">
-									<div className="flex items-center justify-between">
-										<span className="text-sm">Email-уведомления</span>
-										<input
-											type="checkbox"
-											className="toggle toggle-primary"
-											checked
-										/>
-									</div>
-									<div className="flex items-center justify-between">
-										<span className="text-sm">Push-уведомления</span>
-										<input type="checkbox" className="toggle toggle-primary" />
-									</div>
-									<div className="flex items-center justify-between">
-										<span className="text-sm">SMS-уведомления</span>
-										<input type="checkbox" className="toggle toggle-primary" />
-									</div>
-								</div>
-							</TabsContent>
-						</Tabs>
+						<div className="space-y-4">
+							<div className="flex items-center">
+								<Mail className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">возможная@почта.бу</span>
+							</div>
+							<div className="flex items-center">
+								<Phone className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">{anotherUser?.tel}</span>
+							</div>
+							<div className="flex items-center">
+								<Building className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">{anotherUser?.position ?? ''}</span>
+							</div>
+							<div className="flex items-center">
+								<Calendar className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">
+									День рождения:{' '}
+									{anotherUser?.bornDate
+										? format(anotherUser?.bornDate, 'yyyy-MM-dd')
+										: ''}
+								</span>
+							</div>
+							<Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+								<Edit2 className="mr-2 h-4 w-4" />
+								Редактировать профиль
+							</Button>
+						</div>
 					</CardContent>
 				</Card>
 
@@ -120,7 +89,13 @@ const ProfilePage = () => {
 					<CardContent></CardContent>
 				</Card>
 			</div>
-		</main>
+			<EditUserModal
+				open={open}
+				user={anotherUser}
+				onClose={() => setOpen(false)}
+				isSelf={!!id}
+			/>
+		</div>
 	);
 };
 

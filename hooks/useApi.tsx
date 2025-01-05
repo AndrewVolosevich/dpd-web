@@ -4,6 +4,14 @@ const useApi = () => {
 	const { token, refreshToken, logout } = useAuth();
 
 	return async (url: string, options: RequestInit = {}) => {
+		if (!token) {
+			return {
+				ok: false,
+				statusText: 'Unauthorized: No token',
+				data: null,
+			};
+		}
+
 		const fetchOptions: RequestInit = {
 			...options,
 			headers: {
