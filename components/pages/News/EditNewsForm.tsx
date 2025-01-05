@@ -51,9 +51,8 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 	const queryClient = useQueryClient();
 	const { mutateAsync: createNews, isPending: createLoading } = useMutation({
 		mutationFn: async (newsData: any) => {
-			return api(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/create`, {
-				method: 'POST',
-				body: JSON.stringify({ ...newsData }),
+			return api.post(`/news/create`, {
+				...newsData,
 			});
 		},
 		onError: (error) => {
@@ -74,9 +73,8 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 
 	const { mutateAsync: updateNews, isPending: updateLoading } = useMutation({
 		mutationFn: async (newsData: any) => {
-			return api(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/update`, {
-				method: 'POST',
-				body: JSON.stringify({ ...newsData }),
+			return api.post(`/news/update`, {
+				...newsData,
 			});
 		},
 		onError: (error) => {
@@ -121,7 +119,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 				content,
 			});
 		}
-		const data = await resp?.json();
+		const data = resp?.data;
 		if (data?.id) {
 			setTimeout(() => {
 				router.push(`${Routes.NEWS}/${data.id}`);

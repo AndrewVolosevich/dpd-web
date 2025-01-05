@@ -14,14 +14,12 @@ const usePaginatedUsers = ({
 	return useQuery({
 		queryKey: ['paginated-users', { page, limit }],
 		queryFn: async (): Promise<PaginatedUsers> => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/get-paginated-users`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ page, limit, sortRule: 'surname' }),
-				},
-			);
-			return resp?.json();
+			const resp = await api.post(`/auth/get-paginated-users`, {
+				page,
+				limit,
+				sortRule: 'surname',
+			});
+			return resp?.data;
 		},
 		placeholderData: keepPreviousData,
 	});

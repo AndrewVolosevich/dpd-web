@@ -35,7 +35,7 @@ const NewsListPage = () => {
 
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
-			return api(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/${newsId}`, {
+			return api(`/news/${newsId}`, {
 				method: 'DELETE',
 			});
 		},

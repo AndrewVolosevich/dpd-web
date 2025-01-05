@@ -72,14 +72,8 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	const queryClient = useQueryClient();
 	const { mutate: updateUser, isPending: updateLoading } = useMutation({
 		mutationFn: async (userData: any) => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/update-user`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ ...userData }),
-				},
-			);
-			return resp?.json();
+			const resp = await api.post(`/auth/update-user`, { ...userData });
+			return resp?.data;
 		},
 		onError: (error) => {
 			toast({
@@ -117,14 +111,8 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 
 	const { mutate: createUser, isPending: createLoading } = useMutation({
 		mutationFn: async (userData: any) => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/create-user`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ ...userData }),
-				},
-			);
-			return resp?.json();
+			const resp = await api.post(`/auth/create-user`, { ...userData });
+			return resp?.data;
 		},
 		onError: (error) => {
 			toast({

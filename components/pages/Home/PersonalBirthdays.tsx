@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import UserCard from '@/components/pages/Home/UserCard';
 import useUsersByBirthday from '@/lib/api/queries/Users/useUsersByBirthday';
@@ -19,7 +20,7 @@ const PersonalBirthdays = ({ className }: PersonalBirthdaysProps) => {
 			<h2 className="font-bold mb-2 sm:mb-4 text-sm sm:text-base ml-2">
 				Дни Рождения
 			</h2>
-			<div className="bg-white px-4 py-2 rounded-lg shadow lg:min-h-[calc(100%-40px)] max-h-80 overflow-y-auto">
+			<div className="bg-white px-4 py-2 rounded-lg shadow lg:min-h-[calc(100%-40px)] lg:max-h-80 overflow-y-auto">
 				<div className="mb-2 sm:mb-4 text-center">
 					{Object.entries(groupedUsers).map(([date, users]) => (
 						<div key={date}>

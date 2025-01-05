@@ -35,6 +35,7 @@
 		"@radix-ui/react-tooltip": "^1.1.5",
 		"@tailwindcss/line-clamp": "^0.4.4",
 		"@tanstack/react-query": "^5.62.3",
+		"axios": "^1.7.9",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",

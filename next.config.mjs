@@ -4,6 +4,7 @@ const nextConfig = {
 		dangerouslyAllowSVG: true,
 		domains: ['placehold.co'],
 	},
+	staticPageGenerationTimeout: 120,
 };
 
 export default nextConfig;

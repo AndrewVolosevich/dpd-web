@@ -8,13 +8,8 @@ const useNewsList = ({ page, limit }: { page: number; limit: number }) => {
 	return useQuery({
 		queryKey: ['news', 'news-list', { page, limit }],
 		queryFn: async (): Promise<PaginatedNews> => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/paginated?page=${page}&limit=${limit}`,
-				{
-					method: 'GET',
-				},
-			);
-			return resp?.json();
+			const resp = await api.get(`/news/paginated?page=${page}&limit=${limit}`);
+			return resp?.data;
 		},
 		placeholderData: keepPreviousData,
 	});

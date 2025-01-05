@@ -17,7 +17,7 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import React, { useState } from 'react';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import usePaginatedUsers from '@/lib/api/queries/Users/usePaginatedUsers';
@@ -58,9 +58,7 @@ export default function UsersTable() {
 
 	const { mutate: deleteUser } = useMutation({
 		mutationFn: async (userId: string) => {
-			return api(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/${userId}`, {
-				method: 'DELETE',
-			});
+			return api.delete(`/auth/${userId}`);
 		},
 		onError: (error) => {
 			toast({
@@ -164,7 +162,7 @@ export default function UsersTable() {
 						<PaginationNext
 							href="#"
 							onClick={handleNext}
-							disabled={page >= data?.total / limit}
+							disabled={page >= (data?.total || 0) / limit}
 						/>
 					</PaginationItem>
 				</PaginationContent>

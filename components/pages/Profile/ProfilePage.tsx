@@ -23,14 +23,9 @@ const ProfilePage = ({ id }: { id?: string }) => {
 	const { data: anotherUser, isLoading } = useQuery({
 		queryKey: ['another-user', { userId }],
 		queryFn: async (): Promise<UserData> => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/get-another-user?userId=${userId}`,
-				{
-					method: 'GET',
-				},
-			);
+			const resp = await api.get(`/auth/get-another-user?userId=${userId}`);
 
-			return await resp.json();
+			return await resp?.data;
 		},
 	});
 

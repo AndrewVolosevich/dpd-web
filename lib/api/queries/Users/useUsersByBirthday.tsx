@@ -8,14 +8,10 @@ const useUsersByBirthday = () => {
 	return useQuery({
 		queryKey: ['users-by-birthdays'],
 		queryFn: async (): Promise<UserData[]> => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/get-users-by-birthdays`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ sortRule: 'bornDate' }),
-				},
-			);
-			return resp?.json();
+			const resp = await api.post(`/auth/get-users-by-birthdays`, {
+				sortRule: 'bornDate',
+			});
+			return resp?.data;
 		},
 	});
 };

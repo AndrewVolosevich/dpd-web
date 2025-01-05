@@ -26,14 +26,9 @@ const NewsPage = ({
 	const { data, isLoading } = useQuery({
 		queryKey: ['news', { newsId }],
 		queryFn: async () => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/news/${newsId}`,
-				{
-					method: 'GET',
-				},
-			);
+			const resp = await api.get(`/news/${newsId}`);
 
-			return await resp.json();
+			return await resp?.data;
 		},
 	});
 

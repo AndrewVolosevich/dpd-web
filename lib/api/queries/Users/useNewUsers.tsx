@@ -8,14 +8,8 @@ const useNewUsers = ({ limit }: { limit: number }) => {
 	return useQuery({
 		queryKey: ['new-users', { limit }],
 		queryFn: async (): Promise<UserData[]> => {
-			const resp = await api(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/auth/get-new-users`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ limit }),
-				},
-			);
-			return resp?.json();
+			const resp = await api.post(`/auth/get-new-users`, { limit });
+			return resp?.data;
 		},
 	});
 };
