@@ -11,9 +11,10 @@ const useApi = () => {
 
 	api.interceptors.request.use(
 		(config) => {
-			if (token) {
-				config.headers.Authorization = `Bearer ${token}`;
+			if (!token) {
+				return Promise.reject(new Error('No token available'));
 			}
+			config.headers.Authorization = `Bearer ${token}`;
 			return config;
 		},
 		(error) => Promise.reject(error),
