@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 	}
 
 	return new Response(JSON.stringify({ ...newResp }), {
-		status: 200,
+		status: resp?.status,
 		headers: {
 			'Content-Type': 'application/json',
 		},

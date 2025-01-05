@@ -19,6 +19,11 @@ interface UserNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserNav({ className }: UserNavProps) {
 	const router = useRouter();
 	const { user, logout } = useAuth();
+
+	if (!user) {
+		return null;
+	}
+
 	return (
 		<div className={className}>
 			<DropdownMenu>
