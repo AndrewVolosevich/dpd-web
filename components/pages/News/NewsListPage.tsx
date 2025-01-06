@@ -47,7 +47,8 @@ const NewsListPage = () => {
 			});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['news', 'news-list'] });
+			queryClient.invalidateQueries({ queryKey: ['news'] });
+			queryClient.invalidateQueries({ queryKey: ['news-list'] });
 			toast({
 				title: 'Новость успешно удалена',
 				variant: 'default',

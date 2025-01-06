@@ -64,6 +64,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['news'] });
+			queryClient.invalidateQueries({ queryKey: ['news-list'] });
 			toast({
 				title: 'Новость успешно создана',
 				variant: 'default',
@@ -86,6 +87,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['news'] });
+			queryClient.invalidateQueries({ queryKey: ['news-list'] });
 			toast({
 				title: 'Новость успешно обновлена',
 				variant: 'default',
@@ -142,7 +144,6 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 								control={form.control}
 								name="isMain"
 								render={({ field }) => {
-									console.log('===field', field);
 									return (
 										<FormItem className={'flex flex-row items-center'}>
 											<FormControl>
