@@ -36,6 +36,7 @@ export interface UserData {
 	updatedAt?: string;
 
 	image?: string;
+	presentation?: any;
 }
 
 export interface PaginatedUsers {

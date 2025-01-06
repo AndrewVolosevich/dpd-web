@@ -28,6 +28,7 @@ import DeleteAlert from '@/components/common/DeleteAlert/DeleteAlert';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
+import Link from 'next/link';
 
 const limit = 20;
 
@@ -118,8 +119,11 @@ export default function UsersTable() {
 							data?.data?.map((user) => (
 								<TableRow key={user.tel}>
 									<TableCell>
-										{user?.surname} {user?.name}
+										<Link href={`profile/${user?.id}`}>
+											{user?.surname} {user?.name}
+										</Link>
 									</TableCell>
+
 									<TableCell>{user?.tel}</TableCell>
 									<TableCell>{user?.department || '-'}</TableCell>
 									<TableCell>{user?.position || '-'}</TableCell>

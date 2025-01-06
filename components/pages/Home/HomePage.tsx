@@ -8,15 +8,17 @@ import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 export const HomePage = () => {
 	return (
 		<div className="flex flex-col justify-center w-full py-4">
-			<div className={'flex container mx-auto gap-6 flex-col lg:flex-row mb-4'}>
-				<div className="lg:w-8/12">
-					<Suspense fallback={<FullPageLoader />}>
+			<Suspense fallback={<FullPageLoader />}>
+				<div
+					className={'flex container mx-auto gap-6 flex-col lg:flex-row mb-4'}
+				>
+					<div className="lg:w-8/12">
 						<HomePageNews />
-					</Suspense>
+					</div>
+					<PersonalBirthdays className="w-full lg:w-4/12" />
 				</div>
-				<PersonalBirthdays className="w-full lg:w-4/12" />
-			</div>
-			<PersonalChanges className={'w-full mt-4 container mx-auto'} />
+				<PersonalChanges className={'w-full mt-4 container mx-auto'} />
+			</Suspense>
 		</div>
 	);
 };

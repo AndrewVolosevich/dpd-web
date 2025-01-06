@@ -12,7 +12,7 @@ const useSuspenseNewsList = ({
 	const api = useApi();
 
 	return useSuspenseQuery({
-		queryKey: ['news', 'news-list', { page, limit }],
+		queryKey: ['news', { page, limit }],
 		queryFn: async (): Promise<PaginatedNews> => {
 			const resp = await api.get(`/news/paginated?page=${page}&limit=${limit}`);
 

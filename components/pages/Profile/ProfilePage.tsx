@@ -5,12 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { Button } from '@/components/ui/button';
 import { Building, Calendar, Edit2, Mail, Phone } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import UserCard from '@/components/pages/Home/UserCard';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import EditUserModal from '@/components/pages/Profile/EditUserModal';
 import { format } from 'date-fns';
 import { UserData } from '@/types/entities';
+import Presentation from '@/components/pages/Profile/Presentation';
 
 const ProfilePage = ({ id }: { id?: string }) => {
 	const { user } = useAuth();
@@ -76,14 +77,10 @@ const ProfilePage = ({ id }: { id?: string }) => {
 						</div>
 					</CardContent>
 				</Card>
-
-				<Card className="col-span-1 md:col-span-3">
-					<CardHeader>
-						<CardTitle>Активность</CardTitle>
-					</CardHeader>
-					<CardContent></CardContent>
-				</Card>
 			</div>
+
+			<Presentation user={anotherUser} />
+
 			<EditUserModal
 				open={open}
 				user={anotherUser}
