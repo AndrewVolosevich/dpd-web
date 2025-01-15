@@ -19,7 +19,7 @@ import InlineCode from '@editorjs/inline-code';
 // @ts-ignore
 import Marker from '@editorjs/marker';
 // @ts-ignore
-// import ImageTool from '@editorjs/image';
+import ImageTool from '@editorjs/image';
 
 export const getEditorJsTools = (token: string) => {
 	return {
@@ -52,19 +52,19 @@ export const getEditorJsTools = (token: string) => {
 		code: Code,
 		inlineCode: InlineCode,
 		marker: Marker,
-		// image: {
-		// 	class: ImageTool,
-		// 	config: {
-		// 		field: 'file',
-		// 		additionalRequestHeaders: {
-		// 			authorization: `Bearer ${token}`,
-		// 		},
-		// 		endpoints: {
-		// 			byFile: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/device`, // Your backend file uploader endpoint
-		// 			byUrl: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/url`, // Your endpoint that provides uploading by Url
-		// 		},
-		// 	},
-		// },
+		image: {
+			class: ImageTool,
+			config: {
+				field: 'file',
+				additionalRequestHeaders: {
+					authorization: `Bearer ${token}`,
+				},
+				endpoints: {
+					byFile: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/device`, // Your backend file uploader endpoint
+					byUrl: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/url`, // Your endpoint that provides uploading by Url
+				},
+			},
+		},
 	};
 };
 
