@@ -35,7 +35,7 @@ export interface UserData {
 	createdAt: string;
 	updatedAt?: string;
 
-	image?: string;
+	photo?: string;
 	presentation?: any;
 }
 
