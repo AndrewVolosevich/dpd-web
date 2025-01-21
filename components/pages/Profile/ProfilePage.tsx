@@ -12,10 +12,12 @@ import EditUserModal from '@/components/pages/Profile/EditUserModal';
 import { format } from 'date-fns';
 import { UserData } from '@/types/entities';
 import Presentation from '@/components/pages/Profile/Presentation';
+import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
 
 const ProfilePage = ({ id }: { id?: string }) => {
-	const { user } = useAuth();
+	const { user, isAdmin } = useAuth();
 	const [open, setOpen] = useState(false);
+	const [openPhoto, setOpenPhoto] = useState(false);
 	const api = useApi();
 	const userId = useMemo(() => {
 		return id || user?.id;
@@ -42,7 +44,11 @@ const ProfilePage = ({ id }: { id?: string }) => {
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
 				<Card className="col-span-1 pt-6">
 					<CardContent className="flex flex-col items-center">
-						<UserCard user={anotherUser} full />
+						<UserCard
+							user={anotherUser}
+							full
+							onEdit={!!id || isAdmin ? () => setOpenPhoto(true) : undefined}
+						/>
 					</CardContent>
 				</Card>
 
@@ -85,7 +91,13 @@ const ProfilePage = ({ id }: { id?: string }) => {
 				open={open}
 				user={anotherUser}
 				onClose={() => setOpen(false)}
-				isSelf={!!id}
+				isSelf={!id}
+			/>
+			<EditUserPhotoModal
+				open={openPhoto}
+				user={anotherUser}
+				onClose={() => setOpenPhoto(false)}
+				isSelf={!id}
 			/>
 		</div>
 	);

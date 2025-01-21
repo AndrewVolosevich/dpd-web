@@ -2,7 +2,16 @@
 const nextConfig = {
 	images: {
 		dangerouslyAllowSVG: true,
-		domains: ['placehold.co', 'storage-203.s3hoster.by'],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'placehold.co',
+			},
+			{
+				protocol: 'https',
+				hostname: 'storage-203.s3hoster.by',
+			},
+		],
 	},
 	staticPageGenerationTimeout: 120,
 };

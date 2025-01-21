@@ -30,6 +30,7 @@ export interface AuthUser {
 	department?: string;
 	position?: string;
 	isSupervisor?: boolean;
+	photo?: string;
 
 	endDate?: string;
 	startDate?: string;
@@ -191,9 +192,32 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return accessToken;
 	}, [toast]);
 
-	const updateUser = useCallback((user: AuthUser) => {
-		setUser(user);
-	}, []);
+	const updateUser = useCallback(
+		async (user: AuthUser) => {
+			setLoading(true);
+			let resp = null;
+			if (user) {
+				resp = await fetch(`/api/auth/update-user/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ user }),
+				});
+			}
+
+			if (!resp?.ok) {
+				setLoading(false);
+				return;
+			}
+
+			setUser(user);
+			localStorage.setItem('user', JSON.stringify(user));
+			setLoading(false);
+			router.refresh();
+		},
+		[router],
+	);
 
 	useEffect(() => {
 		if (

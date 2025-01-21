@@ -85,20 +85,21 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 		onSuccess: async (u) => {
 			if (isSelf) {
 				updateSelfUser(u);
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['new-users'],
-				});
-				await queryClient.invalidateQueries({
-					queryKey: ['another-user'],
-				});
-				await queryClient.invalidateQueries({
-					queryKey: ['paginated-users'],
-				});
-				await queryClient.invalidateQueries({
-					queryKey: ['users-by-birthdays'],
-				});
 			}
+
+			await queryClient.invalidateQueries({
+				queryKey: ['new-users'],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['another-user'],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['paginated-users'],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['users-by-birthdays'],
+			});
+
 			toast({
 				title: 'Пользователь успешно изменен',
 				variant: 'default',
