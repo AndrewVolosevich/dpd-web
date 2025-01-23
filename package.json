@@ -46,6 +46,7 @@
 		"next": "15.0.3",
 		"next-themes": "^0.2.1",
 		"react": "^18",
+		"react-confetti": "^6.2.2",
 		"react-dom": "^18",
 		"react-hook-form": "^7.54.1",
 		"tailwind-merge": "^2.5.2",

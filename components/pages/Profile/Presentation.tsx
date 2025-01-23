@@ -3,7 +3,11 @@ import OutputBlock from '@/components/Editor/OutputBlock';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import EditorBlock from '@/components/Editor/EditorBlock';
-import { EDITOR_INITIAL_DATA } from '@/const/editor';
+import {
+	EDITOR_INITIAL_DATA,
+	EDITOR_NEW_DATA,
+	EDITOR_TRANSFER_DATA,
+} from '@/const/editor';
 import { Card, CardContent } from '@/components/ui/card';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +21,9 @@ const Presentation = ({ user }: { user: UserData }) => {
 	const [editorData, setEditorData] = useState<any>(
 		user?.presentation ? user?.presentation : EDITOR_INITIAL_DATA,
 	);
+	const [editorRenderData, setEditorRenderData] = useState<any>(null);
+	const [clearCounter, setClearCounter] = useState<number>(0);
+	const [renderCounter, setRenderCounter] = useState<number>(0);
 	const queryClient = useQueryClient();
 	const api = useApi();
 
@@ -88,9 +95,34 @@ const Presentation = ({ user }: { user: UserData }) => {
 		return null;
 	}
 
+	const handleSample = (sample: any) => {
+		setClearCounter((old) => old + 1);
+		setTimeout(() => {
+			setEditorRenderData(sample);
+			setRenderCounter((old) => old + 1);
+		}, 0);
+	};
+
 	return (
 		<div className={'w-full mt-4'}>
-			{user?.presentation && (
+			{isEditing && (
+				<div className={'mb-4'}>
+					<Button
+						className={'mr-2'}
+						variant={'outline'}
+						onClick={() => handleSample(EDITOR_NEW_DATA)}
+					>
+						При приеме
+					</Button>
+					<Button
+						variant={'outline'}
+						onClick={() => handleSample(EDITOR_TRANSFER_DATA)}
+					>
+						При преводе
+					</Button>
+				</div>
+			)}
+			{(!!user?.presentation?.blocks?.length || isEditing) && (
 				<Card className="col-span-1 md:col-span-3">
 					<CardContent>
 						<div>
@@ -99,6 +131,9 @@ const Presentation = ({ user }: { user: UserData }) => {
 								<EditorBlock
 									className={'mt-4 w-full mx-auto'}
 									data={editorData}
+									clearCounter={clearCounter}
+									renderCounter={renderCounter}
+									renderData={editorRenderData}
 									onChange={setEditorData}
 									editorBlockId="editorjs-container"
 								/>

@@ -8,6 +8,8 @@ import './EditorBlock.css';
 interface EditorBlockProps extends React.HTMLAttributes<HTMLDivElement> {
 	data: any;
 	clearCounter?: number;
+	renderCounter?: number;
+	renderData?: any;
 	editorBlockId: string;
 	onChange: React.Dispatch<any>;
 }
@@ -15,6 +17,8 @@ interface EditorBlockProps extends React.HTMLAttributes<HTMLDivElement> {
 const EditorBlock = ({
 	data,
 	clearCounter,
+	renderCounter,
+	renderData,
 	onChange,
 	editorBlockId,
 	className,
@@ -69,6 +73,12 @@ const EditorBlock = ({
 			ejInstance.current?.clear();
 		}
 	}, [clearCounter]);
+
+	useEffect(() => {
+		if (ejInstance.current && renderData && renderCounter) {
+			ejInstance.current?.render(renderData);
+		}
+	}, [renderCounter]);
 	return (
 		<div className={clsx('editor', className)} {...props}>
 			<div id={editorBlockId} />
