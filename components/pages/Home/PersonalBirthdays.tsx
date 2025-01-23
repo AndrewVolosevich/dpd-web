@@ -3,6 +3,8 @@ import React from 'react';
 import UserCard from '@/components/pages/Home/UserCard';
 import useUsersByBirthday from '@/lib/api/queries/Users/useUsersByBirthday';
 import { groupUsersByBirthday } from '@/lib/api/date/helpers';
+import { Button } from '@/components/ui/button';
+import { Gift } from 'lucide-react';
 
 type PersonalBirthdaysProps = React.HTMLAttributes<HTMLElement>;
 
@@ -15,6 +17,14 @@ const PersonalBirthdays = ({ className }: PersonalBirthdaysProps) => {
 		return null;
 	}
 
+	const handleSendEmail = (email: string, name: string) => {
+		const subject = encodeURIComponent(`С Днем Рождения, ${name}!`);
+		const body = encodeURIComponent(
+			`Дорогой(ая) ${name},\n\nПоздравляю тебя с Днем Рождения! Желаю счастья, здоровья и успехов.\n\nС наилучшими пожеланиями.`,
+		);
+		window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+	};
+
 	return (
 		<aside className={className}>
 			<h2 className="font-bold mb-2 sm:mb-4 text-sm sm:text-base ml-2">
@@ -25,13 +35,25 @@ const PersonalBirthdays = ({ className }: PersonalBirthdaysProps) => {
 					{Object.entries(groupedUsers).map(([date, users]) => (
 						<div key={date}>
 							<p className="font-semibold text-sm mb-4">{date}</p>
-							<div className="flex flex-row flex-wrap justify-between">
+							<div className="flex flex-row flex-wrap justify-between w-[100%]">
 								{users?.map((user) => (
-									<UserCard
+									<div
 										key={user.id}
-										className="w-[49%] lg:w-full"
-										user={user}
-									/>
+										className={
+											'flex flex-row justify-between w-[49%] lg:w-full items-center'
+										}
+									>
+										<UserCard user={user} />
+										<Button
+											className={'mr-2 mb-4'}
+											variant={'outline'}
+											onClick={() =>
+												handleSendEmail('test@gmail.com', user?.name || '')
+											}
+										>
+											<Gift className={'text-primary'} />
+										</Button>
+									</div>
 								))}
 							</div>
 						</div>
