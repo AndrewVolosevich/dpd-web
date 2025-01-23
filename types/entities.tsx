@@ -2,6 +2,7 @@ export type NewsModel = {
 	content?: any;
 	createdAt: string;
 	description?: string;
+	titleImg?: string;
 	id: string;
 	title?: string;
 	updatedAt: string;
