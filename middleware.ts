@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+	if (request.nextUrl.pathname === '/404') {
+		return NextResponse.next();
+	}
+
 	const user = request.cookies.get('user');
 	const userId = user?.value ? JSON.parse(user?.value || '')?.id : '';
 
@@ -24,9 +28,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		// Skip Next.js internals and all static files, unless found in search params
-		'/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-		// Always run for API routes
+		'/((?!_next/static|_next/image|favicon.ico|404|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
 		'/(api|trpc)(.*)',
 	],
 };

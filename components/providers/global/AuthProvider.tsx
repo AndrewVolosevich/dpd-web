@@ -10,7 +10,7 @@ import React, {
 	useState,
 } from 'react';
 import { Routes } from '@/const/routes';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/const/common';
 import { useToast } from '@/hooks/use-toast';
 
@@ -218,13 +218,31 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		},
 		[router],
 	);
+	const pathname = usePathname();
 
 	useEffect(() => {
+		const checkPage = async () => {
+			try {
+				const response = await fetch(pathname);
+				if (response.status === 404) {
+					return;
+				} else {
+					refreshUser();
+				}
+			} catch {
+				//
+			}
+		};
 		if (
 			typeof window !== 'undefined' &&
 			!!localStorage.getItem(REFRESH_TOKEN)
 		) {
-			refreshUser();
+			const localUser = localStorage.getItem('user');
+			if (!localUser) {
+				checkPage();
+			} else if (localUser) {
+				setUser(JSON.parse(localUser));
+			}
 		}
 	}, []);
 

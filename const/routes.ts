@@ -13,6 +13,28 @@ export const NavLinks = [
 	{
 		title: 'О компании',
 		href: Routes.ABOUT,
+		items: [
+			{
+				title: 'История',
+				href: `${Routes.ABOUT}/history`,
+			},
+			{
+				title: 'Миссия и ценности ',
+				href: `${Routes.ABOUT}/mission`,
+			},
+			{
+				title: 'Орг.структура',
+				href: `${Routes.ABOUT}/structure`,
+			},
+			{
+				title: 'Первые лица DPD Беларусь',
+				href: `${Routes.ABOUT}/head`,
+			},
+			{
+				title: 'Реквизиты',
+				href: `${Routes.ABOUT}/details`,
+			},
+		],
 	},
 	{
 		title: 'База знаний',
