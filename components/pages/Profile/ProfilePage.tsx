@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { UserData } from '@/types/entities';
 import Presentation from '@/components/pages/Profile/Presentation';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
+import BirthdayCelebration from '@/components/pages/Profile/BirthdaySelebration';
 
 const ProfilePage = ({ id }: { id?: string }) => {
 	const { user, isAdmin } = useAuth();
@@ -38,6 +39,10 @@ const ProfilePage = ({ id }: { id?: string }) => {
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
+			<BirthdayCelebration
+				name={anotherUser?.name || ''}
+				birthDate={anotherUser?.bornDate || ''}
+			/>
 			<div className={'flex flex-row justify-between self-start mb-6'}>
 				<h1 className="text-2xl font-bold">Профиль пользователя</h1>
 			</div>

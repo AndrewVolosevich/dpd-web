@@ -17,10 +17,12 @@ export async function POST(req: NextRequest) {
 	);
 	const newResp = await resp.json();
 
-	cookieStore.set('user', `${JSON.stringify({ ...newResp?.user }) || ''}`, {
-		path: '/',
-		maxAge: 2592000,
-	});
+	if (newResp?.user) {
+		cookieStore.set('user', `${JSON.stringify({ ...newResp?.user }) || ''}`, {
+			path: '/',
+			maxAge: 2592000,
+		});
+	}
 
 	if (newResp?.accessToken) {
 		cookieStore.set('accessToken', newResp?.accessToken, {

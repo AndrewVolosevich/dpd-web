@@ -1,11 +1,10 @@
 'use client';
 
 import React from 'react';
-import { NavLinks, Routes } from '@/const/routes';
-import NavLink from '@/components/common/NavLink/NavLink';
 import { Logo } from '@/components/Header/Logo/Logo';
 import { NavMenu } from '@/components/Header/NavMenu/NavMenu';
 import { UserNav } from '@/components/common/UserNav/UserNav';
+import { Navigation } from './Navigation/Navigation';
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = React.useState(false);
@@ -23,23 +22,7 @@ const Header = () => {
 					<div
 						className={'bg-gray-200 w-full flex items-center justify-center'}
 					>
-						<nav
-							className={
-								'container hidden md:flex relative w-full items-center'
-							}
-						>
-							<ul className={`flex flex-row items-center list-none p-0 m-0`}>
-								{NavLinks.map((link, index) => {
-									if (link.href !== Routes.PROFILE) {
-										return (
-											<NavLink href={link.href} key={`${link.href}-${index}`}>
-												{link.title}
-											</NavLink>
-										);
-									}
-								})}
-							</ul>
-						</nav>
+						<Navigation className="container hidden md:flex relative w-full items-center" />
 						<NavMenu
 							isOpen={menuOpen}
 							onChange={() => setMenuOpen((old) => !old)}

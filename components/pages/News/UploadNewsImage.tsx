@@ -1,67 +1,45 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
-import { UserData } from '@/types/entities';
-import { useAuth } from '@/components/providers/global/AuthProvider';
 
-interface UploadUserPhotoProps {
-	user?: UserData;
-	isSelf?: boolean;
-	onClose: () => void;
+interface UploadNewsImageProps {
+	onClose: (val?: string) => void;
 }
 
-const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
+const UploadNewsImage = ({ onClose }: UploadNewsImageProps) => {
 	const [preview, setPreview] = useState<string | null>(null);
 	const formRef = useRef<HTMLFormElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const { updateUser: updateSelfUser } = useAuth();
 
-	const queryClient = useQueryClient();
 	const api = useApi();
 	const { mutate: updatePhoto, isPending: updateLoading } = useMutation({
 		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/upload/update-photo`, userData);
+			const resp = await api.post(`/upload/update-news-image`, userData);
 			return resp?.data;
 		},
 		onError: (error) => {
+			onClose();
 			toast({
-				title: 'Неудачное изменение фото',
+				title: 'Неудачное изменение изображения',
 				variant: 'destructive',
 				description: error.message,
 			});
 		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			}
-			// Reset the form and preview
+		onSuccess: async (r) => {
 			formRef.current?.reset();
 			setPreview(null);
 			if (fileInputRef.current) fileInputRef.current.value = '';
+			if (r?.url) {
+				onClose(r?.url);
 
-			await queryClient.invalidateQueries({
-				queryKey: ['another-user'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['new-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['paginated-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['users-by-birthdays'],
-			});
-
-			toast({
-				title: 'Фото успешно изменено',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
+				toast({
+					title: 'Изображение успешно изменено',
+					variant: 'default',
+				});
+			}
 		},
 	});
 
@@ -78,12 +56,7 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
 		const formData = new FormData(event.currentTarget);
-		if (user) {
-			formData.append('userId', user?.id);
-			formData.append('userTel', user?.tel);
-		}
 		await updatePhoto(formData);
 	};
 
@@ -92,16 +65,17 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 			<form onSubmit={handleSubmit} className="space-y-4" ref={formRef}>
 				<div className="flex items-center justify-center">
 					{preview ? (
-						<Image
-							src={preview || '/placeholder.svg'}
-							alt="Avatar preview"
-							width={100}
-							height={100}
-							className="rounded-full object-cover max-h-24 max-w-24 min-h-24 max-w-24"
-						/>
+						<div className="relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
+							<Image
+								src={preview || '/placeholder.svg'}
+								alt="Preview"
+								fill
+								className="object-cover"
+							/>
+						</div>
 					) : (
-						<div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-							<span className="text-gray-500">нет фото</span>
+						<div className="w-full aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center">
+							<span className="text-gray-500">Нет изображения</span>
 						</div>
 					)}
 				</div>
@@ -132,11 +106,11 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 					disabled={!preview || updateLoading}
 					className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[hsl(346,100%,43%)] hover:bg-[hsl(346,100%,38%)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[hsl(346,100%,43%)] disabled:opacity-50"
 				>
-					{updateLoading ? 'Загрузка...' : 'Загрузить фото'}
+					{updateLoading ? 'Загрузка...' : 'Загрузить изображение'}
 				</Button>
 			</form>
 		</div>
 	);
 };
 
-export default UploadUserPhoto;
+export default UploadNewsImage;

@@ -10,7 +10,7 @@ const CompanyNews = ({ className, news }: CompanyNewsProps) => {
 	return (
 		<div className={className}>
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-2">
-				{news?.map((i) => <SecondaryNewsItem mainNews={i} key={i.id} />)}
+				{news?.map((i) => <SecondaryNewsItem news={i} key={i.id} />)}
 			</div>
 		</div>
 	);

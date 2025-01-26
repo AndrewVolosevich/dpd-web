@@ -17,7 +17,7 @@ const MainNews = ({ className, mainNews }: MainNewsProps) => {
 					<Image
 						layout="fill"
 						objectFit="cover"
-						src={'/images/dpd-image.jpg'}
+						src={mainNews?.titleImg || '/images/dpd-image.jpg'}
 						alt={`Главная новость`}
 					/>
 				</div>

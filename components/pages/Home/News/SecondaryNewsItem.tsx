@@ -6,12 +6,12 @@ import { cn } from '@/lib/utils';
 import { Routes } from '@/const/routes';
 
 type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
-	mainNews?: NewsModel;
+	news?: NewsModel;
 };
 
-const SecondaryNewsItem = ({ className, mainNews }: MainNewsProps) => {
+const SecondaryNewsItem = ({ className, news }: MainNewsProps) => {
 	return (
-		<Link href={`${Routes.NEWS}/${mainNews?.id}`}>
+		<Link href={`${Routes.NEWS}/${news?.id}`}>
 			<div
 				className={cn(
 					'bg-white rounded shadow overflow-hidden h-full',
@@ -20,7 +20,7 @@ const SecondaryNewsItem = ({ className, mainNews }: MainNewsProps) => {
 			>
 				<div className={'w-full max-h-[200px] min-h-32 relative'}>
 					<Image
-						src="/images/dpd-image.jpg"
+						src={news?.titleImg || '/images/dpd-image.jpg'}
 						layout="fill"
 						objectFit="cover"
 						alt={`Secondary news`}
@@ -31,7 +31,7 @@ const SecondaryNewsItem = ({ className, mainNews }: MainNewsProps) => {
 						'h-full line-clamp-2 px-1 pt-1 bg-gradient-to-r from-primary to-secondary'
 					}
 				>
-					<p className="text-xs text-white">{mainNews?.title}</p>
+					<p className="text-xs text-white">{news?.title}</p>
 				</div>
 			</div>
 		</Link>

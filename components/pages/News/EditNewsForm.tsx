@@ -26,6 +26,9 @@ import useApi from '@/hooks/useApi';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ImagePlus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import UploadNewsModal from '@/components/pages/News/UploadNewsModal';
 
 const formSchema = z.object({
 	title: z.string().max(120).min(1, 'Заголовок не может быть пустым'),
@@ -47,6 +50,8 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 	const [editorData, setEditorData] = useState<any>(
 		news?.content ? news?.content : EDITOR_INITIAL_DATA,
 	);
+	const [open, setOpen] = useState<boolean>(false);
+	const [titleImgUrl, setTitleImgUrl] = useState<string>(news?.titleImg || '');
 
 	const queryClient = useQueryClient();
 	const { mutateAsync: createNews, isPending: createLoading } = useMutation({
@@ -113,11 +118,13 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 			resp = await updateNews({
 				...values,
 				id: news.id,
+				titleImg: titleImgUrl,
 				content,
 			});
 		} else {
 			resp = await createNews({
 				...values,
+				titleImg: titleImgUrl,
 				content,
 			});
 		}
@@ -136,6 +143,17 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 
 	return (
 		<div className={cn('grid gap-4', className)} {...props}>
+			<Button
+				variant={'ghost'}
+				type={'button'}
+				onClick={() => setOpen(true)}
+				className={
+					'h-auto justify-center justify-self-start cursor-pointer px-0 text-base text-primary'
+				}
+			>
+				<ImagePlus className={'text-primary h-8 w-8 mr-2'} />
+				Задать заглавное изображение
+			</Button>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="grid gap-3">
@@ -218,6 +236,15 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 					)}
 				</form>
 			</Form>
+			<UploadNewsModal
+				open={open}
+				onClose={(val?: string) => {
+					if (val) {
+						setTitleImgUrl(val);
+					}
+					setOpen(false);
+				}}
+			/>
 		</div>
 	);
 };
