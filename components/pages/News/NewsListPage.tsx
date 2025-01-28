@@ -21,6 +21,8 @@ import { toast } from '@/hooks/use-toast';
 import { NewsModel } from '@/types/entities';
 import useNewsList from '@/lib/api/queries/News/useNewsList';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
+import { DateRangePicker } from '@/components/common/DateRangePicker/DateRangePicker';
+import { DateRange } from 'react-day-picker';
 
 const limit = 4;
 
@@ -31,7 +33,12 @@ const NewsListPage = () => {
 	const queryClient = useQueryClient();
 	const [page, setPage] = useState(1);
 
-	const { data, isLoading } = useNewsList({ page, limit });
+	const state = useState<DateRange | undefined>({
+		from: new Date(2025, 0, 1),
+		to: new Date(),
+	});
+	const dateRange = { from: state[0]?.from, to: state[0]?.to };
+	const { data, isLoading } = useNewsList({ page, limit, dateRange });
 
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
@@ -147,19 +154,27 @@ const NewsListPage = () => {
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
-			<div className={'flex flex-row justify-between items-start'}>
+			<div className={'flex flex-col md:flex-row justify-between items-start'}>
 				<h1 className="text-2xl font-bold mb-6">Новости компании</h1>
+				<div
+					className={
+						'flex flex-row w-full md:w-[60%] justify-between mb-4 md:mb-0'
+					}
+				>
+					<DateRangePicker state={state} />
 
-				{isAdmin && (
-					<Button
-						onClick={() => {
-							router.push(`${Routes.NEWS}/create`);
-						}}
-						type={'button'}
-					>
-						Создать новость
-					</Button>
-				)}
+					{isAdmin && (
+						<Button
+							onClick={() => {
+								router.push(`${Routes.NEWS}/create`);
+							}}
+							className={'md:ml-3'}
+							type={'button'}
+						>
+							Создать новость
+						</Button>
+					)}
+				</div>
 			</div>
 			{getContent()}
 		</div>

@@ -83,11 +83,15 @@ export default function UsersTable() {
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
-			<div className={'flex flex-row justify-between items-start'}>
+			<div className={'flex flex-col md:flex-row justify-between items-start'}>
 				<h1 className="text-2xl font-bold mb-6">Работники компании</h1>
 
 				{isAdmin && (
-					<Button onClick={() => setOpen(true)} type={'button'}>
+					<Button
+						onClick={() => setOpen(true)}
+						type={'button'}
+						className={'mb-4 md:mb-0'}
+					>
 						Добавить нового работника
 					</Button>
 				)}
