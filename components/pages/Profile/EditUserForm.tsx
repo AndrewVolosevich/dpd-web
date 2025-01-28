@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
 	Select,
@@ -23,10 +22,11 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { format, formatISO } from 'date-fns';
+import { formatISO } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
+import DatePickerPopoverWithFields from '@/components/common/DatePickerPopoverWithFields/DatePickerPopoverWithFields';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
@@ -37,9 +37,9 @@ const formSchema = z.object({
 	department: z.string().optional(),
 	position: z.string().optional(),
 	isSupervisor: z.boolean().optional(),
-	startDate: z.string().optional(),
-	endDate: z.string().optional(),
-	bornDate: z.string().optional(),
+	startDate: z.date().optional(),
+	endDate: z.date().optional(),
+	bornDate: z.date().optional(),
 });
 
 interface EditUserFormProps {
@@ -63,9 +63,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			department: user?.department ?? '',
 			position: user?.position ?? '',
 			isSupervisor: user?.isSupervisor ?? false,
-			startDate: user?.startDate ? format(user?.startDate, 'yyyy-MM-dd') : '',
-			endDate: user?.endDate ? format(user?.endDate, 'yyyy-MM-dd') : '',
-			bornDate: user?.bornDate ? format(user?.bornDate, 'yyyy-MM-dd') : '',
+			startDate: user?.startDate
+				? (new Date(user?.startDate) as Date)
+				: undefined,
+			endDate: user?.endDate ? (new Date(user?.endDate) as Date) : undefined,
+			bornDate: user?.bornDate ? (new Date(user?.bornDate) as Date) : undefined,
 		},
 	});
 
@@ -165,11 +167,14 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 		}
 	};
 
+	const getDateInputDisabled = (date: Date) =>
+		date > new Date() || date < new Date('1900-01-01');
+
 	return (
 		<div>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<FormField
 							control={form.control}
 							name="surname"
@@ -243,7 +248,7 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 									)}
 								/>
 							)}
-							<div className="grid grid-cols-2 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<FormField
 									control={form.control}
 									name="department"
@@ -300,19 +305,18 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 								)}
 							/>
 
-							<div className="grid grid-cols-2 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<FormField
 									control={form.control}
 									name="startDate"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Дата начала работы</FormLabel>
-											<FormControl>
-												<div className="relative">
-													<Input type="date" {...field} />
-													<Calendar className="absolute right-3 top-2.5 h-4 w-4 text-gray-500" />
-												</div>
-											</FormControl>
+											<DatePickerPopoverWithFields
+												value={field.value}
+												onChange={field.onChange}
+												disabled={getDateInputDisabled}
+											/>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -324,12 +328,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Дата окончания работы</FormLabel>
-											<FormControl>
-												<div className="relative">
-													<Input type="date" {...field} />
-													<Calendar className="absolute right-3 top-2.5 h-4 w-4 text-gray-500" />
-												</div>
-											</FormControl>
+											<DatePickerPopoverWithFields
+												value={field.value}
+												onChange={field.onChange}
+												disabled={getDateInputDisabled}
+											/>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -344,12 +347,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Дата рождения</FormLabel>
-								<FormControl>
-									<div className="relative">
-										<Input type="date" {...field} />
-										<Calendar className="absolute right-3 top-2.5 h-4 w-4 text-gray-500" />
-									</div>
-								</FormControl>
+								<DatePickerPopoverWithFields
+									value={field.value}
+									onChange={field.onChange}
+									disabled={getDateInputDisabled}
+								/>
 								<FormMessage />
 							</FormItem>
 						)}
