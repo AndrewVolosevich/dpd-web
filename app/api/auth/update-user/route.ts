@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
+import { USER } from '@/const/common';
 
 export async function POST(req: NextRequest) {
 	const data = await req.json();
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
 			},
 		});
 	}
-	cookieStore.set('user', `${JSON.stringify({ ...user }) || ''}`, {
+	cookieStore.set(USER, `${JSON.stringify({ ...user }) || ''}`, {
 		path: '/',
 		maxAge: 2592000,
 	});

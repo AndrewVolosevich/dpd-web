@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { Routes } from '@/const/routes';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
-import { format } from 'date-fns';
+import { endOfDay, format } from 'date-fns';
 import { Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { NewsModel } from '@/types/entities';
@@ -24,7 +24,7 @@ import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import { DateRangePicker } from '@/components/common/DateRangePicker/DateRangePicker';
 import { DateRange } from 'react-day-picker';
 
-const limit = 4;
+const limit = 10;
 
 const NewsListPage = () => {
 	const { isAdmin } = useAuth();
@@ -35,7 +35,7 @@ const NewsListPage = () => {
 
 	const state = useState<DateRange | undefined>({
 		from: new Date(2025, 0, 1),
-		to: new Date(),
+		to: endOfDay(new Date()),
 	});
 	const dateRange = { from: state[0]?.from, to: state[0]?.to };
 	const { data, isLoading } = useNewsList({ page, limit, dateRange });

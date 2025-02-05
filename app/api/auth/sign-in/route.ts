@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '@/const/common';
 
 export async function POST(req: NextRequest) {
 	const data = await req.json();
@@ -18,21 +19,21 @@ export async function POST(req: NextRequest) {
 	const newResp = await resp.json();
 
 	if (newResp?.user) {
-		cookieStore.set('user', `${JSON.stringify({ ...newResp?.user }) || ''}`, {
+		cookieStore.set(USER, `${JSON.stringify({ ...newResp?.user }) || ''}`, {
 			path: '/',
 			maxAge: 2592000,
 		});
 	}
 
 	if (newResp?.accessToken) {
-		cookieStore.set('accessToken', newResp?.accessToken, {
+		cookieStore.set(ACCESS_TOKEN, newResp?.accessToken, {
 			path: '/',
 			maxAge: 2592000,
 		});
 	}
 
 	if (newResp?.refreshToken) {
-		cookieStore.set('refreshToken', newResp?.refreshToken, {
+		cookieStore.set(REFRESH_TOKEN, newResp?.refreshToken, {
 			path: '/',
 			maxAge: 2592000,
 		});
