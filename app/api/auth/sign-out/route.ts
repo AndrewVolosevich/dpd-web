@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '@/const/common';
 
 export async function POST() {
 	const cookieStore = await cookies();
@@ -9,12 +10,12 @@ export async function POST() {
 			Cookie: cookieStore.toString(),
 		},
 	});
-	cookieStore.set('user', '');
-	cookieStore.delete('user');
-	cookieStore.set('refreshToken', '');
-	cookieStore.delete('refreshToken');
-	cookieStore.set('accessToken', '');
-	cookieStore.delete('accessToken');
+	cookieStore.set(USER, '');
+	cookieStore.delete(USER);
+	cookieStore.set(REFRESH_TOKEN, '');
+	cookieStore.delete(REFRESH_TOKEN);
+	cookieStore.set(ACCESS_TOKEN, '');
+	cookieStore.delete(ACCESS_TOKEN);
 
 	return new Response('Success', {
 		status: 200,

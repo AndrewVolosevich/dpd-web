@@ -2,12 +2,12 @@
 import React from 'react';
 import MainNews from '@/components/pages/Home/News/MainNews';
 import { CompanyNews } from '@/components/pages/Home/News/CompanyNews';
-import useSuspenseNewsList from '@/lib/api/queries/News/useSuspenseNewsList';
+import useNewsList from '@/lib/api/queries/News/useNewsList';
 
 type CompanyNewsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const HomePageNews = ({ className }: CompanyNewsProps) => {
-	const { data } = useSuspenseNewsList({ page: 1, limit: 4 });
+	const { data } = useNewsList({ page: 1, limit: 4 });
 
 	return (
 		<div className={className}>

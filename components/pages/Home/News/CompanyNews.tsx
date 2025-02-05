@@ -3,7 +3,7 @@ import SecondaryNewsItem from '@/components/pages/Home/News/SecondaryNewsItem';
 import { NewsModel } from '@/types/entities';
 
 type CompanyNewsProps = React.HTMLAttributes<HTMLDivElement> & {
-	news: NewsModel[];
+	news?: NewsModel[];
 };
 
 const CompanyNews = ({ className, news }: CompanyNewsProps) => {

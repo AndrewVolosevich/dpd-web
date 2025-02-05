@@ -11,7 +11,7 @@ import React, {
 } from 'react';
 import { Routes } from '@/const/routes';
 import { usePathname, useRouter } from 'next/navigation';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/const/common';
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '@/const/common';
 import { useToast } from '@/hooks/use-toast';
 
 export interface LoginProps {
@@ -110,7 +110,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			const { accessToken, refreshToken, user } = responseData || {};
 			setToken(accessToken);
 			setUser(user);
-			localStorage.setItem('user', JSON.stringify(user));
+			localStorage.setItem(USER, JSON.stringify(user));
 			localStorage.setItem(REFRESH_TOKEN, refreshToken);
 			localStorage.setItem(ACCESS_TOKEN, accessToken);
 			setLoading(false);
@@ -129,7 +129,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			body: JSON.stringify({ token: 'remove' }),
 		});
 		clearUserData();
-		localStorage.setItem('user', '');
+		localStorage.setItem(USER, '');
 		setLoading(false);
 		router.push(Routes.SIGN_IN);
 	}, [router]);
@@ -147,7 +147,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 				const user = await resp.json();
 				if (user?.id) {
 					setUser(user);
-					localStorage.setItem('user', JSON.stringify(user));
+					localStorage.setItem(USER, JSON.stringify(user));
 					if (localStorage.getItem(ACCESS_TOKEN)) {
 						setToken(localStorage.getItem(ACCESS_TOKEN) || '');
 					}
@@ -185,7 +185,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		const { accessToken, refreshToken, user } = responseData || {};
 		setToken(accessToken);
 		setUser(user);
-		localStorage.setItem('user', JSON.stringify(user));
+		localStorage.setItem(USER, JSON.stringify(user));
 		localStorage.setItem(REFRESH_TOKEN, refreshToken);
 		localStorage.setItem(ACCESS_TOKEN, accessToken);
 		setLoading(false);
@@ -212,7 +212,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			}
 
 			setUser(user);
-			localStorage.setItem('user', JSON.stringify(user));
+			localStorage.setItem(USER, JSON.stringify(user));
 			setLoading(false);
 			router.refresh();
 		},
@@ -237,7 +237,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			typeof window !== 'undefined' &&
 			!!localStorage.getItem(REFRESH_TOKEN)
 		) {
-			const localUser = localStorage.getItem('user');
+			const localToken = localStorage.getItem(ACCESS_TOKEN);
+			if (!token && localToken) {
+				setToken(localToken);
+			}
+			const localUser = localStorage.getItem(USER);
 			if (!localUser) {
 				checkPage();
 			} else if (localUser) {
