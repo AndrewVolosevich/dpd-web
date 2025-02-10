@@ -46,3 +46,14 @@ export interface PaginatedUsers {
 	page: number;
 	limit: number;
 }
+
+export interface MagazineModel {
+	id: string;
+	title: string;
+	titleImg?: string;
+	contentUrl: string;
+	updatedAt: string;
+	createdAt: string;
+}
+
+export type MagazinesData = MagazineModel[];

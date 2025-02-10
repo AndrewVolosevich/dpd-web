@@ -43,6 +43,20 @@ export const NavLinks = [
 	{
 		title: 'Корпоративная жизнь',
 		href: Routes.CORPORATE_LIFE,
+		items: [
+			{
+				title: 'Корпоративные журналы',
+				href: `${Routes.CORPORATE_LIFE}/magazines`,
+			},
+			{
+				title: 'Фото',
+				href: `${Routes.CORPORATE_LIFE}/photo`,
+			},
+			{
+				title: 'Видео',
+				href: `${Routes.CORPORATE_LIFE}/video`,
+			},
+		],
 	},
 	{
 		title: 'Новости',

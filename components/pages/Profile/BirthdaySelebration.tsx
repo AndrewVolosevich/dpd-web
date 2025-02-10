@@ -42,7 +42,7 @@ export default function BirthdayCelebration({
 				initial={{ scale: 0.5, opacity: 0 }}
 				animate={{ scale: 1, opacity: 1 }}
 				transition={{ duration: 0.5 }}
-				className="my-6 p-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl"
+				className="my-6 p-8 rounded-lg bg-gradient-to-r from-[#E30037] via-[#8C0022] to-[#E30037] text-white shadow-xl"
 			>
 				<div className="flex flex-col items-center gap-4">
 					<Cake className="w-12 h-12" />

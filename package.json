@@ -10,6 +10,7 @@
 		"prettier": "prettier --write ."
 	},
 	"dependencies": {
+		"@coolbytes/editorjs-delimiter": "^1.0.3",
 		"@editorjs/checklist": "^1.6.0",
 		"@editorjs/delimiter": "^1.4.0",
 		"@editorjs/editorjs": "^2.30.7",

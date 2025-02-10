@@ -4,6 +4,7 @@ import CustomCodeRenderer from './OutputRenderers/CustomCodeRenderer';
 import CustomImageRenderer from './OutputRenderers/CustomImageRenderer';
 import { FC } from 'react';
 import dynamic from 'next/dynamic';
+import CustomDelimiterRenderer from '@/components/Editor/OutputRenderers/CustomDelimiterRenderer';
 
 const Output = dynamic(
 	async () => (await import('editorjs-react-renderer')).default,
@@ -17,6 +18,7 @@ interface EditorOutputProps {
 const renderers = {
 	image: CustomImageRenderer,
 	code: CustomCodeRenderer,
+	delimiter: CustomDelimiterRenderer,
 };
 
 const customClassNames = {
