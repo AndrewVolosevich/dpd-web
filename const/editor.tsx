@@ -7,7 +7,9 @@ import List from '@editorjs/list';
 // @ts-ignore
 import LinkTool from '@editorjs/link';
 // @ts-ignore
-import Delimiter from '@editorjs/delimiter';
+import Delimiter from '@coolbytes/editorjs-delimiter';
+// import Delimiter from '@editorjs/delimiter';
+
 // @ts-ignore
 // import CheckList from '@editorjs/checklist';
 // @ts-ignore
@@ -47,7 +49,18 @@ export const getEditorJsTools = (token: string) => {
 			},
 			inlineToolbar: true,
 		},
-		delimiter: Delimiter,
+		// delimiter: Delimiter,
+		delimiter: {
+			class: Delimiter,
+			config: {
+				styleOptions: ['star', 'dash', 'line'],
+				defaultStyle: 'star',
+				lineWidthOptions: [8, 15, 25, 35, 50, 60, 100],
+				defaultLineWidth: 25,
+				lineThicknessOptions: [1, 2, 3, 4, 5, 6],
+				defaultLineThickness: 2,
+			},
+		},
 		embed: Embed,
 		code: Code,
 		inlineCode: InlineCode,
@@ -91,7 +104,7 @@ export const EDITOR_NEW_DATA = {
 		},
 		{
 			type: 'delimiter',
-			data: {},
+			data: { lineThickness: 2, lineWidth: 100, style: 'line' },
 		},
 		{
 			type: 'header',
@@ -114,7 +127,7 @@ export const EDITOR_NEW_DATA = {
 		},
 		{
 			type: 'delimiter',
-			data: {},
+			data: { lineThickness: 2, lineWidth: 100, style: 'line' },
 		},
 		{
 			type: 'paragraph',
@@ -198,7 +211,7 @@ export const EDITOR_TRANSFER_DATA = {
 		},
 		{
 			type: 'delimiter',
-			data: {},
+			data: { lineThickness: 2, lineWidth: 100, style: 'line' },
 		},
 		{
 			type: 'header',
@@ -221,7 +234,7 @@ export const EDITOR_TRANSFER_DATA = {
 		},
 		{
 			type: 'delimiter',
-			data: {},
+			data: { lineThickness: 2, lineWidth: 100, style: 'line' },
 		},
 		{
 			type: 'paragraph',

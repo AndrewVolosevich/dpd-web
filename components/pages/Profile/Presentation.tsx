@@ -124,8 +124,10 @@ const Presentation = ({ user }: { user: UserData }) => {
 			)}
 			{(!!user?.presentation?.blocks?.length || isEditing) && (
 				<Card className="col-span-1 md:col-span-3">
-					<CardContent>
-						<div>
+					<CardContent
+						className={'flex flex-col w-full justify-center items-center'}
+					>
+						<div className={'w-full md:w-[70%]'}>
 							{editorData && !isEditing && <OutputBlock content={editorData} />}
 							{isEditing && (
 								<EditorBlock

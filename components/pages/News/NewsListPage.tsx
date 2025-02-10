@@ -23,6 +23,8 @@ import useNewsList from '@/lib/api/queries/News/useNewsList';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import { DateRangePicker } from '@/components/common/DateRangePicker/DateRangePicker';
 import { DateRange } from 'react-day-picker';
+import Search from '@/components/common/Search/Search';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const limit = 10;
 
@@ -31,6 +33,8 @@ const NewsListPage = () => {
 	const api = useApi();
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const [search, setSearch] = useState('');
+	const debouncedSearch = useDebounce(search, 500);
 	const [page, setPage] = useState(1);
 
 	const state = useState<DateRange | undefined>({
@@ -38,7 +42,12 @@ const NewsListPage = () => {
 		to: endOfDay(new Date()),
 	});
 	const dateRange = { from: state[0]?.from, to: state[0]?.to };
-	const { data, isLoading } = useNewsList({ page, limit, dateRange });
+	const { data, isLoading } = useNewsList({
+		page,
+		limit,
+		dateRange,
+		search: debouncedSearch,
+	});
 
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
@@ -94,7 +103,7 @@ const NewsListPage = () => {
 										<div className="md:flex-shrink-0">
 											<img
 												className="w-full h-full object-cover md:w-48 "
-												src={'/images/dpd-image.jpg'}
+												src={item?.titleImg || '/images/dpd-image.jpg'}
 												alt={item?.title}
 											/>
 										</div>
@@ -154,26 +163,29 @@ const NewsListPage = () => {
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
-			<div className={'flex flex-col md:flex-row justify-between items-start'}>
-				<h1 className="text-2xl font-bold mb-6">Новости компании</h1>
-				<div
-					className={
-						'flex flex-row w-full md:w-[60%] justify-between mb-4 md:mb-0'
-					}
-				>
-					<DateRangePicker state={state} />
+			<div className={'flex flex-col justify-between items-start'}>
+				<div className="flex flex-row w-full justify-between">
+					<h1 className="text-2xl font-bold">Новости компании</h1>
 
 					{isAdmin && (
 						<Button
 							onClick={() => {
 								router.push(`${Routes.NEWS}/create`);
 							}}
-							className={'md:ml-3'}
 							type={'button'}
 						>
 							Создать новость
 						</Button>
 					)}
+				</div>
+				<div
+					className={'flex flex-col md:flex-row w-full justify-between my-4'}
+				>
+					<Search
+						searchState={[search, setSearch]}
+						className={'mb-2 md:mb-0'}
+					/>
+					<DateRangePicker state={state} />
 				</div>
 			</div>
 			{getContent()}
