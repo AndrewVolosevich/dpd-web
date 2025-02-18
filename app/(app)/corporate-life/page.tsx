@@ -2,8 +2,8 @@ import { CorporateLifePage } from '@/components/pages/CorporateLife/CorporateLif
 
 export default function CorporateLife() {
 	return (
-		<main>
+		<div>
 			<CorporateLifePage />
-		</main>
+		</div>
 	);
 }

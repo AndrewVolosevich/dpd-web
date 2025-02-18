@@ -6,7 +6,7 @@ export enum Routes {
 	NEWS = '/news',
 	PROFILE = '/profile',
 	SIGN_IN = '/sign-in',
-	USERS = '/users',
+	ADMIN = '/admin',
 }
 
 export const NavLinks = [
@@ -63,8 +63,18 @@ export const NavLinks = [
 		href: Routes.NEWS,
 	},
 	{
-		title: 'Пользователи',
-		href: Routes.USERS,
+		title: 'Администратор',
+		href: `${Routes.ADMIN}/users`,
+		items: [
+			{
+				title: 'Пользователи',
+				href: `${Routes.ADMIN}/users`,
+			},
+			{
+				title: 'Опросы',
+				href: `${Routes.ADMIN}/surveys`,
+			},
+		],
 	},
 ];
 

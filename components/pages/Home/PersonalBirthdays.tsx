@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import useUsersByBirthday from '@/lib/api/queries/Users/useUsersByBirthday';
-import { groupUsersByBirthday } from '@/lib/api/date/helpers';
+import { groupUsersByBirthday } from '@/lib/date/helpers';
 import BirthdaySlider from '@/components/pages/Home/BirthdaySlider';
 
 type PersonalBirthdaysProps = React.HTMLAttributes<HTMLElement>;
