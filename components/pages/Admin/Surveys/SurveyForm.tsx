@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { PlusCircle, Star, Trash2 } from 'lucide-react';
+import { ListPlus, PlusCircle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -31,15 +31,22 @@ import {
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
 import { validateSurvey } from '@/lib/validators/surveys';
 import { useRouter } from 'next/navigation';
+import { BulkOptionsModal } from '@/components/common/BulkOptionsModal/BulkOptionsModal';
+import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/QuestionPreview';
 
-export function SurveyForm({ initialData }: { initialData?: Survey }) {
+export function SurveyForm({
+	initialData,
+	forCopy = false,
+}: {
+	initialData?: Survey;
+	forCopy?: boolean;
+}) {
 	useNonAdminRedirect(`${Routes.ADMIN}/surveys`);
 	const [title, setTitle] = useState(initialData?.title || '');
 	const [description, setDescription] = useState(
 		initialData?.description || '',
 	);
 	const [preface, setPreface] = useState(initialData?.preface || '');
-	const [afterword, setAfterword] = useState(initialData?.afterword || '');
 	const [type, setType] = useState(initialData?.type || 'ANONYMOUS');
 
 	const [questions, setQuestions] = useState<Question[]>(
@@ -48,7 +55,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 				type: 'OPEN_TEXT',
 				text: '',
 				options: [],
-				isRequired: false,
+				isRequired: true,
 			},
 		],
 	);
@@ -93,6 +100,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
+			queryClient.invalidateQueries({ queryKey: ['survey'] });
 			toast({
 				title: 'Опрос успешно обновлен',
 				variant: 'default',
@@ -107,9 +115,37 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 				type: 'OPEN_TEXT',
 				text: '',
 				options: [],
-				isRequired: false,
+				isRequired: true,
 			},
 		]);
+	};
+
+	const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+	const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
+		number | null
+	>(null);
+
+	const handleBulkAdd = (newOptions: string[]) => {
+		if (selectedQuestionIndex === null) return;
+		setQuestions((prev) => {
+			const updated = [...prev];
+
+			const existingOptions = new Set(
+				updated[selectedQuestionIndex].options.map((o) => o.value),
+			);
+			const uniqueOptions = newOptions.filter(
+				(option) => !existingOptions.has(option),
+			);
+
+			updated[selectedQuestionIndex].options = [
+				...updated[selectedQuestionIndex].options,
+				...uniqueOptions.map((option) => ({ value: option, correct: false })),
+			];
+
+			return updated;
+		});
+
+		setSelectedQuestionIndex(null);
 	};
 
 	const updateQuestion = <K extends keyof Question>(
@@ -170,11 +206,10 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 			title,
 			description,
 			preface,
-			afterword,
 			type,
 			status: 'DRAFT' as SurveyStatus,
 			questions,
-			...(initialData?.id ? { id: initialData.id } : {}),
+			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
 		};
 		const isValid = validateSurvey(surveyData);
 
@@ -185,7 +220,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 			});
 			return;
 		}
-		if (initialData) {
+		if (initialData && !forCopy) {
 			await updateSurvey(surveyData);
 		} else {
 			await createSurvey(surveyData);
@@ -194,62 +229,11 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 		router.push(`${Routes.ADMIN}/surveys`);
 	};
 
-	const renderRatingPreview = (question: Question) => {
-		if (!question.ratingConfig) return null;
-
-		switch (question.ratingConfig.type) {
-			case 'EMOTIONS':
-				return (
-					<div className="flex gap-4 items-center justify-center">
-						{['😡', '🙁', '😐', '🙂', '😊'].map((emoji, index) => (
-							<button
-								key={index}
-								className="text-2xl hover:scale-110 transition-transform"
-								type="button"
-							>
-								{emoji}
-							</button>
-						))}
-					</div>
-				);
-			case 'STARS':
-				return (
-					<div className="flex gap-1">
-						{Array.from({ length: 5 }, (_, i) => (
-							<Button key={i} variant="outline" size="lg" className="p-2">
-								<Star className="h-6 w-6" />
-							</Button>
-						))}
-					</div>
-				);
-			case 'SCALE':
-				return (
-					<div className="flex gap-2 flex-wrap">
-						{Array.from(
-							{ length: question.ratingConfig.maxValue || 10 },
-							(_, i) => (
-								<Button
-									key={i}
-									variant="outline"
-									size="sm"
-									className="w-10 h-10"
-								>
-									{i + 1}
-								</Button>
-							),
-						)}
-					</div>
-				);
-			default:
-				return null;
-		}
-	};
-
 	return (
 		<div className="container py-6 space-y-6 m-auto">
 			<div className="flex justify-between items-center">
 				<h1 className="text-3xl font-bold">
-					{initialData ? 'Редактировать опрос' : 'Создать опрос'}
+					{initialData && !forCopy ? 'Редактировать опрос' : 'Создать опрос'}
 				</h1>
 				<div className="flex gap-2">
 					<Button variant="buttonLink" href={`${Routes.ADMIN}/surveys`}>
@@ -266,7 +250,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 			</div>
 
 			<div className="space-y-6 max-w-3xl">
-				<div key={'1'} className="space-y-4">
+				<div className="space-y-4">
 					<div className="space-y-2">
 						<Label htmlFor="title">Название</Label>
 						<Input
@@ -297,15 +281,6 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 							onChange={(e) => setPreface(e.target.value)}
 						/>
 					</div>
-					<div className="space-y-2">
-						<Label htmlFor="afterword">Заключительное слово</Label>
-						<Textarea
-							id="afterword"
-							value={afterword}
-							onChange={(e) => setAfterword(e.target.value)}
-							placeholder="Заключительное слово"
-						/>
-					</div>
 
 					<div className="flex items-center space-x-2">
 						<Switch
@@ -324,9 +299,9 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 						</Label>
 					</div>
 				</div>
-				<div key={'2'} className="space-y-4">
+				<div className="space-y-4">
 					{questions.map((q, qIndex) => (
-						<Card key={q.id}>
+						<Card key={q.id || qIndex}>
 							<CardContent className="pt-6 space-y-4">
 								<div className="flex justify-between">
 									<Label>Вопрос {qIndex + 1}</Label>
@@ -383,6 +358,21 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 									</Label>
 								</div>
 
+								<div className="flex items-center space-x-2">
+									<Switch
+										id={`allowComment-${q.id}`}
+										checked={q?.allowComment}
+										onCheckedChange={(checked) => {
+											const newQuestions = [...questions];
+											newQuestions[qIndex].allowComment = checked;
+											setQuestions(newQuestions);
+										}}
+									/>
+									<Label htmlFor={`allowComment-${q.id}`}>
+										Разрешить комментарий к вопросу
+									</Label>
+								</div>
+
 								{q.type === 'OPEN_TEXT' && (
 									<Input disabled placeholder="Поле для ответа" />
 								)}
@@ -403,6 +393,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 													<RadioGroupItem
 														value={`${optionIndex}`}
 														id={`${optionIndex}`}
+														checked={option.correct}
 													/>
 													<div className="flex-1 flex items-center space-x-2">
 														<Input
@@ -428,14 +419,28 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 												</div>
 											))}
 										</RadioGroup>
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() => addOption(qIndex)}
-										>
-											<PlusCircle className="h-4 w-4 mr-2" />
-											Добавить вариант
-										</Button>
+										<div>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => addOption(qIndex)}
+												className={'mb-2'}
+											>
+												<PlusCircle className="h-4 w-4 mr-2" /> Добавить вариант
+											</Button>
+											<br />
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => {
+													setSelectedQuestionIndex(qIndex);
+													setIsBulkModalOpen(true);
+												}}
+											>
+												<ListPlus className="h-4 w-4 mr-2" />
+												Добавить несколько
+											</Button>
+										</div>
 									</div>
 								)}
 
@@ -464,13 +469,28 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 												</Button>
 											</div>
 										))}
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() => addOption(qIndex)}
-										>
-											<PlusCircle className="h-4 w-4 mr-2" /> Добавить вариант
-										</Button>
+										<div>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => addOption(qIndex)}
+												className={'mb-2'}
+											>
+												<PlusCircle className="h-4 w-4 mr-2" /> Добавить вариант
+											</Button>
+											<br />
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => {
+													setSelectedQuestionIndex(qIndex);
+													setIsBulkModalOpen(true);
+												}}
+											>
+												<ListPlus className="h-4 w-4 mr-2" />
+												Добавить несколько
+											</Button>
+										</div>
 									</div>
 								)}
 
@@ -483,6 +503,8 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 												newQuestions[qIndex].ratingConfig = {
 													type: value,
 													maxValue: value === 'SCALE' ? 10 : undefined,
+													leftLabel: '',
+													rightLabel: '',
 												};
 												setQuestions(newQuestions);
 											}}
@@ -498,7 +520,7 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 										</Select>
 
 										{q.ratingConfig?.type === 'SCALE' && (
-											<div className="flex items-center gap-2">
+											<div className="flex gap-2 flex-col items-start">
 												<Label>Максимальное значение:</Label>
 												<Select
 													value={String(q.ratingConfig.maxValue || 10)}
@@ -522,19 +544,55 @@ export function SurveyForm({ initialData }: { initialData?: Survey }) {
 														))}
 													</SelectContent>
 												</Select>
+												<div className="flex-col w-full">
+													<div className="space-y-2 mb-2">
+														<Label>Метка слева</Label>
+														<Input
+															placeholder="например: Крайне негативно"
+															value={q.ratingConfig.leftLabel || ''}
+															onChange={(e) => {
+																const newQuestions = [...questions];
+																if (newQuestions[qIndex].ratingConfig) {
+																	newQuestions[qIndex].ratingConfig.leftLabel =
+																		e.target.value;
+																}
+																setQuestions(newQuestions);
+															}}
+														/>
+													</div>
+													<div className="space-y-2">
+														<Label>Метка справа</Label>
+														<Input
+															placeholder="например: Крайне позитивно"
+															value={q.ratingConfig.rightLabel || ''}
+															onChange={(e) => {
+																const newQuestions = [...questions];
+																if (newQuestions[qIndex].ratingConfig) {
+																	newQuestions[qIndex].ratingConfig.rightLabel =
+																		e.target.value;
+																}
+																setQuestions(newQuestions);
+															}}
+														/>
+													</div>
+												</div>
 											</div>
 										)}
 
 										<div className="border rounded-lg p-4 bg-muted/50">
 											<Label className="block mb-2">Предпросмотр:</Label>
-											{renderRatingPreview(q)}
+											<QuestionPreview question={q} />
 										</div>
 									</div>
 								)}
 							</CardContent>
 						</Card>
 					))}
-
+					<BulkOptionsModal
+						isOpen={isBulkModalOpen}
+						onClose={() => setIsBulkModalOpen(false)}
+						onAdd={handleBulkAdd}
+					/>
 					<Button variant="outline" onClick={addQuestion}>
 						<PlusCircle className="h-4 w-4 mr-2" />
 						Добавить вопрос

@@ -11,8 +11,6 @@ import {
 import { Download, Eye, Trash2 } from 'lucide-react';
 import { MagazineModel } from '@/types/entities';
 import Image from 'next/image';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import React from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -80,10 +78,10 @@ export function MagazineItem({ magazine }: { magazine: MagazineModel }) {
 			<div className="flex flex-col justify-between h-[198px] flex-1 w-full">
 				<div>
 					<h3 className="text-lg font-medium">{magazine.title}</h3>
-					<p className="text-sm text-muted-foreground">
-						Дата публикации:{' '}
-						{format(magazine.createdAt, 'dd MMMM yyyy', { locale: ru })}
-					</p>
+					{/*<p className="text-sm text-muted-foreground">*/}
+					{/*	Дата публикации:{' '}*/}
+					{/*	{format(magazine.createdAt, 'dd MMMM yyyy', { locale: ru })}*/}
+					{/*</p>*/}
 				</div>
 				<div className="flex gap-2 flex-row justify-end mt-4 md:mt-0">
 					<Dialog>

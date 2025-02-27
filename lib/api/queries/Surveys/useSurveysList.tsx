@@ -1,13 +1,27 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 
-const useSurveysList = () => {
+const useSurveysList = ({
+	status,
+	sort,
+	search,
+}: {
+	status?: string;
+	sort?: string;
+	search?: string;
+}) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['surveys-list'],
+		queryKey: ['surveys-list', { status, sort, search }],
 		queryFn: async (): Promise<any> => {
-			const url = `/surveys`;
+			const params = new URLSearchParams({
+				...(search && { search }),
+				...(sort && { sort }),
+				...(status && { status }),
+			});
+
+			const url = `/surveys?${params.toString()}`;
 			const resp = await api.get(url);
 			return resp?.data;
 		},

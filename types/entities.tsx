@@ -75,9 +75,12 @@ export interface Question {
 	text: string;
 	options: { value: string; correct?: boolean }[];
 	isRequired: boolean;
+	allowComment?: boolean;
 	ratingConfig?: {
 		type: RatingType;
 		maxValue?: number;
+		leftLabel?: string;
+		rightLabel?: string;
 	};
 }
 
@@ -92,4 +95,16 @@ export interface Survey {
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
+}
+
+export interface Answer {
+	questionId: string;
+	value: any;
+	comment?: string;
+}
+
+export interface SurveyResponse {
+	surveyId: string;
+	userId: string;
+	answers: Answer[];
 }

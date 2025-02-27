@@ -6,12 +6,12 @@ interface SurveyPageProps {
 	}>;
 }
 
-export default async function Survey({ params }: SurveyPageProps) {
+export default async function CopySurvey({ params }: SurveyPageProps) {
 	const { surveyId } = await params;
 
 	return (
 		<div>
-			<UpdateSurveyPage surveyId={surveyId} />
+			<UpdateSurveyPage forCopy surveyId={surveyId} />
 		</div>
 	);
 }

@@ -8,11 +8,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
+	CircleOff,
+	ClipboardPen,
 	Copy,
 	Download,
 	Eye,
 	MoreHorizontal,
 	Pencil,
+	Play,
 	Trash2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -47,6 +50,42 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 			});
 		},
 	});
+
+	const { mutateAsync: updateSurvey } = useMutation({
+		mutationFn: async (surveyData: any) => {
+			return api.put(`/surveys/${surveyData.id}`, {
+				...surveyData,
+			});
+		},
+		onError: (error) => {
+			toast({
+				title: 'Неудачное редактирование опроса',
+				variant: 'destructive',
+				description: error.message,
+			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
+			toast({
+				title: 'Опрос успешно обновлен',
+				variant: 'default',
+			});
+		},
+	});
+
+	const updateSurveyStatus = async (survey: Survey, status: string) => {
+		await updateSurvey({ ...survey, status });
+	};
+
+	const getSurveyBadgeText = (status: string) => {
+		if (status === 'ACTIVE') {
+			return 'Активный';
+		} else if (status === 'COMPLETED') {
+			return 'Завершенный';
+		}
+		return 'Черновик';
+	};
+
 	if (!surveys) {
 		return null;
 	}
@@ -64,7 +103,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 								<Badge
 									variant={survey.status === 'ACTIVE' ? 'default' : 'secondary'}
 								>
-									{survey.status === 'ACTIVE' ? 'Активный' : 'Черновик'}
+									{getSurveyBadgeText(survey.status)}
 								</Badge>
 							</div>
 							<p className="text-sm text-muted-foreground mt-1">
@@ -103,10 +142,39 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 									</DropdownMenuItem>
 								</Link>
 
-								<DropdownMenuItem>
-									<Copy className="h-4 w-4 mr-2" />
-									Копировать опрос
-								</DropdownMenuItem>
+								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/take`}>
+									<DropdownMenuItem>
+										<ClipboardPen className="h-4 w-4 mr-2" />
+										Пройти опрос
+									</DropdownMenuItem>
+								</Link>
+
+								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/copy`}>
+									<DropdownMenuItem>
+										<Copy className="h-4 w-4 mr-2" />
+										Копировать опрос
+									</DropdownMenuItem>
+								</Link>
+								{survey?.status === 'DRAFT' && (
+									<DropdownMenuItem
+										onClick={() => {
+											updateSurveyStatus(survey, 'ACTIVE');
+										}}
+									>
+										<Play className="h-4 w-4 mr-2" />
+										Активировать
+									</DropdownMenuItem>
+								)}
+								{survey?.status === 'ACTIVE' && (
+									<DropdownMenuItem
+										onClick={() => {
+											updateSurveyStatus(survey, 'COMPLETED');
+										}}
+									>
+										<CircleOff className="h-4 w-4 mr-2" />
+										Завершить
+									</DropdownMenuItem>
+								)}
 								<DropdownMenuItem>
 									<Download className="h-4 w-4 mr-2" />
 									Выгрузить в Excel
