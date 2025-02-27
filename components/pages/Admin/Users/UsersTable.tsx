@@ -132,20 +132,24 @@ export default function UsersTable() {
 									<TableCell>{user?.department || '-'}</TableCell>
 									<TableCell>{user?.position || '-'}</TableCell>
 									<TableCell className={'flex flex-row justify-end'}>
-										<div className="flex gap-2">
-											<Button
-												variant="ghost"
-												size="icon"
-												onClick={() => {
-													setUpdatedUser(user);
-													setOpen(true);
-												}}
-											>
-												<Pencil className="h-4 w-4" />
-												<span className="sr-only">Редактировать</span>
-											</Button>
-											<DeleteAlert onProceed={() => deleteUser(user?.id)} />
-										</div>
+										{isAdmin ? (
+											<>
+												<div className="flex gap-2">
+													<Button
+														variant="ghost"
+														size="icon"
+														onClick={() => {
+															setUpdatedUser(user);
+															setOpen(true);
+														}}
+													>
+														<Pencil className="h-4 w-4" />
+														<span className="sr-only">Редактировать</span>
+													</Button>
+													<DeleteAlert onProceed={() => deleteUser(user?.id)} />
+												</div>
+											</>
+										) : null}
 									</TableCell>
 								</TableRow>
 							))

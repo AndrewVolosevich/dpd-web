@@ -17,7 +17,7 @@ function makeQueryClient() {
 					if (error?.response?.status === 401) {
 						return false;
 					}
-					return failureCount <= 2;
+					return failureCount <= 1;
 				},
 			},
 			dehydrate: {

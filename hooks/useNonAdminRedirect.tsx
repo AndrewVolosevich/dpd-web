@@ -3,7 +3,7 @@ import { Routes } from '@/const/routes';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 
-export const useNonAdminRedirect = (url: Routes | undefined) => {
+export const useNonAdminRedirect = (url: Routes | string | undefined) => {
 	const router = useRouter();
 	const { isAdmin, loading, user } = useAuth();
 

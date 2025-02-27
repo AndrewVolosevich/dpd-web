@@ -13,35 +13,42 @@ import {
 	NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { NavLinks, Routes } from '@/const/routes';
+import { useAuth } from '@/components/providers/global/AuthProvider';
 
 export function Navigation({ className }: { className?: string }) {
+	const { isAdmin } = useAuth();
 	const links = NavLinks.filter((link) => link.href !== Routes.PROFILE);
 	return (
 		<div className={className}>
 			<NavigationMenu>
 				<NavigationMenuList>
-					{links.map((link) => (
-						<NavigationMenuItem key={link.title}>
-							<Link href={link.href}>
-								<NavigationMenuTrigger withIcon={!!link?.items?.length}>
-									{link.title}
-								</NavigationMenuTrigger>
-							</Link>
-							{link?.items && link?.items?.length > 0 && (
-								<NavigationMenuContent className={'relative'}>
-									<ul className="p-6 w-[400px] md:w-[500px] list-none">
-										{link.items.map((item) => (
-											<ListItem
-												key={item.title}
-												href={item.href}
-												title={item.title}
-											/>
-										))}
-									</ul>
-								</NavigationMenuContent>
-							)}
-						</NavigationMenuItem>
-					))}
+					{links.map((link) => {
+						if (link.title === 'Администратор' && !isAdmin) {
+							return null;
+						}
+						return (
+							<NavigationMenuItem key={link.title}>
+								<Link href={link.href}>
+									<NavigationMenuTrigger withIcon={!!link?.items?.length}>
+										{link.title}
+									</NavigationMenuTrigger>
+								</Link>
+								{link?.items && link?.items?.length > 0 && (
+									<NavigationMenuContent className={'relative'}>
+										<ul className="p-6 list-none w-[80vw]">
+											{link.items.map((item) => (
+												<ListItem
+													key={item.title}
+													href={item.href}
+													title={item.title}
+												/>
+											))}
+										</ul>
+									</NavigationMenuContent>
+								)}
+							</NavigationMenuItem>
+						);
+					})}
 				</NavigationMenuList>
 			</NavigationMenu>
 		</div>
