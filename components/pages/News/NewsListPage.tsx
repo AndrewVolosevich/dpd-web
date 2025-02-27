@@ -34,7 +34,7 @@ const NewsListPage = () => {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState('');
-	const debouncedSearch = useDebounce(search, 500);
+	const debouncedSearch = useDebounce(search, 1000);
 	const [page, setPage] = useState(1);
 
 	const state = useState<DateRange | undefined>({

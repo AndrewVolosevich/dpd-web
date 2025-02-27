@@ -11,10 +11,12 @@ export default function Search({
 	searchState,
 	onSearch,
 	className,
+	placeholder,
 }: {
 	searchState: [string, Dispatch<SetStateAction<string>>];
 	onSearch?: () => void;
 	className?: string;
+	placeholder?: string;
 }) {
 	const [searchQuery, setSearchQuery] = searchState;
 
@@ -31,7 +33,7 @@ export default function Search({
 		<div className={cn('relative w-full max-w-[300px]', className)}>
 			<SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-primary" />
 			<Input
-				placeholder="Поиск..."
+				placeholder={placeholder || 'Поиск...'}
 				className="pl-8 pr-8"
 				value={searchQuery}
 				onChange={handleSearch}

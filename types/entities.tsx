@@ -57,3 +57,54 @@ export interface MagazineModel {
 }
 
 export type MagazinesData = MagazineModel[];
+
+// Surveys
+export type QuestionType =
+	| 'OPEN_TEXT'
+	| 'SINGLE_CHOICE'
+	| 'MULTIPLE_CHOICE'
+	| 'RATING';
+
+export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE';
+export type SurveyType = 'ANONYMOUS' | 'PERSONALIZED';
+export type SurveyStatus = 'ACTIVE' | 'COMPLETED' | 'DRAFT';
+
+export interface Question {
+	id?: string;
+	type: 'OPEN_TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE' | 'RATING';
+	text: string;
+	options: { value: string; correct?: boolean }[];
+	isRequired: boolean;
+	allowComment?: boolean;
+	ratingConfig?: {
+		type: RatingType;
+		maxValue?: number;
+		leftLabel?: string;
+		rightLabel?: string;
+	};
+}
+
+export interface Survey {
+	id?: string;
+	title: string;
+	description?: string;
+	preface?: string;
+	afterword?: string;
+	type: SurveyType;
+	status: SurveyStatus;
+	updatedAt?: string;
+	createdAt?: string;
+	questions: Question[];
+}
+
+export interface Answer {
+	questionId: string;
+	value: any;
+	comment?: string;
+}
+
+export interface SurveyResponse {
+	surveyId: string;
+	userId: string;
+	answers: Answer[];
+}

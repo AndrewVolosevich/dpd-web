@@ -20,7 +20,7 @@ type NavMenuProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
-	const { logout } = useAuth();
+	const { logout, isAdmin } = useAuth();
 	return (
 		<Sheet open={isOpen} onOpenChange={onChange}>
 			<SheetTrigger asChild>
@@ -35,32 +35,38 @@ const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
 					<SheetTitle className={'hidden'}>Мобильное меню</SheetTitle>
 				</SheetHeader>
 				<ul className={`flex flex-col items-center p-2`}>
-					{NavLinks.map((link, index) => (
-						<React.Fragment key={`${link?.title}-${index}`}>
-							<NavLink
-								href={link.href}
-								className={'mb-2 w-full py-4 text-xl'}
-								onClick={() => {
-									onChange(false);
-								}}
-							>
-								{link.title}
-							</NavLink>
-							{link?.items &&
-								link?.items?.length > 0 &&
-								link?.items?.map((item) => (
-									<Link
-										key={item?.title}
-										href={item?.title}
-										className={
-											'self-start ml-5 mb-1 hover:text-primary text-base'
-										}
-									>
-										{item?.title}
-									</Link>
-								))}
-						</React.Fragment>
-					))}
+					{NavLinks.map((link, index) => {
+						if (link.title === 'Администратор' && !isAdmin) {
+							return null;
+						}
+
+						return (
+							<React.Fragment key={`${link?.title}-${index}`}>
+								<NavLink
+									href={link.href}
+									className={'mb-2 w-full py-4 text-xl'}
+									onClick={() => {
+										onChange(false);
+									}}
+								>
+									{link.title}
+								</NavLink>
+								{link?.items &&
+									link?.items?.length > 0 &&
+									link?.items?.map((item) => (
+										<Link
+											key={item?.title}
+											href={item?.title}
+											className={
+												'self-start ml-5 mb-1 hover:text-primary text-base'
+											}
+										>
+											{item?.title}
+										</Link>
+									))}
+							</React.Fragment>
+						);
+					})}
 					<NavLink href={Routes.PROFILE} className={'mb-2 w-full'}>
 						Профиль
 					</NavLink>

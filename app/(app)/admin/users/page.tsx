@@ -1,4 +1,4 @@
-import UsersPage from '@/components/pages/Users/UsersPage';
+import UsersPage from '@/components/pages/Admin/Users/UsersPage';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/getQueryClient';
 import getServerTokenFromCookies from '@/lib/getServerTokenFromCookies';
