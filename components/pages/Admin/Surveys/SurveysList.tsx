@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
 	CircleOff,
-	ClipboardPen,
 	Copy,
 	Download,
 	Layers2,
