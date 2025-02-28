@@ -12,8 +12,9 @@ import {
 	ClipboardPen,
 	Copy,
 	Download,
-	Eye,
+	Layers2,
 	MoreHorizontal,
+	NotepadTextDashed,
 	Pencil,
 	Play,
 	Trash2,
@@ -53,7 +54,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 
 	const { mutateAsync: updateSurvey } = useMutation({
 		mutationFn: async (surveyData: any) => {
-			return api.put(`/surveys/${surveyData.id}`, {
+			return api.put(`/surveys/${surveyData.id}/data`, {
 				...surveyData,
 			});
 		},
@@ -74,7 +75,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 	});
 
 	const updateSurveyStatus = async (survey: Survey, status: string) => {
-		await updateSurvey({ ...survey, status });
+		await updateSurvey({ id: survey.id, status });
 	};
 
 	const getSurveyBadgeText = (status: string) => {
@@ -116,18 +117,6 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 					</div>
 
 					<div className="flex items-center gap-2">
-						{survey.status === 'ACTIVE' && (
-							<>
-								<Button variant="outline" size="sm">
-									<Eye className="h-4 w-4 mr-2" />
-									Просмотреть ответы
-								</Button>
-								<Button variant="outline" size="sm">
-									<Copy className="h-4 w-4 mr-2" />
-									Копировать ссылку
-								</Button>
-							</>
-						)}
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="ghost" size="sm">
@@ -142,16 +131,19 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 									</DropdownMenuItem>
 								</Link>
 
-								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/take`}>
-									<DropdownMenuItem>
-										<ClipboardPen className="h-4 w-4 mr-2" />
-										Пройти опрос
-									</DropdownMenuItem>
-								</Link>
+								<DropdownMenuItem
+									onClick={() => {
+										navigator.clipboard.writeText(
+											`${Routes.ADMIN}/surveys/${survey?.id}/take`,
+										);
+									}}
+								>
+									<Copy className="h-4 w-4 mr-2" /> Копировать ссылку
+								</DropdownMenuItem>
 
 								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/copy`}>
 									<DropdownMenuItem>
-										<Copy className="h-4 w-4 mr-2" />
+										<Layers2 className="h-4 w-4 mr-2" />
 										Копировать опрос
 									</DropdownMenuItem>
 								</Link>
@@ -173,6 +165,15 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 									>
 										<CircleOff className="h-4 w-4 mr-2" />
 										Завершить
+									</DropdownMenuItem>
+								)}
+								{survey?.status !== 'DRAFT' && (
+									<DropdownMenuItem
+										onClick={() => {
+											updateSurveyStatus(survey, 'DRAFT');
+										}}
+									>
+										<NotepadTextDashed className="h-4 w-4 mr-2" /> В черновик
 									</DropdownMenuItem>
 								)}
 								<DropdownMenuItem>

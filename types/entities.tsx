@@ -90,21 +90,19 @@ export interface Survey {
 	description?: string;
 	preface?: string;
 	afterword?: string;
+	endDate?: string;
 	type: SurveyType;
 	status: SurveyStatus;
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
+	_count?: {
+		responses?: number;
+	};
 }
 
 export interface Answer {
 	questionId: string;
 	value: any;
 	comment?: string;
-}
-
-export interface SurveyResponse {
-	surveyId: string;
-	userId: string;
-	answers: Answer[];
 }

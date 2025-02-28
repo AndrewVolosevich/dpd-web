@@ -1,5 +1,5 @@
 'use client';
-import { SurveyForm } from '@/components/pages/Admin/Surveys/SurveyForm';
+import { SurveyForm } from '@/components/pages/Admin/Surveys/SurveyForm/SurveyForm';
 import useSurvey from '@/lib/api/queries/Surveys/useSurvey';
 
 export default function UpdateSurveyPage({
