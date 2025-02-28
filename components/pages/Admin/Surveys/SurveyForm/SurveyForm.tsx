@@ -33,6 +33,8 @@ import { validateSurvey } from '@/lib/validators/surveys';
 import { useRouter } from 'next/navigation';
 import { BulkOptionsModal } from '@/components/common/BulkOptionsModal/BulkOptionsModal';
 import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/QuestionPreview';
+import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerPopover';
+import { formatISO } from 'date-fns';
 
 export function SurveyForm({
 	initialData,
@@ -43,11 +45,15 @@ export function SurveyForm({
 }) {
 	useNonAdminRedirect(`${Routes.ADMIN}/surveys`);
 	const [title, setTitle] = useState(initialData?.title || '');
+	const [endDate, setEndDate] = useState(
+		initialData?.endDate ? (new Date(initialData?.endDate) as Date) : undefined,
+	);
 	const [description, setDescription] = useState(
 		initialData?.description || '',
 	);
 	const [preface, setPreface] = useState(initialData?.preface || '');
 	const [type, setType] = useState(initialData?.type || 'ANONYMOUS');
+	const [status, setStatus] = useState(initialData?.status || 'DRAFT');
 
 	const [questions, setQuestions] = useState<Question[]>(
 		initialData?.questions || [
@@ -206,8 +212,9 @@ export function SurveyForm({
 			title,
 			description,
 			preface,
+			endDate: endDate ? formatISO(endDate) : undefined,
 			type,
-			status: 'DRAFT' as SurveyStatus,
+			status: (status || 'DRAFT') as SurveyStatus,
 			questions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
 		};
@@ -280,6 +287,26 @@ export function SurveyForm({
 							value={preface}
 							onChange={(e) => setPreface(e.target.value)}
 						/>
+					</div>
+
+					<div className="flex items-center space-x-2">
+						<DatePickerPopover value={endDate} onChange={setEndDate} />
+					</div>
+
+					<div className="flex flex-col items-center space-x-2">
+						<Select
+							value={status}
+							onValueChange={(value) => setStatus(value as SurveyStatus)}
+						>
+							<SelectTrigger>
+								<SelectValue placeholder="Выберите статус" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="DRAFT">Черновик</SelectItem>
+								<SelectItem value="ACTIVE">Активный</SelectItem>
+								<SelectItem value="COMPLETED">Завершен</SelectItem>
+							</SelectContent>
+						</Select>
 					</div>
 
 					<div className="flex items-center space-x-2">

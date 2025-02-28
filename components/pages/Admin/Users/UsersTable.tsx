@@ -123,7 +123,7 @@ export default function UsersTable() {
 							data?.data?.map((user) => (
 								<TableRow key={user.tel}>
 									<TableCell>
-										<Link href={`profile/${user?.id}`}>
+										<Link href={`/profile/${user?.id}`}>
 											{user?.surname} {user?.name}
 										</Link>
 									</TableCell>

@@ -26,7 +26,7 @@ import { formatISO } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
-import DatePickerPopoverWithFields from '@/components/common/DatePickerPopoverWithFields/DatePickerPopoverWithFields';
+import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
