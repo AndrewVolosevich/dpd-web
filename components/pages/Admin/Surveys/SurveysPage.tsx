@@ -79,7 +79,7 @@ const SurveysPage = () => {
 				</TabsList>
 			</Tabs>
 
-			<SurveysList surveys={data} />
+			{data?.length && <SurveysList surveys={data} />}
 		</div>
 	);
 };
