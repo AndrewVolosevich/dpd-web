@@ -50,21 +50,31 @@ export function RatingQuestion({
 				);
 			case 'SCALE':
 				return (
-					<div className="flex gap-2 flex-wrap">
-						{Array.from(
-							{ length: question.ratingConfig.maxValue || 10 },
-							(_, i) => (
-								<Button
-									key={i}
-									variant="outline"
-									size="sm"
-									className={`w-10 h-10 ${value === i + 1 ? 'bg-primary text-primary-foreground' : ''}`}
-									onClick={() => onChange(i + 1)}
-								>
-									{i + 1}
-								</Button>
-							),
-						)}
+					<div className={'flex flex-col'}>
+						<div className="flex gap-2 flex-wrap justify-center">
+							{Array.from(
+								{ length: question.ratingConfig.maxValue || 10 },
+								(_, i) => (
+									<Button
+										key={i}
+										variant="outline"
+										size="sm"
+										className={`w-10 h-10 ${value === i + 1 ? 'bg-primary text-primary-foreground' : ''}`}
+										onClick={() => onChange(i + 1)}
+									>
+										{i + 1}
+									</Button>
+								),
+							)}
+						</div>
+						<div
+							className={
+								'flex justify-between px-1 text-sm text-muted-foreground'
+							}
+						>
+							<span>{question.ratingConfig?.leftLabel}</span>
+							<span>{question.ratingConfig?.rightLabel}</span>
+						</div>
 					</div>
 				);
 			default:

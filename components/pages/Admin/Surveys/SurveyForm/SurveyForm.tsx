@@ -35,6 +35,7 @@ import { BulkOptionsModal } from '@/components/common/BulkOptionsModal/BulkOptio
 import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/QuestionPreview';
 import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerPopover';
 import { formatISO } from 'date-fns';
+import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 
 export function SurveyForm({
 	initialData,
@@ -208,6 +209,14 @@ export function SurveyForm({
 	};
 
 	const handleSubmit = async () => {
+		const updatedQuestions = forCopy
+			? questions?.map((q) => {
+					delete (q as any)?.surveyId;
+					delete q?.answers;
+					delete q?.id;
+					return q;
+				})
+			: questions;
 		const surveyData = {
 			title,
 			description,
@@ -215,7 +224,7 @@ export function SurveyForm({
 			endDate: endDate ? formatISO(endDate) : undefined,
 			type,
 			status: (status || 'DRAFT') as SurveyStatus,
-			questions,
+			questions: updatedQuestions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
 		};
 		const isValid = validateSurvey(surveyData);
@@ -256,7 +265,7 @@ export function SurveyForm({
 				</div>
 			</div>
 
-			<div className="space-y-6 max-w-3xl">
+			<div className="space-y-6 max-w-6xl mx-auto">
 				<div className="space-y-4">
 					<div className="space-y-2">
 						<Label htmlFor="title">Название</Label>
@@ -359,6 +368,7 @@ export function SurveyForm({
 											Несколько вариантов
 										</SelectItem>
 										<SelectItem value="RATING">Оценка</SelectItem>
+										<SelectItem value="MATRIX">Матрица</SelectItem>
 									</SelectContent>
 								</Select>
 
@@ -402,6 +412,35 @@ export function SurveyForm({
 
 								{q.type === 'OPEN_TEXT' && (
 									<Input disabled placeholder="Поле для ответа" />
+								)}
+
+								{q.type === 'MATRIX' && (
+									<MatrixQuestion
+										question={{
+											rows: q.ratingConfig?.rows || [],
+											columns: q.ratingConfig?.columns || [],
+										}}
+										onChange={({ rows, columns }) => {
+											const newQuestions = [...questions];
+											if (newQuestions[qIndex]) {
+												if (!newQuestions[qIndex].ratingConfig) {
+													newQuestions[qIndex].ratingConfig = {
+														rows: [],
+														columns: [],
+														type: 'MATRIX',
+														maxValue: undefined,
+														leftLabel: undefined,
+														rightLabel: undefined,
+													};
+												}
+												if (rows !== undefined)
+													newQuestions[qIndex].ratingConfig!.rows = rows;
+												if (columns !== undefined)
+													newQuestions[qIndex].ratingConfig!.columns = columns;
+												setQuestions(newQuestions);
+											}
+										}}
+									/>
 								)}
 
 								{q.type === 'SINGLE_CHOICE' && (

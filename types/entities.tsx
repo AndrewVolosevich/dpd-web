@@ -65,13 +65,13 @@ export type QuestionType =
 	| 'MULTIPLE_CHOICE'
 	| 'RATING';
 
-export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE';
+export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE' | 'MATRIX';
 export type SurveyType = 'ANONYMOUS' | 'PERSONALIZED';
 export type SurveyStatus = 'ACTIVE' | 'COMPLETED' | 'DRAFT';
 
 export interface Question {
 	id?: string;
-	type: 'OPEN_TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE' | 'RATING';
+	type: 'OPEN_TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE' | 'RATING' | 'MATRIX';
 	text: string;
 	options: { value: string; correct?: boolean }[];
 	isRequired: boolean;
@@ -81,7 +81,18 @@ export interface Question {
 		maxValue?: number;
 		leftLabel?: string;
 		rightLabel?: string;
+		rows?: string[];
+		columns?: string[];
 	};
+	answers?: Answer[];
+}
+
+export interface Response {
+	id: string;
+	surveyId: string;
+	userId: string;
+	createdAt: string;
+	answers: Answer[];
 }
 
 export interface Survey {
@@ -96,13 +107,17 @@ export interface Survey {
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
+	responses?: Response[];
 	_count?: {
 		responses?: number;
 	};
 }
 
 export interface Answer {
+	id: string;
 	questionId: string;
-	value: any;
+	value?: any;
 	comment?: string;
+	createdAt?: string;
+	responseId: string;
 }
