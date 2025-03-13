@@ -17,11 +17,12 @@ import { Answer, Question } from '@/types/entities';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { Routes } from '@/const/routes';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { MatrixQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/MatrixQuestion';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -32,6 +33,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const [answers, setAnswers] = useState<Answer[]>([]);
 	const [started, setStarted] = useState(false);
 	const [showComment, setShowComment] = useState<boolean>(false);
+	const queryClient = useQueryClient();
 
 	const { mutateAsync: createResponse, isPending } = useMutation({
 		mutationFn: async (responseData: any) => {
@@ -47,6 +49,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 			});
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
 			toast({
 				title: 'Опрос успешно пройден',
 				variant: 'default',
@@ -79,7 +82,10 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 				};
 				return updatedAnswers;
 			} else {
-				return [...prevAnswers, { questionId: currentQuestion.id, value }];
+				return [
+					...prevAnswers,
+					{ questionId: currentQuestion.id, value } as Answer,
+				];
 			}
 		});
 	};
@@ -160,6 +166,19 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 					<RatingQuestion
 						question={currentQuestion as any}
 						value={getAnswerById(currentQuestion.id)?.value}
+						onChange={handleAnswer}
+					/>
+				);
+			case 'MATRIX':
+				return (
+					<MatrixQuestion
+						question={currentQuestion as any}
+						value={
+							(getAnswerById(currentQuestion.id)?.value as Record<
+								string,
+								string
+							>) || {}
+						}
 						onChange={handleAnswer}
 					/>
 				);

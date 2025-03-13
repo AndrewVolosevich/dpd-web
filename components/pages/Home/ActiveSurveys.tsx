@@ -27,11 +27,11 @@ const ActiveSurveys = () => {
 				<h2 className="font-bold mb-2 sm:mb-4 text-sm sm:text-base ml-2">
 					Доступные опросы
 				</h2>
-				<div className="flex flex-col gap-4">
+				<div className="flex flex-row w-full flex-wrap gap-4">
 					{data?.map((survey) => (
 						<Card
 							key={survey.id}
-							className="border shadow-sm hover:shadow-md transition-shadow w-full"
+							className="border shadow-sm hover:shadow-md transition-shadow w-[49%]"
 						>
 							<CardHeader className="pb-2">
 								<CardTitle className="text-xl font-bold text-red-600">
@@ -39,7 +39,7 @@ const ActiveSurveys = () => {
 								</CardTitle>
 							</CardHeader>
 							<CardContent className="pb-2">
-								<p className="text-gray-600">{survey.description}</p>
+								{/*<p className="text-gray-600">{survey.description}</p>*/}
 								<div className="flex flex-wrap gap-x-6 gap-y-2 mt-3">
 									{survey?.endDate && (
 										<p className="text-sm text-gray-500">

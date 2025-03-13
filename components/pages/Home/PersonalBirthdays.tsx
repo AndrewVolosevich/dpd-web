@@ -10,9 +10,6 @@ const PersonalBirthdays = ({ className }: PersonalBirthdaysProps) => {
 	const { data } = useUsersByBirthday();
 
 	const groupedUsers = groupUsersByBirthday(data);
-	if (!data?.length) {
-		return null;
-	}
 
 	return (
 		<aside className={className}>

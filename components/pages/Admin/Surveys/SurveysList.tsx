@@ -11,6 +11,7 @@ import {
 	CircleOff,
 	Copy,
 	Download,
+	Eye,
 	Layers2,
 	MoreHorizontal,
 	NotepadTextDashed,
@@ -133,7 +134,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 								<DropdownMenuItem
 									onClick={() => {
 										navigator.clipboard.writeText(
-											`${Routes.ADMIN}/surveys/${survey?.id}/take`,
+											`${window?.location?.origin}${Routes.ADMIN}/surveys/${survey?.id}/take`,
 										);
 									}}
 								>
@@ -175,6 +176,12 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 										<NotepadTextDashed className="h-4 w-4 mr-2" /> В черновик
 									</DropdownMenuItem>
 								)}
+								<Link href={`${Routes.ADMIN}/results/${survey?.id}`}>
+									<DropdownMenuItem>
+										<Eye className="h-4 w-4 mr-2" />
+										Посмотреть результаты
+									</DropdownMenuItem>
+								</Link>
 								<DropdownMenuItem>
 									<Download className="h-4 w-4 mr-2" />
 									Выгрузить в Excel
