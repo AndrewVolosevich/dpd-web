@@ -34,8 +34,8 @@ import { useRouter } from 'next/navigation';
 import { BulkOptionsModal } from '@/components/common/BulkOptionsModal/BulkOptionsModal';
 import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/QuestionPreview';
 import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerPopover';
-import { formatISO } from 'date-fns';
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
+import { getStartDateISO } from '@/lib/date/helpers';
 
 export function SurveyForm({
 	initialData,
@@ -221,7 +221,7 @@ export function SurveyForm({
 			title,
 			description,
 			preface,
-			endDate: endDate ? formatISO(endDate) : undefined,
+			endDate: getStartDateISO(endDate),
 			type,
 			status: (status || 'DRAFT') as SurveyStatus,
 			questions: updatedQuestions,
