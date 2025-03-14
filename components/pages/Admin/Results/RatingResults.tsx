@@ -20,10 +20,18 @@ interface RatingResultsProps {
 		}>;
 	};
 }
-
 export function RatingResults({ question }: RatingResultsProps) {
+	const maxValue = useMemo(() => {
+		if (
+			question?.ratingConfig?.type === 'EMOTIONS' ||
+			question?.ratingConfig?.type === 'STARS'
+		) {
+			return 5;
+		}
+		return question.ratingConfig?.maxValue || 10;
+	}, [question.ratingConfig]);
+
 	const results = useMemo(() => {
-		const maxValue = question.ratingConfig?.maxValue || 10;
 		const ratings: Record<number, number> = {};
 
 		// Инициализация счетчиков для всех возможных оценок
@@ -64,7 +72,7 @@ export function RatingResults({ question }: RatingResultsProps) {
 			averageRating,
 			totalAnswers: question.answers.length,
 		};
-	}, [question]);
+	}, [question, maxValue]);
 
 	const renderRatingType = () => {
 		switch (question.ratingConfig?.type) {
