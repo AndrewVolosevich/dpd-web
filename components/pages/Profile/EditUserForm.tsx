@@ -22,11 +22,11 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { formatISO } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
+import { getStartDateISO } from '@/lib/date/helpers';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
@@ -156,9 +156,9 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 		const userToUpdate = {
 			...values,
 			id: user?.id,
-			startDate: values?.startDate ? formatISO(values?.startDate) : undefined,
-			endDate: values?.endDate ? formatISO(values?.endDate) : undefined,
-			bornDate: values?.bornDate ? formatISO(values?.bornDate) : undefined,
+			startDate: getStartDateISO(values?.startDate),
+			endDate: getStartDateISO(values?.endDate),
+			bornDate: getStartDateISO(values?.bornDate),
 		};
 		if (isForCreate) {
 			createUser(userToUpdate);

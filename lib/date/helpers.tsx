@@ -22,3 +22,11 @@ export function groupUsersByBirthday(
 		{} as Record<string, UserData[]>,
 	);
 }
+
+export function getStartDateISO(date: Date | undefined): string | undefined {
+	return date
+		? new Date(
+				Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+			).toISOString()
+		: undefined;
+}
