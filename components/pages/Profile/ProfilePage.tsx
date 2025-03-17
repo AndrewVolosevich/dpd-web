@@ -14,6 +14,7 @@ import { UserData } from '@/types/entities';
 import Presentation from '@/components/pages/Profile/Presentation';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
 import BirthdayCelebration from '@/components/pages/Profile/BirthdaySelebration';
+import { ru } from 'date-fns/locale';
 
 const ProfilePage = ({ id }: { id?: string }) => {
 	const { user, isAdmin } = useAuth();
@@ -81,7 +82,7 @@ const ProfilePage = ({ id }: { id?: string }) => {
 								<span className="text-sm">
 									День рождения:{' '}
 									{anotherUser?.bornDate
-										? format(anotherUser?.bornDate, 'yyyy-MM-dd')
+										? format(anotherUser?.bornDate, 'dd MMMM', { locale: ru })
 										: ''}
 								</span>
 							</div>
