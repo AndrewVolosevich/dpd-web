@@ -28,6 +28,7 @@ import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import Link from 'next/link';
 import { Routes } from '@/const/routes';
+import { exportSurveyToCsv } from '@/lib/exportToCsv';
 
 export function SurveysList({ surveys }: { surveys: Survey[] }) {
 	const api = useApi();
@@ -90,6 +91,33 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 	if (!surveys) {
 		return null;
 	}
+
+	const exportToExcel = (survey: Survey) => {
+		if (!survey) {
+			toast({
+				title: 'Ошибка экспорта',
+				description: 'Данные опроса недоступны',
+				variant: 'destructive',
+			});
+			return;
+		}
+
+		try {
+			exportSurveyToCsv(survey);
+			toast({
+				title: 'Экспорт выполнен',
+				description: 'Результаты опроса успешно экспортированы в CSV',
+			});
+		} catch (error) {
+			console.error('Ошибка при экспорте:', error);
+			toast({
+				title: 'Ошибка экспорта',
+				description: 'Не удалось экспортировать результаты опроса',
+				variant: 'destructive',
+			});
+		}
+	};
+
 	return (
 		<div className="space-y-4">
 			{surveys.map((survey) => (
@@ -141,6 +169,16 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 									<Copy className="h-4 w-4 mr-2" /> Копировать ссылку
 								</DropdownMenuItem>
 
+								<DropdownMenuItem
+									onClick={() => {
+										navigator.clipboard.writeText(
+											`${window?.location?.origin}${Routes.ADMIN}/results/${survey?.id}`,
+										);
+									}}
+								>
+									<Copy className="h-4 w-4 mr-2" /> Поделится результатами
+								</DropdownMenuItem>
+
 								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/copy`}>
 									<DropdownMenuItem>
 										<Layers2 className="h-4 w-4 mr-2" />
@@ -182,7 +220,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 										Посмотреть результаты
 									</DropdownMenuItem>
 								</Link>
-								<DropdownMenuItem>
+								<DropdownMenuItem onClick={() => exportToExcel(survey)}>
 									<Download className="h-4 w-4 mr-2" />
 									Выгрузить в Excel
 								</DropdownMenuItem>

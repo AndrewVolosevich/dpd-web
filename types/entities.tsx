@@ -63,7 +63,9 @@ export type QuestionType =
 	| 'OPEN_TEXT'
 	| 'SINGLE_CHOICE'
 	| 'MULTIPLE_CHOICE'
-	| 'RATING';
+	| 'RATING'
+	| 'MATRIX'
+	| 'PHOTO';
 
 export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE' | 'MATRIX';
 export type SurveyType = 'ANONYMOUS' | 'PERSONALIZED';
@@ -71,7 +73,7 @@ export type SurveyStatus = 'ACTIVE' | 'COMPLETED' | 'DRAFT';
 
 export interface Question {
 	id?: string;
-	type: 'OPEN_TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE' | 'RATING' | 'MATRIX';
+	type: QuestionType;
 	text: string;
 	options: { value: string; correct?: boolean }[];
 	isRequired: boolean;
@@ -84,6 +86,8 @@ export interface Question {
 		rows?: string[];
 		columns?: string[];
 	};
+	photos?: { url: string }[];
+	allowMultipleSelection?: boolean;
 	answers?: Answer[];
 }
 

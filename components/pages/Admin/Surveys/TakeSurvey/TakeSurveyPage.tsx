@@ -23,6 +23,7 @@ import useApi from '@/hooks/useApi';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/MatrixQuestion';
+import { PhotoQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/PhotoQuestion';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -69,6 +70,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 		: 0;
 
 	const handleAnswer = (value: any) => {
+		console.log('===handleAnswer', value);
 		setAnswers((prevAnswers) => {
 			const existingAnswerIndex = prevAnswers.findIndex(
 				(a) => a.questionId === currentQuestion.id,
@@ -178,6 +180,17 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 								string,
 								string
 							>) || {}
+						}
+						onChange={handleAnswer}
+					/>
+				);
+			case 'PHOTO':
+				return (
+					<PhotoQuestion
+						question={currentQuestion as any}
+						value={
+							getAnswerById(currentQuestion.id)?.value ||
+							(currentQuestion.allowMultipleSelection ? [] : '')
 						}
 						onChange={handleAnswer}
 					/>

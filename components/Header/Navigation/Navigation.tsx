@@ -28,11 +28,17 @@ export function Navigation({ className }: { className?: string }) {
 						}
 						return (
 							<NavigationMenuItem key={link.title}>
-								<Link href={link.href}>
+								{link?.items?.length ? (
 									<NavigationMenuTrigger withIcon={!!link?.items?.length}>
 										{link.title}
 									</NavigationMenuTrigger>
-								</Link>
+								) : (
+									<Link href={link.href}>
+										<NavigationMenuTrigger withIcon={!!link?.items?.length}>
+											{link.title}
+										</NavigationMenuTrigger>
+									</Link>
+								)}
 								{link?.items && link?.items?.length > 0 && (
 									<NavigationMenuContent className={'relative'}>
 										<ul className="p-6 list-none w-[80vw]">
