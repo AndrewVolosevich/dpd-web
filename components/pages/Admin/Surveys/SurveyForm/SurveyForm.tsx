@@ -36,6 +36,7 @@ import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/Questio
 import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerPopover';
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
+import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
 
 export function SurveyForm({
 	initialData,
@@ -369,6 +370,7 @@ export function SurveyForm({
 										</SelectItem>
 										<SelectItem value="RATING">Оценка</SelectItem>
 										<SelectItem value="MATRIX">Матрица</SelectItem>
+										<SelectItem value="PHOTO">Голосование за фото</SelectItem>
 									</SelectContent>
 								</Select>
 
@@ -650,6 +652,24 @@ export function SurveyForm({
 											<QuestionPreview question={q} />
 										</div>
 									</div>
+								)}
+								{q.type === 'PHOTO' && (
+									<PhotoQuestion
+										question={{
+											photos: q.photos || [],
+											allowMultipleSelection:
+												q?.allowMultipleSelection || false,
+										}}
+										onChange={({ photos, allowMultipleSelection }) => {
+											const newQuestions = [...questions];
+											if (photos !== undefined)
+												newQuestions[qIndex].photos = photos;
+											if (allowMultipleSelection !== undefined)
+												newQuestions[qIndex].allowMultipleSelection =
+													allowMultipleSelection;
+											setQuestions(newQuestions);
+										}}
+									/>
 								)}
 							</CardContent>
 						</Card>
