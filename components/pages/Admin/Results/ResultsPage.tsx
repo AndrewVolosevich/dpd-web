@@ -13,6 +13,7 @@ import { RatingResults } from '@/components/pages/Admin/Results/RatingResults';
 import { MatrixResults } from '@/components/pages/Admin/Results/MatrixResults';
 import useSurvey from '@/lib/api/queries/Surveys/useSurvey';
 import { SurveyStatus } from '@/types/entities';
+import { PhotoResults } from '@/components/pages/Admin/Results/PhotoResults';
 
 export default function ResultsPage({ id }: { id: string }) {
 	const [activeTab, setActiveTab] = useState('overview');
@@ -141,6 +142,9 @@ export default function ResultsPage({ id }: { id: string }) {
 										{question.type === 'MATRIX' && (
 											<MatrixResults question={question as any} />
 										)}
+										{question.type === 'PHOTO' && (
+											<PhotoResults question={question as any} />
+										)}
 									</div>
 								))}
 							</div>
@@ -188,6 +192,9 @@ export default function ResultsPage({ id }: { id: string }) {
 											)}
 											{question.type === 'MATRIX' && (
 												<MatrixResults question={question as any} />
+											)}
+											{question.type === 'PHOTO' && (
+												<PhotoResults question={question as any} />
 											)}
 										</div>
 									</TabsContent>
