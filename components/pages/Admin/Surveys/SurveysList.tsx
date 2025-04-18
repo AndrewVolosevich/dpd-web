@@ -120,126 +120,141 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 
 	return (
 		<div className="space-y-4">
-			{surveys.map((survey) => (
-				<div
-					key={survey.id}
-					className="flex items-center justify-between p-4 border rounded-lg bg-white"
-				>
-					<div className="flex items-start gap-4">
-						<div>
-							<div className="flex items-center gap-2">
-								<h3 className="font-medium">{survey.title}</h3>
-								<Badge
-									variant={survey.status === 'ACTIVE' ? 'default' : 'secondary'}
-								>
-									{getSurveyBadgeText(survey.status)}
-								</Badge>
+			{surveys.map((survey) => {
+				const isTest = survey?.surveyVariant === 'TEST';
+				return (
+					<div
+						key={survey.id}
+						className="flex items-center justify-between p-4 border rounded-lg bg-white"
+					>
+						<div className="flex items-start gap-4">
+							<div>
+								<div className="flex items-center gap-2">
+									<h3 className="font-medium">{survey.title}</h3>
+									<Badge
+										variant={
+											survey.status === 'ACTIVE' ? 'default' : 'secondary'
+										}
+									>
+										{getSurveyBadgeText(survey.status)}
+									</Badge>
+								</div>
+								<p className="text-sm text-muted-foreground mt-1">
+									Изменен:{' '}
+									{survey?.updatedAt
+										? format(survey?.updatedAt, 'dd MMMM yyyy', { locale: ru })
+										: ''}
+								</p>
+								{survey?.endDate && (
+									<p className="text-sm text-muted-foreground mt-1">
+										Окончание:{' '}
+										{survey?.updatedAt
+											? format(survey?.endDate, 'dd MMMM yyyy', { locale: ru })
+											: ''}
+									</p>
+								)}
 							</div>
-							<p className="text-sm text-muted-foreground mt-1">
-								Изменен:{' '}
-								{survey?.updatedAt
-									? format(survey?.updatedAt, 'dd MMMM yyyy', { locale: ru })
-									: ''}
-							</p>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="ghost" size="sm">
+										<MoreHorizontal className="h-4 w-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<Link href={`${Routes.ADMIN}/surveys/${survey?.id}`}>
+										<DropdownMenuItem>
+											<Pencil className="h-4 w-4 mr-2" />
+											Редактировать
+										</DropdownMenuItem>
+									</Link>
+
+									<DropdownMenuItem
+										onClick={() => {
+											navigator.clipboard.writeText(
+												`${window?.location?.origin}${Routes.ADMIN}/surveys/${survey?.id}/take`,
+											);
+										}}
+									>
+										<Copy className="h-4 w-4 mr-2" /> Копировать ссылку
+									</DropdownMenuItem>
+
+									<DropdownMenuItem
+										onClick={() => {
+											navigator.clipboard.writeText(
+												`${window?.location?.origin}${Routes.ADMIN}/results/${survey?.id}${isTest ? '/user-test-results' : ''}`,
+											);
+										}}
+									>
+										<Copy className="h-4 w-4 mr-2" /> Поделится результатами
+									</DropdownMenuItem>
+
+									<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/copy`}>
+										<DropdownMenuItem>
+											<Layers2 className="h-4 w-4 mr-2" />
+											Копировать опрос
+										</DropdownMenuItem>
+									</Link>
+									{survey?.status === 'DRAFT' && (
+										<DropdownMenuItem
+											onClick={() => {
+												updateSurveyStatus(survey, 'ACTIVE');
+											}}
+										>
+											<Play className="h-4 w-4 mr-2" />
+											Активировать
+										</DropdownMenuItem>
+									)}
+									{survey?.status === 'ACTIVE' && (
+										<DropdownMenuItem
+											onClick={() => {
+												updateSurveyStatus(survey, 'COMPLETED');
+											}}
+										>
+											<CircleOff className="h-4 w-4 mr-2" />
+											Завершить
+										</DropdownMenuItem>
+									)}
+									{survey?.status !== 'DRAFT' && (
+										<DropdownMenuItem
+											onClick={() => {
+												updateSurveyStatus(survey, 'DRAFT');
+											}}
+										>
+											<NotepadTextDashed className="h-4 w-4 mr-2" /> В черновик
+										</DropdownMenuItem>
+									)}
+									<Link
+										href={`${Routes.ADMIN}/results/${survey?.id}${isTest ? '/user-test-results' : ''}`}
+									>
+										<DropdownMenuItem>
+											<Eye className="h-4 w-4 mr-2" />
+											Посмотреть результаты
+										</DropdownMenuItem>
+									</Link>
+									<DropdownMenuItem onClick={() => exportToExcel(survey)}>
+										<Download className="h-4 w-4 mr-2" />
+										Выгрузить в Excel
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										className="text-red-600"
+										onClick={() => {
+											if (survey?.id) {
+												deleteSurvey(survey.id);
+											}
+										}}
+									>
+										<Trash2 className="h-4 w-4 mr-2" />
+										Удалить
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</div>
 					</div>
-
-					<div className="flex items-center gap-2">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="ghost" size="sm">
-									<MoreHorizontal className="h-4 w-4" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}`}>
-									<DropdownMenuItem>
-										<Pencil className="h-4 w-4 mr-2" />
-										Редактировать
-									</DropdownMenuItem>
-								</Link>
-
-								<DropdownMenuItem
-									onClick={() => {
-										navigator.clipboard.writeText(
-											`${window?.location?.origin}${Routes.ADMIN}/surveys/${survey?.id}/take`,
-										);
-									}}
-								>
-									<Copy className="h-4 w-4 mr-2" /> Копировать ссылку
-								</DropdownMenuItem>
-
-								<DropdownMenuItem
-									onClick={() => {
-										navigator.clipboard.writeText(
-											`${window?.location?.origin}${Routes.ADMIN}/results/${survey?.id}`,
-										);
-									}}
-								>
-									<Copy className="h-4 w-4 mr-2" /> Поделится результатами
-								</DropdownMenuItem>
-
-								<Link href={`${Routes.ADMIN}/surveys/${survey?.id}/copy`}>
-									<DropdownMenuItem>
-										<Layers2 className="h-4 w-4 mr-2" />
-										Копировать опрос
-									</DropdownMenuItem>
-								</Link>
-								{survey?.status === 'DRAFT' && (
-									<DropdownMenuItem
-										onClick={() => {
-											updateSurveyStatus(survey, 'ACTIVE');
-										}}
-									>
-										<Play className="h-4 w-4 mr-2" />
-										Активировать
-									</DropdownMenuItem>
-								)}
-								{survey?.status === 'ACTIVE' && (
-									<DropdownMenuItem
-										onClick={() => {
-											updateSurveyStatus(survey, 'COMPLETED');
-										}}
-									>
-										<CircleOff className="h-4 w-4 mr-2" />
-										Завершить
-									</DropdownMenuItem>
-								)}
-								{survey?.status !== 'DRAFT' && (
-									<DropdownMenuItem
-										onClick={() => {
-											updateSurveyStatus(survey, 'DRAFT');
-										}}
-									>
-										<NotepadTextDashed className="h-4 w-4 mr-2" /> В черновик
-									</DropdownMenuItem>
-								)}
-								<Link href={`${Routes.ADMIN}/results/${survey?.id}`}>
-									<DropdownMenuItem>
-										<Eye className="h-4 w-4 mr-2" />
-										Посмотреть результаты
-									</DropdownMenuItem>
-								</Link>
-								<DropdownMenuItem onClick={() => exportToExcel(survey)}>
-									<Download className="h-4 w-4 mr-2" />
-									Выгрузить в Excel
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									className="text-red-600"
-									onClick={() => {
-										if (survey?.id) {
-											deleteSurvey(survey.id);
-										}
-									}}
-								>
-									<Trash2 className="h-4 w-4 mr-2" />
-									Удалить
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
-				</div>
-			))}
+				);
+			})}
 		</div>
 	);
 }

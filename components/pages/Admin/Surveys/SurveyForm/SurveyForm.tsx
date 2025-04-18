@@ -27,6 +27,7 @@ import {
 	RatingType,
 	Survey,
 	SurveyStatus,
+	SurveyVariant,
 } from '@/types/entities';
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
 import { validateSurvey } from '@/lib/validators/surveys';
@@ -37,6 +38,7 @@ import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerP
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
+import { UserAssignment } from '@/components/pages/Admin/Surveys/SurveyForm/UserAssignment';
 
 export function SurveyForm({
 	initialData,
@@ -56,6 +58,12 @@ export function SurveyForm({
 	const [preface, setPreface] = useState(initialData?.preface || '');
 	const [type, setType] = useState(initialData?.type || 'ANONYMOUS');
 	const [status, setStatus] = useState(initialData?.status || 'DRAFT');
+	const [surveyVariant, setSurveyVariant] = useState(
+		initialData?.surveyVariant || 'SURVEY',
+	);
+	const [assignedUserIds, setAssignedUserIds] = useState<string[]>(
+		initialData?.assignedUserIds || [],
+	);
 
 	const [questions, setQuestions] = useState<Question[]>(
 		initialData?.questions || [
@@ -224,6 +232,8 @@ export function SurveyForm({
 			preface,
 			endDate: getStartDateISO(endDate),
 			type,
+			surveyVariant,
+			assignedUserIds,
 			status: (status || 'DRAFT') as SurveyStatus,
 			questions: updatedQuestions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
@@ -319,6 +329,23 @@ export function SurveyForm({
 						</Select>
 					</div>
 
+					<div className="flex flex-col items-center space-x-2">
+						<Select
+							value={surveyVariant}
+							onValueChange={(value) =>
+								setSurveyVariant(value as SurveyVariant)
+							}
+						>
+							<SelectTrigger>
+								<SelectValue placeholder="Выберите тип" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="SURVEY">Опрос</SelectItem>
+								<SelectItem value="TEST">Тест</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
 					<div className="flex items-center space-x-2">
 						<Switch
 							id="collect-info"
@@ -335,6 +362,14 @@ export function SurveyForm({
 							Собирать информацию об участниках?
 						</Label>
 					</div>
+
+					{/* User Assignment Section */}
+					{surveyVariant === 'TEST' && (
+						<UserAssignment
+							assignedUserIds={assignedUserIds}
+							setAssignedUserIds={setAssignedUserIds}
+						/>
+					)}
 				</div>
 				<div className="space-y-4">
 					{questions.map((q, qIndex) => (
@@ -475,6 +510,15 @@ export function SurveyForm({
 															}
 															placeholder={`Вариант ответа ${optionIndex + 1}`}
 														/>
+														{surveyVariant === 'TEST' && (
+															<Checkbox
+																checked={option.correct}
+																onCheckedChange={() =>
+																	toggleCorrect(qIndex, optionIndex)
+																}
+																className="ml-2"
+															/>
+														)}
 														<Button
 															variant="ghost"
 															size="sm"
@@ -509,6 +553,13 @@ export function SurveyForm({
 												Добавить несколько
 											</Button>
 										</div>
+										{surveyVariant === 'TEST' && (
+											<div className="mt-2 p-2 bg-muted rounded-md">
+												<Label className="text-sm">
+													Отметьте правильные варианты ответов
+												</Label>
+											</div>
+										)}
 									</div>
 								)}
 
@@ -559,6 +610,13 @@ export function SurveyForm({
 												Добавить несколько
 											</Button>
 										</div>
+										{surveyVariant === 'TEST' && (
+											<div className="mt-2 p-2 bg-muted rounded-md">
+												<Label className="text-sm">
+													Отметьте правильные варианты ответов
+												</Label>
+											</div>
+										)}
 									</div>
 								)}
 
