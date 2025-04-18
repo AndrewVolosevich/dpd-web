@@ -69,6 +69,7 @@ export type QuestionType =
 
 export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE' | 'MATRIX';
 export type SurveyType = 'ANONYMOUS' | 'PERSONALIZED';
+export type SurveyVariant = 'SURVEY' | 'TEST';
 export type SurveyStatus = 'ACTIVE' | 'COMPLETED' | 'DRAFT';
 
 export interface Question {
@@ -108,6 +109,7 @@ export interface Survey {
 	endDate?: string;
 	type: SurveyType;
 	status: SurveyStatus;
+	surveyVariant?: SurveyVariant;
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
@@ -115,6 +117,8 @@ export interface Survey {
 	_count?: {
 		responses?: number;
 	};
+	assignments?: SurveyAssignment[]; // Added assignments
+	assignedUserIds?: string[]; // Added for form handling
 }
 
 export interface Answer {
@@ -124,4 +128,13 @@ export interface Answer {
 	comment?: string;
 	createdAt?: string;
 	responseId: string;
+}
+
+export interface SurveyAssignment {
+	id: string;
+	surveyId: string;
+	userId: string;
+	user?: UserData;
+	createdAt: string;
+	updatedAt: string;
 }

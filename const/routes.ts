@@ -71,8 +71,12 @@ export const NavLinks = [
 				href: `${Routes.ADMIN}/users`,
 			},
 			{
-				title: 'Опросы',
+				title: 'Опросы и тесты',
 				href: `${Routes.ADMIN}/surveys`,
+			},
+			{
+				title: 'Панель руководителя',
+				href: `${Routes.ADMIN}/supervisor`,
 			},
 		],
 	},

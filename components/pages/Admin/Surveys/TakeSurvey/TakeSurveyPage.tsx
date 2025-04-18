@@ -24,6 +24,8 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/MatrixQuestion';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/PhotoQuestion';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -34,6 +36,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const [answers, setAnswers] = useState<Answer[]>([]);
 	const [started, setStarted] = useState(false);
 	const [showComment, setShowComment] = useState<boolean>(false);
+	const [testResults, setTestResults] = useState<any>(null);
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: createResponse, isPending } = useMutation({
@@ -55,6 +58,22 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 				title: 'Опрос успешно пройден',
 				variant: 'default',
 			});
+		},
+	});
+
+	const { mutateAsync: getResults, isPending: loadingResults } = useMutation({
+		mutationFn: async (params: { surveyId: string; userId: string }) => {
+			return api.get(`/surveys/${params.surveyId}/results`);
+		},
+		onError: (error) => {
+			toast({
+				title: 'Ошибка при получении результатов',
+				variant: 'destructive',
+				description: error.message,
+			});
+		},
+		onSuccess: (response) => {
+			setTestResults(response.data.testResults);
 		},
 	});
 
@@ -131,7 +150,12 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 			answers,
 		};
 		await createResponse(respData);
-		router.push(`${Routes.HOME}`);
+		// If this is a test, get the results
+		if (data.surveyVariant === 'TEST') {
+			await getResults({ surveyId, userId: user.id });
+		} else {
+			router.push(`${Routes.HOME}`);
+		}
 	};
 
 	const getAnswerById = (id: string) => {
@@ -228,12 +252,61 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 		return null;
 	};
 
+	const renderTestResults = () => {
+		if (!testResults) return null;
+
+		const { correctAnswers, totalQuestions, score, passed } = testResults;
+
+		return (
+			<div className="space-y-4">
+				<Alert variant={passed ? 'default' : 'destructive'}>
+					<div className="flex items-center">
+						{passed ? (
+							<CheckCircle2 className="h-5 w-5 mr-2 text-green-500" />
+						) : (
+							<XCircle className="h-5 w-5 mr-2 text-red-500" />
+						)}
+						<AlertTitle>
+							{passed ? 'Тест пройден!' : 'Тест не пройден'}
+						</AlertTitle>
+					</div>
+					<AlertDescription>
+						Вы ответили правильно на {correctAnswers} из {totalQuestions}{' '}
+						вопросов ({Math.round(score)}%)
+					</AlertDescription>
+				</Alert>
+
+				<div className="flex justify-center">
+					<Button onClick={() => router.push(Routes.HOME)}>
+						Вернуться на главную
+					</Button>
+				</div>
+			</div>
+		);
+	};
+
+	if (testResults) {
+		return (
+			<div className="container py-6 space-y-6 m-auto">
+				<h2 className="text-2xl font-bold mb-4">{data.title} - Результаты</h2>
+				{renderTestResults()}
+			</div>
+		);
+	}
+
 	return (
 		<div className="container py-6 space-y-6 m-auto">
 			<div className="space-y-6">
 				<div>
 					<h1 className="text-2xl font-bold mb-2">{data.title}</h1>
 					<p className="text-muted-foreground">{data.description}</p>
+					{data.surveyVariant === 'TEST' && (
+						<div className="mt-2 p-2 bg-muted rounded-md">
+							<p className="text-sm font-medium">
+								Это тест с проверкой знаний. Ваши ответы будут оценены.
+							</p>
+						</div>
+					)}
 				</div>
 
 				<div className="space-y-2">
@@ -264,7 +337,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 								className="w-full bg-primary hover:bg-red-600"
 							>
 								<PlayCircle className="h-4 w-4 mr-2" />
-								Начать опрос
+								{data.surveyVariant === 'TEST' ? 'Начать тест' : 'Начать опрос'}
 							</Button>
 						</div>
 					) : (
@@ -303,10 +376,10 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 						{currentQuestionIndex === data.questions.length - 1 ? (
 							<Button
 								onClick={handleSubmit}
-								disabled={!canProceed || isPending}
+								disabled={!canProceed || isPending || loadingResults}
 							>
 								<Send className="h-4 w-4 mr-2" />
-								Отправить
+								{isPending || loadingResults ? 'Отправка...' : 'Отправить'}
 							</Button>
 						) : (
 							<Button onClick={handleNext} disabled={!canProceed}>

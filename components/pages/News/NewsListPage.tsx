@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
 	Pagination,
 	PaginationContent,
@@ -48,7 +48,7 @@ const NewsListPage = () => {
 		dateRange,
 		search: debouncedSearch,
 	});
-
+	console.log('===', data);
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
 			return api(`/news/${newsId}`, {
@@ -85,6 +85,12 @@ const NewsListPage = () => {
 		setPage((old) => old + 1);
 	};
 
+	const newsToShow = useMemo((): NewsModel[] => {
+		if (!data) return [];
+		const { data: newsList, main } = data;
+		return [...(newsList || []), ...(main ? [main] : [])];
+	}, [data]);
+
 	const getContent = () => {
 		if (isLoading) {
 			return <FullPageLoader />;
@@ -92,8 +98,8 @@ const NewsListPage = () => {
 		return (
 			<>
 				<div className="space-y-6">
-					{data?.data &&
-						data?.data?.map((item: NewsModel) => {
+					{newsToShow &&
+						newsToShow?.map((item: NewsModel) => {
 							return (
 								<article
 									key={item.id}
