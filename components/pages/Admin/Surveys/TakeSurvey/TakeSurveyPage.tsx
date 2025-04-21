@@ -89,7 +89,6 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 		: 0;
 
 	const handleAnswer = (value: any) => {
-		console.log('===handleAnswer', value);
 		setAnswers((prevAnswers) => {
 			const existingAnswerIndex = prevAnswers.findIndex(
 				(a) => a.questionId === currentQuestion.id,

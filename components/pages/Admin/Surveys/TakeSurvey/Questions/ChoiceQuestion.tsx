@@ -14,7 +14,6 @@ export function ChoiceQuestion({
 	value,
 	onChange,
 }: ChoiceQuestionProps) {
-	console.log();
 	if (question.type === 'SINGLE_CHOICE') {
 		return (
 			<RadioGroup

@@ -19,8 +19,6 @@ export function PhotoQuestion({
 }: PhotoQuestionProps) {
 	const photos = question.photos || [];
 	const allowMultiple = question.allowMultipleSelection || false;
-	console.log('===question', question, value);
-	console.log('===value', value);
 	if (photos.length === 0) {
 		return (
 			<div className="text-muted-foreground italic">
