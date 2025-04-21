@@ -7,17 +7,19 @@ import useApi from '@/hooks/useApi';
 
 interface UploadNewsImageProps {
 	onClose: (val?: string) => void;
+	url: string;
+	hideImage?: boolean;
 }
 
-const UploadNewsImage = ({ onClose }: UploadNewsImageProps) => {
+const UploadImage = ({ onClose, url, hideImage }: UploadNewsImageProps) => {
 	const [preview, setPreview] = useState<string | null>(null);
 	const formRef = useRef<HTMLFormElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const api = useApi();
 	const { mutate: updatePhoto, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/upload/update-news-image`, userData);
+		mutationFn: async (userData: FormData) => {
+			const resp = await api.post(url, userData);
 			return resp?.data;
 		},
 		onError: (error) => {
@@ -63,22 +65,26 @@ const UploadNewsImage = ({ onClose }: UploadNewsImageProps) => {
 	return (
 		<div className={'mt-4'}>
 			<form onSubmit={handleSubmit} className="space-y-4" ref={formRef}>
-				<div className="flex items-center justify-center">
-					{preview ? (
-						<div className="relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
-							<Image
-								src={preview || '/placeholder.svg'}
-								alt="Preview"
-								fill
-								className="object-cover"
-							/>
-						</div>
-					) : (
-						<div className="w-full aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center">
-							<span className="text-gray-500">Нет изображения</span>
-						</div>
-					)}
-				</div>
+				{hideImage ? (
+					<div>Изображение загружено</div>
+				) : (
+					<div className="flex items-center justify-center">
+						{preview ? (
+							<div className="relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
+								<Image
+									src={preview || '/placeholder.svg'}
+									alt="Preview"
+									fill
+									className="object-cover"
+								/>
+							</div>
+						) : (
+							<div className="w-full aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center">
+								<span className="text-gray-500">Нет изображения</span>
+							</div>
+						)}
+					</div>
+				)}
 				<div>
 					<label
 						htmlFor="avatar"
@@ -113,4 +119,4 @@ const UploadNewsImage = ({ onClose }: UploadNewsImageProps) => {
 	);
 };
 
-export default UploadNewsImage;
+export default UploadImage;

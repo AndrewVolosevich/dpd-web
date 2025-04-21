@@ -48,7 +48,6 @@ const NewsListPage = () => {
 		dateRange,
 		search: debouncedSearch,
 	});
-	console.log('===', data);
 	const { mutate: deleteNews } = useMutation({
 		mutationFn: async (newsId: any) => {
 			return api(`/news/${newsId}`, {

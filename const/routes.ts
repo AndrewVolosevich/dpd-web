@@ -7,6 +7,7 @@ export enum Routes {
 	PROFILE = '/profile',
 	SIGN_IN = '/sign-in',
 	ADMIN = '/admin',
+	EDUCATION = '/education',
 }
 
 export const NavLinks = [
@@ -74,9 +75,35 @@ export const NavLinks = [
 				title: 'Опросы и тесты',
 				href: `${Routes.ADMIN}/surveys`,
 			},
+			// {
+			// 	title: 'Панель руководителя',
+			// 	href: `${Routes.ADMIN}/supervisor`,
+			// },
+		],
+	},
+	{
+		title: 'Обучение',
+		href: `${Routes.EDUCATION}`,
+		items: [
+			{
+				title: 'Материалы',
+				href: `${Routes.EDUCATION}/materials`,
+			},
+			{
+				title: 'Мое обучение',
+				href: `${Routes.EDUCATION}/my-training`,
+			},
+			{
+				title: 'Адаптация',
+				href: `${Routes.EDUCATION}/adaptation`,
+			},
+			{
+				title: 'Оценка',
+				href: `${Routes.EDUCATION}/assessment`,
+			},
 			{
 				title: 'Панель руководителя',
-				href: `${Routes.ADMIN}/supervisor`,
+				href: `${Routes.EDUCATION}/cabinet`,
 			},
 		],
 	},

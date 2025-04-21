@@ -5,7 +5,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import UploadNewsImage from '@/components/pages/News/UploadNewsImage';
+import UploadImage from '@/components/common/UploadImage';
 
 interface EditUserPhotoModalProps {
 	open: boolean;
@@ -19,7 +19,7 @@ const EditUserPhotoModal = ({ open, onClose }: EditUserPhotoModalProps) => {
 				<DialogHeader>
 					<DialogTitle>{'Загрузка заглавного изображения'}</DialogTitle>
 				</DialogHeader>
-				<UploadNewsImage onClose={onClose} />
+				<UploadImage onClose={onClose} url={'/upload/update-news-image'} />
 			</DialogContent>
 		</Dialog>
 	);

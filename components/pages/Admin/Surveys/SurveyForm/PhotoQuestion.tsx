@@ -58,7 +58,6 @@ export function PhotoQuestion({ question, onChange }: PhotoQuestionProps) {
 
 	const { mutate: deletePhoto } = useMutation({
 		mutationFn: async (url: string) => {
-			console.log({ url: url });
 			const resp = await api.post(`/upload/deleteByUrl`, { url: url });
 			return resp.data;
 		},
