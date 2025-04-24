@@ -10,7 +10,8 @@ export interface TrainingMaterial {
 	id: string;
 	title: string;
 	type: MaterialType;
-	url: string;
+	url?: string;
+	fileUrl?: string;
 	createdAt: string;
 	updatedAt: string;
 

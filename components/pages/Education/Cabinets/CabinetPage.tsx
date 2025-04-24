@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import type { TrainingMaterial, TrainingSection } from '@/types/education';
+import type { TrainingSection } from '@/types/education';
 import { SectionCard } from '../SectionCard';
 import { SectionForm } from '../SectionForm';
 import { Plus } from 'lucide-react';
@@ -120,11 +120,8 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 
 	const handleAddMaterial = async (
 		sectionId: string, // ID раздела, к которому добавляется материал
-		file: File, // Загружаемый файл
-		materialData: Omit<
-			TrainingMaterial,
-			'id' | 'createdAt' | 'updatedAt' | 'url'
-		>,
+		file: File | string, // Загружаемый файл
+		materialData: { title: string; isUrl: boolean },
 		section: TrainingSection,
 	) => {
 		if (!cabinet) {
@@ -139,6 +136,7 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 		formData.append('sectionId', sectionId);
 		formData.append('cabinetTitle', cabinet?.title);
 		formData.append('sectionTitle', section?.title);
+		formData.append('fileUrl', materialData?.isUrl ? file : '');
 
 		await addMaterial(formData);
 	};

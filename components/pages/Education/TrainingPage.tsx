@@ -24,6 +24,7 @@ export const TrainingPage = () => {
 		useState<TrainingCabinet | null>(null);
 
 	const { isAdmin } = useAuth();
+	// TODO: add material by link
 	const { mutateAsync: createCabinet } = useMutation({
 		mutationFn: async (cabinetData: any) => {
 			return api.post(`/education/cabinet`, {

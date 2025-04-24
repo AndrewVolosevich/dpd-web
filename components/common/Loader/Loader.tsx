@@ -1,14 +1,21 @@
 'use client';
 import React from 'react';
 import { Loader2 } from 'lucide-react';
+import { clsx } from 'clsx';
 
 interface LoaderProps {
 	message?: string;
+	className?: string;
 }
 
-const Loader = ({ message = 'Загрузка...' }: LoaderProps) => {
+const Loader = ({ message = 'Загрузка...', className }: LoaderProps) => {
 	return (
-		<div className="w-full h-full inset-0 flex items-center justify-center">
+		<div
+			className={clsx(
+				'w-full h-full inset-0 flex items-center justify-center',
+				className,
+			)}
+		>
 			<div className="flex flex-col items-center space-y-4">
 				<Loader2 className="h-12 w-12 text-primary animate-spin" />
 				{message && (
@@ -19,4 +26,4 @@ const Loader = ({ message = 'Загрузка...' }: LoaderProps) => {
 	);
 };
 
-export default Loader;
+export { Loader };

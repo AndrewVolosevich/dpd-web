@@ -9,6 +9,7 @@ import {
 	Monitor,
 	File,
 	Trash2,
+	Link as LinkIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/global/AuthProvider';
@@ -19,13 +20,18 @@ interface MaterialItemProps {
 }
 
 export const MaterialItem = ({ material, onDelete }: MaterialItemProps) => {
-	const getFileExtension = (url: string) => {
+	const getFileExtension = (url?: string | null) => {
+		if (url === null) return 'link';
+
 		return url?.split('.')?.pop()?.toLowerCase() || '';
 	};
 
-	const getIcon = (materialUrl: string) => {
+	const getIcon = (materialUrl?: string, isUrl?: boolean) => {
 		// Извлечение расширения файла из URL
 		const fileExtension = getFileExtension(materialUrl);
+		if (isUrl) {
+			return <LinkIcon className="h-5 w-5" />;
+		}
 
 		switch (fileExtension) {
 			case 'pdf':
@@ -49,16 +55,18 @@ export const MaterialItem = ({ material, onDelete }: MaterialItemProps) => {
 	};
 
 	const { isAdmin } = useAuth();
-
+	const url = material?.fileUrl || material?.url || '';
 	return (
 		<div className="flex items-center justify-between p-3 border rounded-md hover:bg-gray-50">
 			<Link
-				href={material.url}
+				href={url}
 				target="_blank"
 				rel="noopener noreferrer"
 				className="flex items-center gap-3 flex-1"
 			>
-				<div className="text-gray-500">{getIcon(material.url)}</div>
+				<div className="text-gray-500">
+					{getIcon(material?.url, !!material?.fileUrl)}
+				</div>
 				<div>
 					<h4 className="font-medium text-gray-800">
 						{material?.title}.{getFileExtension(material.url)}

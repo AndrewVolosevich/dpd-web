@@ -1,7 +1,6 @@
 export enum Routes {
 	HOME = '/',
 	ABOUT = '/about',
-	KNOWLEDGE_BASE = '/knowledge-base',
 	CORPORATE_LIFE = '/corporate-life',
 	NEWS = '/news',
 	PROFILE = '/profile',
@@ -39,7 +38,29 @@ export const NavLinks = [
 	},
 	{
 		title: 'База знаний',
-		href: Routes.KNOWLEDGE_BASE,
+		href: `${Routes.EDUCATION}`,
+		items: [
+			{
+				title: 'Материалы',
+				href: `${Routes.EDUCATION}/materials`,
+			},
+			{
+				title: 'Мое обучение',
+				href: `${Routes.EDUCATION}/my-training`,
+			},
+			{
+				title: 'Адаптация',
+				href: `${Routes.EDUCATION}/adaptation`,
+			},
+			{
+				title: 'Оценка',
+				href: `${Routes.EDUCATION}/assessment`,
+			},
+			{
+				title: 'Панель руководителя',
+				href: `${Routes.EDUCATION}/supervisor-panel`,
+			},
+		],
 	},
 	{
 		title: 'Корпоративная жизнь',
@@ -75,35 +96,9 @@ export const NavLinks = [
 				title: 'Опросы и тесты',
 				href: `${Routes.ADMIN}/surveys`,
 			},
-			// {
-			// 	title: 'Панель руководителя',
-			// 	href: `${Routes.ADMIN}/supervisor`,
-			// },
-		],
-	},
-	{
-		title: 'Обучение',
-		href: `${Routes.EDUCATION}`,
-		items: [
 			{
-				title: 'Материалы',
-				href: `${Routes.EDUCATION}/materials`,
-			},
-			{
-				title: 'Мое обучение',
-				href: `${Routes.EDUCATION}/my-training`,
-			},
-			{
-				title: 'Адаптация',
-				href: `${Routes.EDUCATION}/adaptation`,
-			},
-			{
-				title: 'Оценка',
-				href: `${Routes.EDUCATION}/assessment`,
-			},
-			{
-				title: 'Панель руководителя',
-				href: `${Routes.EDUCATION}/cabinet`,
+				title: 'Должностная структура',
+				href: `${Routes.ADMIN}/structure`,
 			},
 		],
 	},
@@ -112,7 +107,6 @@ export const NavLinks = [
 export const PROTECTED_ROUTES = [
 	Routes.HOME,
 	Routes.ABOUT,
-	Routes.KNOWLEDGE_BASE,
 	Routes.CORPORATE_LIFE,
 	Routes.NEWS,
 	Routes.PROFILE,
