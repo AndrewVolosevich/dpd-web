@@ -1,3 +1,5 @@
+import { Department, Position } from '@/types/structure';
+
 export type NewsModel = {
 	content?: any;
 	createdAt: string;
@@ -24,11 +26,14 @@ export interface UserData {
 	name: string;
 	surname: string;
 	patronymic?: string;
+	email?: string;
 
 	roles?: string[];
-	department?: string;
-	position?: string;
-	isSupervisor?: boolean;
+	department?: Department;
+	departmentId?: string;
+	position?: Position;
+	positionId?: string;
+	userPanelId?: string;
 
 	endDate?: string;
 	startDate?: string;
@@ -105,6 +110,7 @@ export interface Survey {
 	title: string;
 	description?: string;
 	preface?: string;
+	showForAll?: boolean;
 	afterword?: string;
 	endDate?: string;
 	type: SurveyType;

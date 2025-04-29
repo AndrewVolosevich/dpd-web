@@ -45,10 +45,10 @@ export default function DeletePositionModal({
 					<DialogDescription>
 						Вы уверены, что хотите удалить должность &quot;{position.title}
 						&quot;? Это действие нельзя отменить.
-						{position.users && position.users.length > 0 && (
+						{position.user && (
 							<span className="block mt-2 font-semibold">
-								Внимание: На этой должности числятся сотрудники. Они будут
-								отвязаны от этой должности.
+								Внимание: На этой должности числится сотрудник. Он будет отвязан
+								от этой должности.
 							</span>
 						)}
 					</DialogDescription>

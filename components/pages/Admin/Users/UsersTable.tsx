@@ -129,8 +129,8 @@ export default function UsersTable() {
 									</TableCell>
 
 									<TableCell>{user?.tel}</TableCell>
-									<TableCell>{user?.department || '-'}</TableCell>
-									<TableCell>{user?.position || '-'}</TableCell>
+									<TableCell>{user?.department?.title || '-'}</TableCell>
+									<TableCell>{user?.position?.title || '-'}</TableCell>
 									<TableCell className={'flex flex-row justify-end'}>
 										{isAdmin ? (
 											<>

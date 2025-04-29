@@ -67,10 +67,7 @@ export default function AssignUserModal({
 
 	// Filter out users who are already assigned to this position
 	const availableUsers =
-		users?.filter(
-			(user) =>
-				!position.users?.some((positionUser) => positionUser.id === user.id),
-		) || [];
+		users?.filter((user) => position?.user?.id !== user.id) || [];
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

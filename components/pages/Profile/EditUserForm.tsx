@@ -27,6 +27,8 @@ import { toast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { getStartDateISO } from '@/lib/date/helpers';
+import { useDepartments } from '@/lib/api/queries/structure/useDepartments';
+import { useDepartmentPositions } from '@/lib/api/queries/structure/useDepartmentPositions';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
@@ -34,8 +36,8 @@ const formSchema = z.object({
 	password: z.string().optional(),
 	patronymic: z.string().optional(),
 	tel: z.string().min(1, 'Телефон обязателен'),
-	department: z.string().optional(),
-	position: z.string().optional(),
+	departmentId: z.string().optional(),
+	positionId: z.string().optional(),
 	isSupervisor: z.boolean().optional(),
 	startDate: z.date().optional(),
 	endDate: z.date().optional(),
@@ -60,9 +62,9 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			patronymic: user?.patronymic ?? '',
 			password: '',
 			tel: user?.tel ?? '',
-			department: user?.department ?? '',
-			position: user?.position ?? '',
-			isSupervisor: user?.isSupervisor ?? false,
+			departmentId: user?.departmentId ?? '',
+			positionId: user?.positionId ?? '',
+			isSupervisor: false,
 			startDate: user?.startDate
 				? (new Date(user?.startDate) as Date)
 				: undefined,
@@ -72,6 +74,12 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	});
 
 	const queryClient = useQueryClient();
+	const { data: departments } = useDepartments();
+	// Получаем значение departmentId из формы
+	const departmentId = form.watch('departmentId');
+	// Загружаем позиции, передавая текущий departmentId
+	const { data: positions } = useDepartmentPositions(departmentId);
+
 	const { mutate: updateUser, isPending: updateLoading } = useMutation({
 		mutationFn: async (userData: any) => {
 			const resp = await api.post(`/auth/update-user`, { ...userData });
@@ -248,10 +256,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 									)}
 								/>
 							)}
+							{/* Поле выбора отдела */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<FormField
 									control={form.control}
-									name="department"
+									name="departmentId"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Отдел</FormLabel>
@@ -265,25 +274,51 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value="it">IT отдел</SelectItem>
-													<SelectItem value="hr">HR отдел</SelectItem>
-													<SelectItem value="sales">Отдел продаж</SelectItem>
+													{departments?.map((department) => (
+														<SelectItem
+															value={department?.id}
+															key={department?.id}
+														>
+															{department.title}
+														</SelectItem>
+													))}
 												</SelectContent>
 											</Select>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-
+								{/* Поле выбора позиции */}
 								<FormField
 									control={form.control}
-									name="position"
+									name="positionId"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Должность</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
+											<Select
+												disabled={!departmentId} // Отключаем, если departmentId не выбран
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue
+															placeholder={
+																!departmentId
+																	? 'Сначала выберите отдел'
+																	: 'Выберите должность'
+															}
+														/>
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{positions?.map((position) => (
+														<SelectItem value={position?.id} key={position?.id}>
+															{position.title}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
 											<FormMessage />
 										</FormItem>
 									)}

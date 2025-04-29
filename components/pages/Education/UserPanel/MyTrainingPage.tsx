@@ -5,9 +5,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AssignedTests from './AssignedTests';
 import CompletedTests from './CompletedTests';
 import LearningMaterials from './LearningMaterials';
+import { useAuth } from '@/components/providers/global/AuthProvider';
+import useUserMaterialAssignments from '@/lib/api/queries/Education/useUserMaterialAssignments';
 
 export default function MyTrainingPage() {
 	const [activeTab, setActiveTab] = useState('assigned');
+	const { user } = useAuth();
+	const { data: materialAssignments } = useUserMaterialAssignments(
+		user?.userPanelId,
+	);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -19,10 +25,10 @@ export default function MyTrainingPage() {
 				onValueChange={setActiveTab}
 				className="w-full"
 			>
-				<TabsList className="grid grid-cols-3 mb-6 w-full max-w-md">
+				<TabsList className="grid grid-cols-3 mb-6 w-full max-w-2xl">
 					<TabsTrigger value="assigned">Назначенные тесты</TabsTrigger>
 					<TabsTrigger value="completed">Пройденные тесты</TabsTrigger>
-					<TabsTrigger value="materials">Новые материалы</TabsTrigger>
+					<TabsTrigger value="materials">Материалы для изучения</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="assigned" className="mt-4">
@@ -34,7 +40,7 @@ export default function MyTrainingPage() {
 				</TabsContent>
 
 				<TabsContent value="materials" className="mt-4">
-					<LearningMaterials materials={[]} />
+					<LearningMaterials materialAssignments={materialAssignments} />
 				</TabsContent>
 			</Tabs>
 		</div>

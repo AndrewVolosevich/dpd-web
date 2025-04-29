@@ -15,7 +15,11 @@ import { Routes } from '@/const/routes';
 import { format } from 'date-fns';
 
 const ActiveSurveys = () => {
-	const { data } = useSurveysList({ status: 'ACTIVE', unpassedOnly: 'true' });
+	const { data } = useSurveysList({
+		status: 'ACTIVE',
+		unpassedOnly: 'true',
+		showForAll: 'true',
+	});
 
 	if (!data?.length) {
 		return null;

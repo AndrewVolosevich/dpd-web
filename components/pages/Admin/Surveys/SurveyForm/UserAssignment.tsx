@@ -117,7 +117,7 @@ export function UserAssignment({
 										</div>
 										{user.position && (
 											<span className="text-xs text-muted-foreground">
-												{user.position}
+												{user.position?.title}
 											</span>
 										)}
 									</Label>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { TrainingSection } from '@/types/education';
 import { SectionCard } from '../SectionCard';
@@ -11,6 +11,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import useApi from '@/hooks/useApi';
 import { useAuth } from '@/components/providers/global/AuthProvider';
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+} from '@/components/ui/breadcrumb';
+import { Routes } from '@/const/routes';
 
 interface CabinetPageProps {
 	cabinetId: string;
@@ -169,6 +176,15 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 
 	return (
 		<div className="container mx-auto px-4 py-8">
+			<Breadcrumb>
+				<BreadcrumbList className="p-0 list-none">
+					<BreadcrumbItem>
+						<BreadcrumbLink href={`${Routes.EDUCATION}/materials`}>
+							Все материалы /
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
 			{cabinet && (
 				<>
 					<h1 className="text-2xl font-bold mb-2">{cabinet.title}</h1>

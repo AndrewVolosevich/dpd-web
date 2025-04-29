@@ -38,7 +38,6 @@ import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerP
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
-import { UserAssignment } from '@/components/pages/Admin/Surveys/SurveyForm/UserAssignment';
 
 export function SurveyForm({
 	initialData,
@@ -56,14 +55,12 @@ export function SurveyForm({
 		initialData?.description || '',
 	);
 	const [preface, setPreface] = useState(initialData?.preface || '');
-	const [type, setType] = useState(initialData?.type || 'ANONYMOUS');
+	const [type, setType] = useState(initialData?.type || 'PERSONALIZED');
 	const [status, setStatus] = useState(initialData?.status || 'DRAFT');
 	const [surveyVariant, setSurveyVariant] = useState(
 		initialData?.surveyVariant || 'SURVEY',
 	);
-	const [assignedUserIds, setAssignedUserIds] = useState<string[]>(
-		initialData?.assignedUserIds || [],
-	);
+	const [showForAll, setShowForAll] = useState(initialData?.showForAll);
 
 	const [questions, setQuestions] = useState<Question[]>(
 		initialData?.questions || [
@@ -230,10 +227,10 @@ export function SurveyForm({
 			title,
 			description,
 			preface,
+			showForAll,
 			endDate: getStartDateISO(endDate),
 			type,
 			surveyVariant,
-			assignedUserIds,
 			status: (status || 'DRAFT') as SurveyStatus,
 			questions: updatedQuestions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
@@ -310,7 +307,11 @@ export function SurveyForm({
 					</div>
 
 					<div className="flex items-center space-x-2">
-						<DatePickerPopover value={endDate} onChange={setEndDate} />
+						<DatePickerPopover
+							value={endDate}
+							onChange={setEndDate}
+							title={'Введите дату окончания'}
+						/>
 					</div>
 
 					<div className="flex flex-col items-center space-x-2">
@@ -348,6 +349,19 @@ export function SurveyForm({
 
 					<div className="flex items-center space-x-2">
 						<Switch
+							id="show-for-all"
+							checked={showForAll}
+							onCheckedChange={() => {
+								setShowForAll(!showForAll);
+							}}
+						/>
+						<Label htmlFor="show-for-all">
+							Показать для всех на главной странице
+						</Label>
+					</div>
+
+					<div className="flex items-center space-x-2">
+						<Switch
 							id="collect-info"
 							checked={type === 'PERSONALIZED'}
 							onCheckedChange={() => {
@@ -362,14 +376,6 @@ export function SurveyForm({
 							Собирать информацию об участниках?
 						</Label>
 					</div>
-
-					{/* User Assignment Section */}
-					{surveyVariant === 'TEST' && (
-						<UserAssignment
-							assignedUserIds={assignedUserIds}
-							setAssignedUserIds={setAssignedUserIds}
-						/>
-					)}
 				</div>
 				<div className="space-y-4">
 					{questions.map((q, qIndex) => (

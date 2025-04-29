@@ -6,7 +6,7 @@ const useEducationCabinetsList = (cabinetId: string) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['education-cabinet'],
+		queryKey: ['education-cabinet', cabinetId],
 		queryFn: async (): Promise<TrainingCabinet> => {
 			const url = `/education/cabinet/${cabinetId}`;
 			const resp = await api.get(url);

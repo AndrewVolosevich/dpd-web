@@ -7,22 +7,25 @@ const useSurveysList = ({
 	sort,
 	search,
 	unpassedOnly,
+	showForAll,
 }: {
 	status?: string;
 	sort?: string;
 	search?: string;
 	unpassedOnly?: string;
+	showForAll?: string;
 }) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['surveys-list', { status, sort, search }],
+		queryKey: ['surveys-list', { status, sort, search, showForAll }],
 		queryFn: async (): Promise<Survey[]> => {
 			const params = new URLSearchParams({
 				...(search && { search }),
 				...(sort && { sort }),
 				...(status && { status }),
 				...(unpassedOnly && { unpassedOnly }),
+				...(showForAll && { showForAll }),
 			});
 
 			const url = `/surveys?${params.toString()}`;

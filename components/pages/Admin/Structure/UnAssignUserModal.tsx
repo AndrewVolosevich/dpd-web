@@ -12,10 +12,9 @@ import {
 import { Button } from '@/components/ui/button';
 import type { Position } from '@/types/structure';
 
-import { useAssignUserToPosition } from '@/lib/api/queries/structure/mutations/useAssignUserToPosition';
-import { useUsers } from '@/lib/api/queries/Users/useUsers';
 import { Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useUnAssignUserToPosition } from '@/lib/api/queries/structure/mutations/useUnAssignUserToPosition';
 
 interface AssignUserModalProps {
 	isOpen: boolean;
@@ -28,12 +27,9 @@ export default function UnAssignUserModal({
 	onClose,
 	position,
 }: AssignUserModalProps) {
-	const { data: users } = useUsers();
 	const queryClient = useQueryClient();
-	const { mutate: assignUser, isPending } = useAssignUserToPosition();
-	const user = users?.find((user) =>
-		position.users?.some((positionUser) => positionUser.id === user.id),
-	);
+	const { mutate: assignUser, isPending } = useUnAssignUserToPosition();
+	const user = position?.user;
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -41,7 +37,7 @@ export default function UnAssignUserModal({
 
 		assignUser(
 			{
-				positionId: undefined,
+				positionId: position.id,
 				userId: user.id,
 			},
 			{

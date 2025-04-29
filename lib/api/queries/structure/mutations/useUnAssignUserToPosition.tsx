@@ -9,14 +9,14 @@ interface AssignUserData {
 	userId: string;
 }
 
-export function useAssignUserToPosition() {
+export function useUnAssignUserToPosition() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: async (data: AssignUserData) => {
-			const response = await api.post(`/structure/assign-user-to-position`, {
+			const response = await api.post(`/structure/unassign-user-to-position`, {
 				userId: data.userId,
 				positionId: data.positionId,
 			});
@@ -24,7 +24,7 @@ export function useAssignUserToPosition() {
 		},
 		onError: (error) => {
 			toast({
-				title: 'Неудачное назначение пользователя',
+				title: 'Неудачное снятие пользователя',
 				variant: 'destructive',
 				description: error.message,
 			});
@@ -34,7 +34,7 @@ export function useAssignUserToPosition() {
 				queryKey: ['positions', data?.position?.departmentId],
 			});
 			toast({
-				title: 'Пользователь успешно назначен',
+				title: 'Пользователь успешно снят',
 				variant: 'default',
 			});
 		},

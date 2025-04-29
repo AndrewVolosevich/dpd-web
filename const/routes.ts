@@ -38,29 +38,7 @@ export const NavLinks = [
 	},
 	{
 		title: 'База знаний',
-		href: `${Routes.EDUCATION}`,
-		items: [
-			{
-				title: 'Материалы',
-				href: `${Routes.EDUCATION}/materials`,
-			},
-			{
-				title: 'Мое обучение',
-				href: `${Routes.EDUCATION}/my-training`,
-			},
-			{
-				title: 'Адаптация',
-				href: `${Routes.EDUCATION}/adaptation`,
-			},
-			{
-				title: 'Оценка',
-				href: `${Routes.EDUCATION}/assessment`,
-			},
-			{
-				title: 'Панель руководителя',
-				href: `${Routes.EDUCATION}/supervisor-panel`,
-			},
-		],
+		href: `${Routes.EDUCATION}/my-training`,
 	},
 	{
 		title: 'Корпоративная жизнь',

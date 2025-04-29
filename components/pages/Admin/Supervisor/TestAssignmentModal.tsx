@@ -172,7 +172,7 @@ export function TestAssignmentModal({
 										</div>
 										{user.position && (
 											<span className="text-xs text-muted-foreground">
-												{user.position}
+												{user.position?.title}
 											</span>
 										)}
 									</Label>

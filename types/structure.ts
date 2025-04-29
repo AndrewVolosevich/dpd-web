@@ -17,7 +17,8 @@ export interface Position {
 	title: string;
 	departmentId: string;
 	department?: Department;
-	users?: UserData[];
+	supervisedPanelId?: string;
+	user?: UserData;
 	createdAt: string;
 	updatedAt: string;
 }

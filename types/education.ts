@@ -1,3 +1,5 @@
+import { Survey } from '@/types/entities';
+
 export type MaterialType =
 	| 'document'
 	| 'presentation'
@@ -36,4 +38,18 @@ export interface TrainingCabinet {
 
 	createdAt?: string;
 	updatedAt?: string;
+}
+
+export interface Assignment {
+	assignedBy: string;
+	completedAt?: string;
+	createdAt: string;
+	dueDate: string;
+	id: string;
+	material: TrainingMaterial;
+	materialId: string;
+	survey: Survey;
+	surveyId: string;
+	updatedAt: string;
+	userPanelId: string;
 }
