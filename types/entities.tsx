@@ -106,7 +106,7 @@ export interface Response {
 }
 
 export interface Survey {
-	id?: string;
+	id: string;
 	title: string;
 	description?: string;
 	preface?: string;

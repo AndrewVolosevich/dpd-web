@@ -9,9 +9,8 @@ import { useRef, useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
+import { useUploadPhotoQuestion } from '@/lib/api/queries/Education/mutations/useUploadPhotoQuestion';
+import { useDeletePhotoQuestion } from '@/lib/api/queries/Education/mutations/useDeletePhotoQuestion';
 
 interface PhotoQuestionProps {
 	question: {
@@ -26,55 +25,10 @@ interface PhotoQuestionProps {
 
 export function PhotoQuestion({ question, onChange }: PhotoQuestionProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const api = useApi();
 	const [uploading, setUploading] = useState(false);
 
-	const { mutate: uploadPhoto } = useMutation({
-		mutationFn: async (formData: FormData) => {
-			const resp = await api.post(`/upload/add-survey-photo`, formData);
-			return resp.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Ошибка загрузки фото',
-				variant: 'destructive',
-				description: error.message,
-			});
-			setUploading(false);
-		},
-		onSuccess: (data) => {
-			if (data?.url) {
-				const newPhoto = { url: data.url as string };
-				onChange({
-					photos: [...(question.photos || []), newPhoto],
-				});
-			}
-			if (fileInputRef.current) {
-				fileInputRef.current.value = '';
-			}
-			setUploading(false);
-		},
-	});
-
-	const { mutate: deletePhoto } = useMutation({
-		mutationFn: async (url: string) => {
-			const resp = await api.post(`/upload/deleteByUrl`, { url: url });
-			return resp.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Ошибка удаления фото',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			toast({
-				title: 'Фото успешно удалено',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutate: uploadPhoto } = useUploadPhotoQuestion();
+	const { mutate: deletePhoto } = useDeletePhotoQuestion();
 
 	const handleFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -84,7 +38,23 @@ export function PhotoQuestion({ question, onChange }: PhotoQuestionProps) {
 			setUploading(true);
 			const formData = new FormData();
 			formData.append('file', file);
-			uploadPhoto(formData);
+			uploadPhoto(formData, {
+				onSuccess: (data) => {
+					if (data?.url) {
+						const newPhoto = { url: data.url as string };
+						onChange({
+							photos: [...(question.photos || []), newPhoto],
+						});
+					}
+					if (fileInputRef.current) {
+						fileInputRef.current.value = '';
+					}
+					setUploading(false);
+				},
+				onError: () => {
+					setUploading(false);
+				},
+			});
 		}
 	};
 

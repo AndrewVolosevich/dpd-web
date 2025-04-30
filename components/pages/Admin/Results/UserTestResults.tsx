@@ -7,7 +7,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useRouter } from 'next/navigation';
-import { Routes } from '@/const/routes';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 
 interface UserTestResultsProps {
@@ -52,10 +51,7 @@ export default function UserTestResults({ surveyId }: UserTestResultsProps) {
 		<div className="py-6 space-y-6 container m-auto">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">{survey.title} - Результаты</h1>
-				<Button
-					variant="outline"
-					onClick={() => router.push(`${Routes.ADMIN}/supervisor`)}
-				>
+				<Button variant="outline" onClick={() => router.back()}>
 					Назад
 				</Button>
 			</div>

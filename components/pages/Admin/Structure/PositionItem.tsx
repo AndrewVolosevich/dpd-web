@@ -7,7 +7,7 @@ import AssignUserModal from '@/components/pages/Admin/Structure/AssignUserModal'
 import UnAssignUserModal from '@/components/pages/Admin/Structure/UnAssignUserModal';
 import { Position } from '@/types/structure';
 import AddSupervisorPanelModal from '@/components/pages/Admin/Supervisor/AddSupervisorPanelModal';
-import { useAssignSupervisorPanel } from '@/lib/api/queries/structure/mutations/useAssignSupervisorPanel';
+import { useAssignSupervisorPanel } from '@/lib/api/queries/Structure/mutations/useAssignSupervisorPanel';
 
 const PositionItem = ({ position }: { position: Position }) => {
 	const [editingPosition, setEditingPosition] = useState<string | null>(null);

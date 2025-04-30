@@ -10,14 +10,17 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import useSurveysList from '@/lib/api/queries/Surveys/useSurveysList';
+import useSurveysList from '@/lib/api/queries/Education/useSurveysList';
 import { Routes } from '@/const/routes';
 import { format } from 'date-fns';
+import { useAuth } from '@/components/providers/global/AuthProvider';
 
 const ActiveSurveys = () => {
+	const { user } = useAuth();
 	const { data } = useSurveysList({
 		status: 'ACTIVE',
 		unpassedOnly: 'true',
+		userId: user?.id,
 		showForAll: 'true',
 	});
 

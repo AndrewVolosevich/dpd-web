@@ -18,9 +18,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Routes } from '@/const/routes';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import {
 	Question,
 	QuestionType,
@@ -38,6 +36,8 @@ import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerP
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
+import { useUpdateSurvey } from '@/lib/api/queries/Education/mutations/useUpdateSurvey';
+import { useCreateSurvey } from '@/lib/api/queries/Education/mutations/useCreateSurvey';
 
 export function SurveyForm({
 	initialData,
@@ -74,52 +74,10 @@ export function SurveyForm({
 	);
 
 	const router = useRouter();
-	const api = useApi();
-	const queryClient = useQueryClient();
-	const { mutateAsync: createSurvey, isPending: createLoading } = useMutation({
-		mutationFn: async (surveyData: any) => {
-			return api.post(`/surveys`, {
-				...surveyData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			toast({
-				title: 'Опрос успешно создан',
-				variant: 'default',
-			});
-		},
-	});
-
-	const { mutateAsync: updateSurvey, isPending: updateLoading } = useMutation({
-		mutationFn: async (surveyData: any) => {
-			return api.put(`/surveys/${surveyData.id}`, {
-				...surveyData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное редактирование опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			queryClient.invalidateQueries({ queryKey: ['survey'] });
-			toast({
-				title: 'Опрос успешно обновлен',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createSurvey, isPending: createLoading } =
+		useCreateSurvey();
+	const { mutateAsync: updateSurvey, isPending: updateLoading } =
+		useUpdateSurvey();
 
 	const addQuestion = () => {
 		setQuestions([

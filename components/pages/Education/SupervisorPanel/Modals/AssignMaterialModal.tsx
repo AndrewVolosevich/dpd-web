@@ -126,6 +126,7 @@ export function AssignMaterialModal({
 		}
 	}, [isOpen]);
 	const getDateInputDisabled = (date: Date) => date < new Date();
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="sm:max-w-[500px]">
@@ -145,9 +146,9 @@ export function AssignMaterialModal({
 					</div>
 				)}
 
-				{/* Поле для выбора крайнего срока */}
+				{/* Поле для выбора срока выполнения */}
 				<div className="mb-4">
-					<Label htmlFor="dueDate">Крайний срок выполнения</Label>
+					<Label htmlFor="dueDate">Срок выполнения</Label>
 					<DatePickerPopoverWithFields
 						formControl={false}
 						value={dueDate}

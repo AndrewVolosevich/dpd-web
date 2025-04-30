@@ -8,10 +8,12 @@ const useSurveysList = ({
 	search,
 	unpassedOnly,
 	showForAll,
+	userId,
 }: {
 	status?: string;
 	sort?: string;
 	search?: string;
+	userId?: string;
 	unpassedOnly?: string;
 	showForAll?: string;
 }) => {
@@ -25,6 +27,7 @@ const useSurveysList = ({
 				...(sort && { sort }),
 				...(status && { status }),
 				...(unpassedOnly && { unpassedOnly }),
+				...(userId && { userId }),
 				...(showForAll && { showForAll }),
 			});
 

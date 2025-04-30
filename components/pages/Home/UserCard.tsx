@@ -46,9 +46,9 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 					>
 						<h3 className="">{user?.name + ' ' + user?.surname}</h3>
 					</Link>
-
+					user?.position &&{' '}
 					<p className="text-sm text-muted-foreground truncate self-center">
-						{user?.position}
+						{user?.position?.title}
 					</p>
 				</div>
 			</div>
@@ -73,7 +73,7 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 						{user?.name + ' ' + user?.surname}
 					</p>
 					<p className="line-clamp-2 text-xs sm:text-sm text-gray-600 block">
-						{user?.position}
+						{user?.position?.title}
 					</p>
 				</div>
 			</div>

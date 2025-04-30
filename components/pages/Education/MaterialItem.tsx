@@ -2,17 +2,10 @@
 
 import { Button } from '@/components/ui/button';
 import type { TrainingMaterial } from '@/types/education';
-import {
-	FileText,
-	Video,
-	Headphones,
-	Monitor,
-	File,
-	Trash2,
-	Link as LinkIcon,
-} from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/global/AuthProvider';
+import { getFileExtension, getIconForMaterial } from '@/lib/getIconForMaterial';
 
 interface MaterialItemProps {
 	material: TrainingMaterial;
@@ -20,40 +13,6 @@ interface MaterialItemProps {
 }
 
 export const MaterialItem = ({ material, onDelete }: MaterialItemProps) => {
-	const getFileExtension = (url?: string | null) => {
-		if (url === null) return 'link';
-
-		return url?.split('.')?.pop()?.toLowerCase() || '';
-	};
-
-	const getIcon = (materialUrl?: string, isUrl?: boolean) => {
-		// Извлечение расширения файла из URL
-		const fileExtension = getFileExtension(materialUrl);
-		if (isUrl) {
-			return <LinkIcon className="h-5 w-5" />;
-		}
-
-		switch (fileExtension) {
-			case 'pdf':
-			case 'doc':
-			case 'docx':
-			case 'txt':
-				return <FileText className="h-5 w-5" />;
-			case 'ppt':
-			case 'pptx':
-				return <Monitor className="h-5 w-5" />;
-			case 'mp4':
-			case 'avi':
-			case 'mov':
-				return <Video className="h-5 w-5" />;
-			case 'mp3':
-			case 'wav':
-				return <Headphones className="h-5 w-5" />;
-			default:
-				return <File className="h-5 w-5" />;
-		}
-	};
-
 	const { isAdmin } = useAuth();
 	const url = material?.fileUrl || material?.url || '';
 	return (
@@ -65,7 +24,7 @@ export const MaterialItem = ({ material, onDelete }: MaterialItemProps) => {
 				className="flex items-center gap-3 flex-1"
 			>
 				<div className="text-gray-500">
-					{getIcon(material?.url, !!material?.fileUrl)}
+					{getIconForMaterial(material?.url, !!material?.fileUrl)}
 				</div>
 				<div>
 					<h4 className="font-medium text-gray-800">

@@ -7,9 +7,6 @@ import { SectionCard } from '../SectionCard';
 import { SectionForm } from '../SectionForm';
 import { Plus } from 'lucide-react';
 import useCabinet from '@/lib/api/queries/Education/useCabinet';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import {
 	Breadcrumb,
@@ -18,6 +15,10 @@ import {
 	BreadcrumbList,
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
+import { useCreateSection } from '@/lib/api/queries/Education/mutations/useCreateSection';
+import { useDeleteSection } from '@/lib/api/queries/Education/mutations/useDeleteSection';
+import { useAddMaterial } from '@/lib/api/queries/Education/mutations/useAddMaterial';
+import { useDeleteMaterial } from '@/lib/api/queries/Education/mutations/useDeleteMaterial';
 
 interface CabinetPageProps {
 	cabinetId: string;
@@ -25,36 +26,13 @@ interface CabinetPageProps {
 
 export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 	const [showForm, setShowForm] = useState(false);
-	const api = useApi();
-	const queryClient = useQueryClient();
 	const { isAdmin } = useAuth();
-	const { toast } = useToast();
-
 	const { data: cabinet } = useCabinet(cabinetId);
-
-	const { mutateAsync: createSection } = useMutation({
-		mutationFn: async (sectionData: any) => {
-			return api.post(`/education/section`, {
-				...sectionData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание секции',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinet'],
-			});
-			toast({
-				title: 'Секция успешно создана',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createSection } = useCreateSection();
+	const { mutateAsync: deleteSection } = useDeleteSection();
+	const { mutateAsync: addMaterial, isPending: materialLoading } =
+		useAddMaterial();
+	const { mutateAsync: deleteMaterial } = useDeleteMaterial();
 
 	const handleAddSection = async (
 		sectionData: Omit<
@@ -73,57 +51,9 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 		setShowForm(false);
 	};
 
-	const { mutateAsync: deleteSection } = useMutation({
-		mutationFn: async (sectionId: any) => {
-			return api.delete(`/education/section/${sectionId}`);
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление секции',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinet'],
-			});
-			toast({
-				title: 'Секция успешно удалена',
-				variant: 'default',
-			});
-		},
-	});
-
 	const handleDeleteSection = async (sectionId: string) => {
 		await deleteSection(sectionId);
 	};
-
-	const { mutateAsync: addMaterial, isPending: materialLoading } = useMutation({
-		mutationFn: async (formData: FormData) => {
-			return api.post(`/education/upload-material`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data', // Указываем тип контента
-				},
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное добавление материала',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinet'],
-			});
-			toast({
-				title: 'Материал успешно добавлен',
-				variant: 'default',
-			});
-		},
-	});
 
 	const handleAddMaterial = async (
 		sectionId: string, // ID раздела, к которому добавляется материал
@@ -147,28 +77,6 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 
 		await addMaterial(formData);
 	};
-
-	const { mutateAsync: deleteMaterial } = useMutation({
-		mutationFn: async (materialId: string) => {
-			return api.delete(`/education/material/${materialId}`);
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление материала',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinet'],
-			});
-			toast({
-				title: 'Материал успешно удален',
-				variant: 'default',
-			});
-		},
-	});
 
 	const handleDeleteMaterial = async (materialId: string) => {
 		await deleteMaterial(materialId);

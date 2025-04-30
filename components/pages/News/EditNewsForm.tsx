@@ -20,15 +20,14 @@ import EditorBlock from '@/components/Editor/EditorBlock';
 import { ContextButton, ContextIcons } from '@/components/ui/context-button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UploadNewsModal from '@/components/pages/News/UploadNewsModal';
+import { useCreateNews } from '@/lib/api/queries/News/mutations/useCreateNews';
+import { useUpdateNews } from '@/lib/api/queries/News/mutations/useUpdateNews';
 
 const formSchema = z.object({
 	title: z.string().max(120).min(1, 'Заголовок не может быть пустым'),
@@ -44,7 +43,6 @@ interface EditNewsFormProps extends React.HTMLAttributes<HTMLDivElement> {
 const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 	useNonAdminRedirect(Routes.NEWS);
 	const router = useRouter();
-	const api = useApi();
 	const { isAdmin } = useAuth();
 	const [clearCounter, setClearCounter] = useState<number>(0);
 	const [editorData, setEditorData] = useState<any>(
@@ -53,52 +51,8 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [titleImgUrl, setTitleImgUrl] = useState<string>(news?.titleImg || '');
 
-	const queryClient = useQueryClient();
-	const { mutateAsync: createNews, isPending: createLoading } = useMutation({
-		mutationFn: async (newsData: any) => {
-			return api.post(`/news/create`, {
-				...newsData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание новости',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['news'] });
-			queryClient.invalidateQueries({ queryKey: ['news-list'] });
-			toast({
-				title: 'Новость успешно создана',
-				variant: 'default',
-			});
-		},
-	});
-
-	const { mutateAsync: updateNews, isPending: updateLoading } = useMutation({
-		mutationFn: async (newsData: any) => {
-			return api.post(`/news/update`, {
-				...newsData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное обновление новости',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['news'] });
-			queryClient.invalidateQueries({ queryKey: ['news-list'] });
-			toast({
-				title: 'Новость успешно обновлена',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createNews, isPending: createLoading } = useCreateNews();
+	const { mutateAsync: updateNews, isPending: updateLoading } = useUpdateNews();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

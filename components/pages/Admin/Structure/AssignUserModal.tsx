@@ -21,9 +21,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { useAssignUserToPosition } from '@/lib/api/queries/structure/mutations/useAssignUserToPosition';
 import { useUsers } from '@/lib/api/queries/Users/useUsers';
 import { Loader2 } from 'lucide-react';
+import { useAssignUserToPosition } from '@/lib/api/queries/Structure/mutations/useAssignUserToPosition';
 
 interface AssignUserModalProps {
 	isOpen: boolean;

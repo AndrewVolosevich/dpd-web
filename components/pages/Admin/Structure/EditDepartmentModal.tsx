@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Department } from '@/types/structure';
-import { useUpdateDepartment } from '@/lib/api/queries/structure/mutations/useUpdateDepartment';
+import { useUpdateDepartment } from '@/lib/api/queries/Structure/mutations/useUpdateDepartment';
 import { Loader2 } from 'lucide-react';
 
 interface EditDepartmentModalProps {

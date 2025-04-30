@@ -2,21 +2,17 @@
 
 import { Button } from '@/components/ui/button';
 import { CabinetCard } from './Cabinets/CabinetCard';
-import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { TrainingCabinet } from '@/types/education';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import useEducationCabinetsList from '@/lib/api/queries/Education/useEducationCabinetsList';
 import { PlusCircle } from 'lucide-react';
 import { CreateCabinetModal } from '@/components/pages/Education/Cabinets/CreateCabinetModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useApi from '@/hooks/useApi';
 import { DeleteCabinetModal } from '@/components/pages/Education/Cabinets/DeleteCabinetModal';
+import { useCreateCabinet } from '@/lib/api/queries/Education/mutations/useCreateCabinet';
+import { useDeleteCabinet } from '@/lib/api/queries/Education/mutations/useDeleteCabinet';
 
 export const TrainingPage = () => {
-	const { toast } = useToast();
-	const api = useApi();
-	const queryClient = useQueryClient();
 	const { data: cabinets } = useEducationCabinetsList();
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -25,53 +21,8 @@ export const TrainingPage = () => {
 
 	const { isAdmin } = useAuth();
 	// TODO: add material by link
-	const { mutateAsync: createCabinet } = useMutation({
-		mutationFn: async (cabinetData: any) => {
-			return api.post(`/education/cabinet`, {
-				...cabinetData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание кабинета',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinets-list'],
-			});
-			toast({
-				title: 'Кабинет успешно создан',
-				variant: 'default',
-			});
-		},
-	});
-
-	const { mutateAsync: deleteCabinet } = useMutation({
-		mutationFn: async (cabinetData: any) => {
-			return api.delete(`/education/cabinet/${cabinetData.id}`, {
-				...cabinetData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление кабинета',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ['education-cabinets-list'],
-			});
-			toast({
-				title: 'Кабинет успешно удален',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createCabinet } = useCreateCabinet();
+	const { mutateAsync: deleteCabinet } = useDeleteCabinet();
 
 	const handleCreateCabinet = async (
 		cabinetData: Omit<TrainingCabinet, 'id' | 'sections'>,

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import useSurveysList from '@/lib/api/queries/Surveys/useSurveysList';
+import useSurveysList from '@/lib/api/queries/Education/useSurveysList';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import {

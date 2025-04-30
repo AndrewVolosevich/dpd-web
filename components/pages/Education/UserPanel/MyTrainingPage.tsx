@@ -11,9 +11,7 @@ import useUserMaterialAssignments from '@/lib/api/queries/Education/useUserMater
 export default function MyTrainingPage() {
 	const [activeTab, setActiveTab] = useState('assigned');
 	const { user } = useAuth();
-	const { data: materialAssignments } = useUserMaterialAssignments(
-		user?.userPanelId,
-	);
+	const { data: assignments } = useUserMaterialAssignments(user?.userPanelId);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -32,15 +30,15 @@ export default function MyTrainingPage() {
 				</TabsList>
 
 				<TabsContent value="assigned" className="mt-4">
-					<AssignedTests />
+					<AssignedTests surveyAssignments={assignments} />
 				</TabsContent>
 
 				<TabsContent value="completed" className="mt-4">
-					<CompletedTests />
+					<CompletedTests surveyAssignments={assignments} />
 				</TabsContent>
 
 				<TabsContent value="materials" className="mt-4">
-					<LearningMaterials materialAssignments={materialAssignments} />
+					<LearningMaterials materialAssignments={assignments} />
 				</TabsContent>
 			</Tabs>
 		</div>

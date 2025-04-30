@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import type { Position } from '@/types/structure';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { useDeletePosition } from '@/lib/api/queries/structure/mutations/useDeletePosition';
+import { useDeletePosition } from '@/lib/api/queries/Structure/mutations/useDeletePosition';
 
 interface DeletePositionModalProps {
 	isOpen: boolean;

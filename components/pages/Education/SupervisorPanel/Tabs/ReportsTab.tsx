@@ -18,7 +18,8 @@ import { subMonths } from 'date-fns';
 
 export default function ReportsTab() {
 	const [reportType, setReportType] = useState('tests');
-	const [dateRange, setDateRange] = useState({
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [dateRange, _] = useState({
 		from: subMonths(new Date(), 1),
 		to: new Date(),
 	});

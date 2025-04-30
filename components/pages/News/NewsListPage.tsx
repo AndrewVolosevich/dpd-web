@@ -13,11 +13,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/const/routes';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useApi from '@/hooks/useApi';
 import { endOfDay, format } from 'date-fns';
 import { Trash2 } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
 import { NewsModel } from '@/types/entities';
 import useNewsList from '@/lib/api/queries/News/useNewsList';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
@@ -25,14 +22,13 @@ import { DateRangePicker } from '@/components/common/DateRangePicker/DateRangePi
 import { DateRange } from 'react-day-picker';
 import Search from '@/components/common/Search/Search';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useDeleteNews } from '@/lib/api/queries/News/mutations/useDeleteNews';
 
 const limit = 10;
 
 const NewsListPage = () => {
 	const { isAdmin } = useAuth();
-	const api = useApi();
 	const router = useRouter();
-	const queryClient = useQueryClient();
 	const [search, setSearch] = useState('');
 	const debouncedSearch = useDebounce(search, 1000);
 	const [page, setPage] = useState(1);
@@ -48,28 +44,7 @@ const NewsListPage = () => {
 		dateRange,
 		search: debouncedSearch,
 	});
-	const { mutate: deleteNews } = useMutation({
-		mutationFn: async (newsId: any) => {
-			return api(`/news/${newsId}`, {
-				method: 'DELETE',
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление новости',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['news'] });
-			queryClient.invalidateQueries({ queryKey: ['news-list'] });
-			toast({
-				title: 'Новость успешно удалена',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutate: deleteNews } = useDeleteNews();
 
 	const handlePrev = () => {
 		if (page <= 1) {

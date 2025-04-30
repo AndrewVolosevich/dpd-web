@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -12,55 +12,33 @@ import {
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Check, CheckCircle, Search } from 'lucide-react';
+import type { ExtendedAssignment } from '@/types/education';
+import Link from 'next/link';
 
-// Будет заменено на реальные данные из API
-const MOCK_COMPLETED_SURVEYS = [
-	{
-		id: '1',
-		title: 'Основы информационной безопасности',
-		type: 'PERSONALIZED',
-		status: 'COMPLETED',
-		questions: [],
-		description: 'Базовый курс по защите информации и конфиденциальных данных',
-		completedAt: '2023-04-15T14:30:00Z',
-		score: 92,
-	},
-	{
-		id: '2',
-		title: 'Техника безопасности на рабочем месте',
-		type: 'PERSONALIZED',
-		status: 'COMPLETED',
-		questions: [],
-		description: 'Обязательный курс для всех сотрудников компании',
-		completedAt: '2023-03-10T11:15:00Z',
-		score: 85,
-	},
-	{
-		id: '3',
-		title: 'Командная работа и коммуникация',
-		type: 'PERSONALIZED',
-		status: 'COMPLETED',
-		questions: [],
-		description: 'Развитие навыков эффективного взаимодействия в команде',
-		completedAt: '2023-02-05T09:45:00Z',
-		score: 78,
-	},
-];
-
-export default function CompletedTests() {
+export default function CompletedTests({
+	surveyAssignments,
+}: {
+	surveyAssignments?: ExtendedAssignment[];
+}) {
 	const [searchQuery, setSearchQuery] = useState('');
-
-	// eslint-disable-next-line
-	const [completedSurveys, setCompletedSurveys] = useState(
-		MOCK_COMPLETED_SURVEYS,
-	);
+	const completedAssignments = useMemo(() => {
+		return (
+			surveyAssignments?.filter((assignment) => {
+				return assignment?.completedAt && !!assignment?.survey;
+			}) || []
+		);
+	}, [surveyAssignments]);
 
 	// Фильтрация тестов по поисковому запросу
-	const filteredSurveys = completedSurveys.filter(
-		(survey) =>
-			survey.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			(survey.description &&
-				survey.description.toLowerCase().includes(searchQuery.toLowerCase())),
+	const filteredAssignments = completedAssignments?.filter(
+		(assignment) =>
+			assignment?.survey?.title
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			(assignment?.survey?.description &&
+				assignment?.survey?.description
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase())),
 	);
 
 	// Форматирование даты в удобный вид
@@ -96,7 +74,7 @@ export default function CompletedTests() {
 				</div>
 			</div>
 
-			{filteredSurveys.length === 0 ? (
+			{filteredAssignments.length === 0 ? (
 				<div className="text-center py-12">
 					<CheckCircle className="mx-auto h-12 w-12 text-muted-foreground" />
 					<h3 className="mt-4 text-lg font-medium">Нет пройденных тестов</h3>
@@ -106,29 +84,43 @@ export default function CompletedTests() {
 				</div>
 			) : (
 				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-					{filteredSurveys.map((survey) => (
-						<Card key={survey.id} className="flex flex-col">
+					{filteredAssignments.map((assignment) => (
+						<Card key={assignment?.survey?.id} className="flex flex-col">
 							<CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-								<CardTitle className="line-clamp-2">{survey.title}</CardTitle>
-								<Badge
-									className={`${getScoreColor(survey.score)} hover:${getScoreColor(survey.score)}`}
-								>
-									{survey.score}%
-								</Badge>
+								<CardTitle className="line-clamp-2">
+									{assignment?.survey?.title}
+								</CardTitle>
+								{assignment?.survey?.testResults?.score && (
+									<Badge
+										className={`${getScoreColor(assignment?.survey?.testResults?.score)} hover:${getScoreColor(assignment?.survey?.testResults?.score)}`}
+									>
+										{assignment?.survey?.testResults?.score}%
+									</Badge>
+								)}
 							</CardHeader>
 							<CardContent className="flex-1">
 								<p className="text-sm text-muted-foreground line-clamp-3 mb-4">
-									{survey.description || 'Нет описания'}
+									{assignment?.survey?.description || 'Нет описания'}
 								</p>
 								<div className="flex items-center text-sm mt-4">
 									<Check className="h-4 w-4 mr-1 text-green-500" />
-									<span>Пройден: {formatDate(survey.completedAt)}</span>
+									{assignment?.completedAt && (
+										<span>Пройден: {formatDate(assignment?.completedAt)}</span>
+									)}
 								</div>
 							</CardContent>
 							<CardFooter className="flex justify-between">
-								<Button variant="outline" className="w-full">
-									Просмотреть результаты
-								</Button>
+								<Link
+									href={
+										assignment?.survey?.surveyVariant === 'TEST'
+											? `/admin/results/${assignment?.survey?.id}/user-test-results`
+											: `/admin/surveys/${assignment?.survey?.id}`
+									}
+								>
+									<Button variant="default" className="w-full">
+										Просмотреть результаты
+									</Button>
+								</Link>
 							</CardFooter>
 						</Card>
 					))}

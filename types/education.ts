@@ -53,3 +53,16 @@ export interface Assignment {
 	updatedAt: string;
 	userPanelId: string;
 }
+
+export interface ExtendedSurvey extends Survey {
+	testResults: {
+		correctAnswers?: number;
+		passed?: boolean;
+		score?: number;
+		totalQuestions?: number;
+	};
+}
+
+export interface ExtendedAssignment extends Assignment {
+	survey: ExtendedSurvey;
+}

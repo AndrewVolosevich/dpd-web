@@ -1,11 +1,9 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { UserData } from '@/types/entities';
 import { useAuth } from '@/components/providers/global/AuthProvider';
+import { useUploadUserPhoto } from '@/lib/api/queries/Users/mutations/useUploadUserPhoto';
 
 interface UploadUserPhotoProps {
 	user?: UserData;
@@ -18,52 +16,8 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 	const formRef = useRef<HTMLFormElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { updateUser: updateSelfUser } = useAuth();
-
-	const queryClient = useQueryClient();
-	const api = useApi();
-	const { mutate: updatePhoto, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/upload/update-photo`, userData);
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное изменение фото',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			}
-			// Reset the form and preview
-			formRef.current?.reset();
-			setPreview(null);
-			if (fileInputRef.current) fileInputRef.current.value = '';
-
-			await queryClient.invalidateQueries({
-				queryKey: ['another-user'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['new-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['paginated-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['users-by-birthdays'],
-			});
-
-			toast({
-				title: 'Фото успешно изменено',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
+	const { mutate: updatePhoto, isPending: updateLoading } =
+		useUploadUserPhoto();
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -84,7 +38,20 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 			formData.append('userId', user?.id);
 			formData.append('userTel', user?.tel);
 		}
-		await updatePhoto(formData);
+		updatePhoto(formData, {
+			onSuccess: async (u: any) => {
+				if (isSelf) {
+					updateSelfUser(u);
+				}
+				// Reset the form and preview
+				formRef.current?.reset();
+				setPreview(null);
+				if (fileInputRef.current) fileInputRef.current.value = '';
+			},
+			onSettled: () => {
+				onClose();
+			},
+		});
 	};
 
 	return (

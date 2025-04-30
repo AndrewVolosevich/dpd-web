@@ -241,8 +241,6 @@ export default function TestsTab() {
 					<AssignTestModal
 						isOpen={isAssignModalOpen}
 						onClose={() => setIsAssignModalOpen(false)}
-						testId={selectedTest.id}
-						testTitle={selectedTest.title}
 					/>
 					<TestResultsModal
 						isOpen={isResultsModalOpen}

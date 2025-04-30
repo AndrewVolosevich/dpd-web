@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -11,56 +11,33 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Clock, FileCheck, Search } from 'lucide-react';
-import { Survey } from '@/types/entities';
+import type { Assignment } from '@/types/education';
+import Link from 'next/link';
 
-// Будет заменено на реальные данные из API
-const MOCK_ASSIGNED_SURVEYS: Survey[] = [
-	{
-		id: '1',
-		title: 'Оценка знаний по пожарной безопасности',
-		type: 'PERSONALIZED',
-		status: 'ACTIVE',
-		questions: [],
-		description:
-			'Обязательный ежегодный тест по знанию правил пожарной безопасности',
-		createdAt: '2023-05-10T10:00:00Z',
-		endDate: '2023-06-10T23:59:59Z',
-	},
-	{
-		id: '2',
-		title: 'Тест на знание корпоративной культуры',
-		type: 'PERSONALIZED',
-		status: 'ACTIVE',
-		questions: [],
-		description: 'Проверка знаний основных ценностей и принципов компании',
-		createdAt: '2023-05-15T10:00:00Z',
-		endDate: '2023-06-15T23:59:59Z',
-	},
-	{
-		id: '3',
-		title: 'Оценка компетенций сотрудника',
-		type: 'PERSONALIZED',
-		status: 'ACTIVE',
-		questions: [],
-		description: 'Ежеквартальная оценка профессиональных навыков',
-		createdAt: '2023-05-20T10:00:00Z',
-		endDate: '2023-06-20T23:59:59Z',
-	},
-];
-
-export default function AssignedTests() {
+export default function AssignedTests({
+	surveyAssignments,
+}: {
+	surveyAssignments?: Assignment[];
+}) {
 	const [searchQuery, setSearchQuery] = useState('');
-	// eslint-disable-next-line
-	const [assignedSurveys, setAssignedSurveys] = useState<Survey[]>(
-		MOCK_ASSIGNED_SURVEYS,
-	);
+	const assignedSurveys = useMemo(() => {
+		return (
+			surveyAssignments?.filter((assignment) => {
+				return !assignment?.completedAt && !!assignment?.survey;
+			}) || []
+		);
+	}, [surveyAssignments]);
 
 	// Фильтрация тестов по поисковому запросу
-	const filteredSurveys = assignedSurveys.filter(
-		(survey) =>
-			survey.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			(survey.description &&
-				survey.description.toLowerCase().includes(searchQuery.toLowerCase())),
+	const filteredSurveys = assignedSurveys?.filter(
+		(assignment) =>
+			assignment?.survey?.title
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			(assignment?.survey?.description &&
+				assignment?.survey?.description
+					.toLowerCase()
+					.includes(searchQuery.toLowerCase())),
 	);
 
 	// Форматирование даты в удобный вид
@@ -129,31 +106,37 @@ export default function AssignedTests() {
 			) : (
 				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 					{filteredSurveys.map((survey) => (
-						<Card key={survey.id} className="flex flex-col">
+						<Card key={survey?.survey?.id} className="flex flex-col">
 							<CardHeader>
-								<CardTitle className="line-clamp-2">{survey.title}</CardTitle>
+								<CardTitle className="line-clamp-2">
+									{survey?.survey?.title}
+								</CardTitle>
 							</CardHeader>
 							<CardContent className="flex-1">
 								<p className="text-sm text-muted-foreground line-clamp-3 mb-4">
-									{survey.description || 'Нет описания'}
+									{survey?.survey?.description || 'Нет описания'}
 								</p>
 								<div className="flex items-center text-sm mt-2">
 									<Clock className="h-4 w-4 mr-1 text-muted-foreground" />
 									<span>
 										До:{' '}
-										{survey.endDate ? formatDate(survey.endDate) : 'Нет срока'}
+										{survey?.survey?.endDate
+											? formatDate(survey?.survey?.endDate)
+											: 'Нет срока'}
 									</span>
 								</div>
 								<div className="mt-1 text-sm">
 									<span
-										className={`font-medium ${getDaysLeft(survey.endDate).includes('Просрочено') ? 'text-red-500' : ''}`}
+										className={`font-medium ${getDaysLeft(survey?.survey?.endDate).includes('Просрочено') ? 'text-red-500' : ''}`}
 									>
-										{getDaysLeft(survey.endDate)}
+										{getDaysLeft(survey?.survey?.endDate)}
 									</span>
 								</div>
 							</CardContent>
 							<CardFooter>
-								<Button className="w-full">Начать тест</Button>
+								<Link href={`/admin/surveys/${survey?.survey?.id}/take`}>
+									<Button className="w-full">Начать тест</Button>
+								</Link>
 							</CardFooter>
 						</Card>
 					))}

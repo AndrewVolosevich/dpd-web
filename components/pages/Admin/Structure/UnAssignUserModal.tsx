@@ -14,7 +14,7 @@ import type { Position } from '@/types/structure';
 
 import { Loader2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUnAssignUserToPosition } from '@/lib/api/queries/structure/mutations/useUnAssignUserToPosition';
+import { useUnAssignUserToPosition } from '@/lib/api/queries/Structure/mutations/useUnAssignUserToPosition';
 
 interface AssignUserModalProps {
 	isOpen: boolean;

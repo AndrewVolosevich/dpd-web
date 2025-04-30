@@ -23,57 +23,16 @@ import { Badge } from '@/components/ui/badge';
 import { Survey } from '@/types/entities';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import Link from 'next/link';
 import { Routes } from '@/const/routes';
 import { exportSurveyToCsv } from '@/lib/exportToCsv';
+import { useDeleteSurvey } from '@/lib/api/queries/Education/mutations/useDeleteSurvey';
+import { useUpdateSurveyData } from '@/lib/api/queries/Education/mutations/useUpdateSurveyData';
 
 export function SurveysList({ surveys }: { surveys: Survey[] }) {
-	const api = useApi();
-	const queryClient = useQueryClient();
-	const { mutateAsync: deleteSurvey } = useMutation({
-		mutationFn: async (surveyID: string) => {
-			return api.delete(`/surveys/${surveyID}`);
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			toast({
-				title: 'Опрос успешно удален',
-				variant: 'default',
-			});
-		},
-	});
-
-	const { mutateAsync: updateSurvey } = useMutation({
-		mutationFn: async (surveyData: any) => {
-			return api.put(`/surveys/${surveyData.id}/data`, {
-				...surveyData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное редактирование опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			toast({
-				title: 'Опрос успешно обновлен',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: deleteSurvey } = useDeleteSurvey();
+	const { mutateAsync: updateSurvey } = useUpdateSurveyData();
 
 	const updateSurveyStatus = async (survey: Survey, status: string) => {
 		await updateSurvey({ id: survey.id, status });

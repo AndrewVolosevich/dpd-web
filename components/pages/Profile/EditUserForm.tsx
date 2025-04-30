@@ -22,13 +22,13 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
+import { useQueryClient } from '@tanstack/react-query';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { getStartDateISO } from '@/lib/date/helpers';
-import { useDepartments } from '@/lib/api/queries/structure/useDepartments';
-import { useDepartmentPositions } from '@/lib/api/queries/structure/useDepartmentPositions';
+import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
+import { useDepartmentPositions } from '@/lib/api/queries/Structure/useDepartmentPositions';
+import { useUpdateUser } from '@/lib/api/queries/Users/mutations/useUpdateUser';
+import { useCreateUser } from '@/lib/api/queries/Users/mutations/useCreateUser';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
@@ -52,7 +52,6 @@ interface EditUserFormProps {
 
 const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	const { isAdmin, updateUser: updateSelfUser } = useAuth();
-	const api = useApi();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -80,78 +79,8 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	// Загружаем позиции, передавая текущий departmentId
 	const { data: positions } = useDepartmentPositions(departmentId);
 
-	const { mutate: updateUser, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/auth/update-user`, { ...userData });
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное изменение пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			}
-
-			await queryClient.invalidateQueries({
-				queryKey: ['new-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['another-user'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['paginated-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['users-by-birthdays'],
-			});
-
-			toast({
-				title: 'Пользователь успешно изменен',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
-
-	const { mutate: createUser, isPending: createLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/auth/create-user`, { ...userData });
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['another-user'],
-				});
-				await queryClient.invalidateQueries({
-					queryKey: ['paginated-users'],
-				});
-			}
-			toast({
-				title: 'Пользователь успешно создан',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
+	const { mutate: updateUser, isPending: updateLoading } = useUpdateUser();
+	const { mutate: createUser, isPending: createLoading } = useCreateUser();
 
 	const canEdit = useMemo(() => isSelf || isAdmin, [isAdmin, isSelf]);
 	const isLoading = useMemo(
@@ -169,9 +98,30 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			bornDate: getStartDateISO(values?.bornDate),
 		};
 		if (isForCreate) {
-			createUser(userToUpdate);
+			createUser(userToUpdate, {
+				onSuccess: async (u) => {
+					if (isSelf) {
+						updateSelfUser(u);
+					} else {
+						await queryClient.invalidateQueries({
+							queryKey: ['another-user'],
+						});
+						await queryClient.invalidateQueries({
+							queryKey: ['paginated-users'],
+						});
+					}
+				},
+			});
 		} else {
-			updateUser(userToUpdate);
+			updateUser(userToUpdate, {
+				onSuccess: (u) => {
+					if (isSelf) {
+						updateSelfUser(u);
+					}
+
+					onClose();
+				},
+			});
 		}
 	};
 

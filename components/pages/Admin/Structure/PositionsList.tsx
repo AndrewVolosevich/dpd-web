@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@/components/common/Loader/Loader';
-import { useDepartmentPositions } from '@/lib/api/queries/structure/useDepartmentPositions';
+import { useDepartmentPositions } from '@/lib/api/queries/Structure/useDepartmentPositions';
 import PositionItem from '@/components/pages/Admin/Structure/PositionItem';
 
 interface PositionsListProps {

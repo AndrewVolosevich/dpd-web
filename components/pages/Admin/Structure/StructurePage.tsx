@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { Loader } from '@/components/common/Loader/Loader';
 import DepartmentTree from '@/components/pages/Admin/Structure/DepartmentTree';
 import CreateDepartmentModal from '@/components/pages/Admin/Structure/CreateDepartmentModal';
-import { useDepartments } from '@/lib/api/queries/structure/useDepartments';
+import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
 
 export default function StructurePage() {
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

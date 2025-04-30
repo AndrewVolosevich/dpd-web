@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import type { Department } from '@/types/structure';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { useDeleteDepartment } from '@/lib/api/queries/structure/mutations/useDeleteDepartment';
+import { useDeleteDepartment } from '@/lib/api/queries/Structure/mutations/useDeleteDepartment';
 
 interface DeleteDepartmentModalProps {
 	isOpen: boolean;
