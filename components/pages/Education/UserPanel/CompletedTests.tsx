@@ -1,19 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Check, CheckCircle, Search } from 'lucide-react';
 import type { ExtendedAssignment } from '@/types/education';
-import Link from 'next/link';
 
 export default function CompletedTests({
 	surveyAssignments,
@@ -109,19 +101,6 @@ export default function CompletedTests({
 									)}
 								</div>
 							</CardContent>
-							<CardFooter className="flex justify-between">
-								<Link
-									href={
-										assignment?.survey?.surveyVariant === 'TEST'
-											? `/admin/results/${assignment?.survey?.id}/user-test-results`
-											: `/admin/surveys/${assignment?.survey?.id}`
-									}
-								>
-									<Button variant="default" className="w-full">
-										Просмотреть результаты
-									</Button>
-								</Link>
-							</CardFooter>
 						</Card>
 					))}
 				</div>

@@ -15,10 +15,10 @@ import {
 	BreadcrumbList,
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
-import { useCreateSection } from '@/lib/api/queries/Education/mutations/useCreateSection';
-import { useDeleteSection } from '@/lib/api/queries/Education/mutations/useDeleteSection';
-import { useAddMaterial } from '@/lib/api/queries/Education/mutations/useAddMaterial';
-import { useDeleteMaterial } from '@/lib/api/queries/Education/mutations/useDeleteMaterial';
+import { useCreateSection } from '@/lib/api/queries/Education/mutations/cabinet/useCreateSection';
+import { useDeleteSection } from '@/lib/api/queries/Education/mutations/cabinet/useDeleteSection';
+import { useAddMaterial } from '@/lib/api/queries/Education/mutations/material/useAddMaterial';
+import { useDeleteMaterial } from '@/lib/api/queries/Education/mutations/material/useDeleteMaterial';
 
 interface CabinetPageProps {
 	cabinetId: string;

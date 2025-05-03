@@ -9,8 +9,8 @@ import { useRef, useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
-import { useUploadPhotoQuestion } from '@/lib/api/queries/Education/mutations/useUploadPhotoQuestion';
-import { useDeletePhotoQuestion } from '@/lib/api/queries/Education/mutations/useDeletePhotoQuestion';
+import { useUploadPhotoQuestion } from '@/lib/api/queries/Education/mutations/survey/useUploadPhotoQuestion';
+import { useDeletePhotoQuestion } from '@/lib/api/queries/Education/mutations/survey/useDeletePhotoQuestion';
 
 interface PhotoQuestionProps {
 	question: {

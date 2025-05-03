@@ -1,11 +1,11 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
-import { UserData } from '@/types/entities';
+import { ExtendedUserData } from '@/types/entities';
 
 const useSupervisorPanelByPosition = (positionId: string) => {
 	const api = useApi();
 
-	return useQuery<UserData[]>({
+	return useQuery<ExtendedUserData[]>({
 		queryKey: ['subordinates-by-position', positionId],
 		queryFn: async () => {
 			const url = `/structure/department-subordinates/${positionId}`;

@@ -40,6 +40,16 @@ export interface TrainingCabinet {
 	updatedAt?: string;
 }
 
+export interface AdaptationPlan {
+	id: string;
+	fileUrl: string;
+	supervisorComment: string;
+
+	createdAt?: string;
+	updatedAt?: string;
+	assignmentId?: string;
+}
+
 export interface Assignment {
 	assignedBy: string;
 	completedAt?: string;
@@ -50,6 +60,8 @@ export interface Assignment {
 	materialId: string;
 	survey: Survey;
 	surveyId: string;
+	adaptationPlan?: AdaptationPlan;
+	adaptationPlanId?: string;
 	updatedAt: string;
 	userPanelId: string;
 }
@@ -65,4 +77,12 @@ export interface ExtendedSurvey extends Survey {
 
 export interface ExtendedAssignment extends Assignment {
 	survey: ExtendedSurvey;
+}
+
+export interface UserPanel {
+	createdAt: string;
+	id: string;
+	updatedAt: string;
+	userId: string;
+	assignments: ExtendedAssignment[];
 }

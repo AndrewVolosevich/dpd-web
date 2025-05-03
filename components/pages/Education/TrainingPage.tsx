@@ -9,8 +9,8 @@ import useEducationCabinetsList from '@/lib/api/queries/Education/useEducationCa
 import { PlusCircle } from 'lucide-react';
 import { CreateCabinetModal } from '@/components/pages/Education/Cabinets/CreateCabinetModal';
 import { DeleteCabinetModal } from '@/components/pages/Education/Cabinets/DeleteCabinetModal';
-import { useCreateCabinet } from '@/lib/api/queries/Education/mutations/useCreateCabinet';
-import { useDeleteCabinet } from '@/lib/api/queries/Education/mutations/useDeleteCabinet';
+import { useCreateCabinet } from '@/lib/api/queries/Education/mutations/cabinet/useCreateCabinet';
+import { useDeleteCabinet } from '@/lib/api/queries/Education/mutations/cabinet/useDeleteCabinet';
 
 export const TrainingPage = () => {
 	const { data: cabinets } = useEducationCabinetsList();

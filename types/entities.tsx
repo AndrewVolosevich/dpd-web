@@ -1,4 +1,5 @@
 import { Department, Position } from '@/types/structure';
+import { ExtendedAssignment, UserPanel } from '@/types/education';
 
 export type NewsModel = {
 	content?: any;
@@ -43,6 +44,10 @@ export interface UserData {
 
 	photo?: string;
 	presentation?: any;
+}
+
+export interface ExtendedUserData extends UserData {
+	userPanel: UserPanel;
 }
 
 export interface PaginatedUsers {

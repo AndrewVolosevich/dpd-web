@@ -11,18 +11,23 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 
 interface UserTestResultsProps {
 	surveyId: string;
+	userId?: string;
 }
 
-export default function UserTestResults({ surveyId }: UserTestResultsProps) {
+export default function UserTestResults({
+	surveyId,
+	userId,
+}: UserTestResultsProps) {
 	const router = useRouter();
 	const api = useApi();
 	const { user } = useAuth();
-	const userId = user?.id;
 	// Fetch test results for specific user
 	const { data, isLoading } = useQuery({
 		queryKey: ['user-test-results', surveyId, userId],
 		queryFn: async () => {
-			const resp = await api.get(`/surveys/${surveyId}/user-results/${userId}`);
+			const resp = await api.get(
+				`/surveys/${surveyId}/user-results/${userId || user?.id}`,
+			);
 			return resp?.data;
 		},
 	});

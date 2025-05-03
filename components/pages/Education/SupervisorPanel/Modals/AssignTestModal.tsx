@@ -14,12 +14,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { UserData } from '@/types/entities';
 import useSurveysList from '@/lib/api/queries/Education/useSurveysList';
-import { useAssignTaskToUser } from '@/lib/api/queries/Education/mutations/useAssignTaskToUser';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { addMonths } from 'date-fns';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Loader } from '@/components/common/Loader/Loader';
+import { useAssignSurveyTaskToUser } from '@/lib/api/queries/Education/mutations/assign/useAssignSurveyTask';
+import { toast } from '@/hooks/use-toast';
 
 interface AssignTestModalProps {
 	isOpen: boolean;
@@ -49,7 +50,7 @@ export function AssignTestModal({
 		);
 	}, [availableSurveys, searchQuery]);
 
-	const { mutate: assignSurveys, isPending } = useAssignTaskToUser();
+	const { mutate: assignSurveys, isPending } = useAssignSurveyTaskToUser();
 
 	const toggleSelectAllTests = () => {
 		if (
@@ -71,7 +72,16 @@ export function AssignTestModal({
 	};
 
 	const handleSubmit = () => {
-		if (employee?.userPanelId) {
+		if (!employee || !selectedSurveyIds?.length || !employee?.userPanelId) {
+			toast({
+				title: 'Ошибка',
+				description:
+					'Пожалуйста, выберите панель, материалы и заполните обязательные поля.',
+				variant: 'destructive',
+			});
+			return;
+		}
+		if (supervisorPositionId) {
 			assignSurveys(
 				{
 					surveyIds: selectedSurveyIds,

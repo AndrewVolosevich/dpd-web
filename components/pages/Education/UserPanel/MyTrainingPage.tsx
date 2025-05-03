@@ -6,12 +6,12 @@ import AssignedTests from './AssignedTests';
 import CompletedTests from './CompletedTests';
 import LearningMaterials from './LearningMaterials';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import useUserMaterialAssignments from '@/lib/api/queries/Education/useUserMaterialAssignments';
+import useUserAssignments from '@/lib/api/queries/Education/useUserAssignments';
 
 export default function MyTrainingPage() {
 	const [activeTab, setActiveTab] = useState('assigned');
 	const { user } = useAuth();
-	const { data: assignments } = useUserMaterialAssignments(user?.userPanelId);
+	const { data: assignments } = useUserAssignments(user?.userPanelId);
 
 	return (
 		<div className="container mx-auto px-4 py-8">

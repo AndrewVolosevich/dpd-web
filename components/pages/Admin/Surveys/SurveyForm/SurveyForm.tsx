@@ -36,8 +36,8 @@ import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerP
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
-import { useUpdateSurvey } from '@/lib/api/queries/Education/mutations/useUpdateSurvey';
-import { useCreateSurvey } from '@/lib/api/queries/Education/mutations/useCreateSurvey';
+import { useUpdateSurvey } from '@/lib/api/queries/Education/mutations/survey/useUpdateSurvey';
+import { useCreateSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateSurvey';
 
 export function SurveyForm({
 	initialData,

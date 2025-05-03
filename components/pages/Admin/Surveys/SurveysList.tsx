@@ -27,8 +27,8 @@ import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Routes } from '@/const/routes';
 import { exportSurveyToCsv } from '@/lib/exportToCsv';
-import { useDeleteSurvey } from '@/lib/api/queries/Education/mutations/useDeleteSurvey';
-import { useUpdateSurveyData } from '@/lib/api/queries/Education/mutations/useUpdateSurveyData';
+import { useDeleteSurvey } from '@/lib/api/queries/Education/mutations/survey/useDeleteSurvey';
+import { useUpdateSurveyData } from '@/lib/api/queries/Education/mutations/survey/useUpdateSurveyData';
 
 export function SurveysList({ surveys }: { surveys: Survey[] }) {
 	const { mutateAsync: deleteSurvey } = useDeleteSurvey();

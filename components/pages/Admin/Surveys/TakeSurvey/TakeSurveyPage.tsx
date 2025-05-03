@@ -23,8 +23,8 @@ import { MatrixQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Ques
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/PhotoQuestion';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, XCircle } from 'lucide-react';
-import { useCreateResponseForSurvey } from '@/lib/api/queries/Education/mutations/useCreateResponseForSurvey';
-import { useGetTestResults } from '@/lib/api/queries/Education/mutations/useGetTestResults';
+import { useCreateResponseForSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateResponseForSurvey';
+import { useGetTestResults } from '@/lib/api/queries/Education/mutations/survey/useGetTestResults';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -120,7 +120,6 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 				{ surveyId, userId: user.id },
 				{
 					onSuccess: (response: any) => {
-						console.log('===response===', response);
 						setTestResults(response?.data?.testResults);
 					},
 				},

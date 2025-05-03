@@ -4,33 +4,30 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
 
-export function useAssignTaskToUser() {
+export function useAssignMaterialTask() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (data: {
-			materialIds?: string[];
-			surveyIds?: string[];
+			materialIds: string[];
 			userPanelId: string;
 			dueDate?: Date;
-			supervisorPositionId?: string;
+			supervisorPositionId: string;
 		}) => {
-			const response = await api.post(`/education/assign-task`, {
+			const response = await api.post(`/education/assign-material-task`, {
 				userPanelId: data.userPanelId, // ID панели пользователя
-				surveyIds: data?.surveyIds, // ID теста/опроса (если назначается)
-				materialIds: data?.materialIds, // ID материала (если назначается)
+				materialIds: data.materialIds, // ID материала
 				dueDate: data?.dueDate, // Крайний срок выполнения
-				supervisorPositionId: data?.supervisorPositionId, // ID панели руководителя
+				supervisorPositionId: data.supervisorPositionId, // ID панели руководителя
 			});
 			return response.data;
 		},
 		onSuccess: () => {
 			toast({
-				title: 'Материалы назначены',
-				description: `Материалы успешно назначены`,
+				title: 'Материалы успешно назначены',
 			});
-			queryClient.invalidateQueries({ queryKey: ['user-panel'] });
+			queryClient.invalidateQueries({ queryKey: ['subordinates-by-position'] });
 		},
 		onError: () => {
 			toast({

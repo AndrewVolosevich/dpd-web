@@ -28,6 +28,7 @@ export function useCreateResponseForSurvey() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
+			queryClient.invalidateQueries({ queryKey: ['user-assignments'] });
 			toast({
 				title: 'Опрос успешно пройден',
 				variant: 'default',

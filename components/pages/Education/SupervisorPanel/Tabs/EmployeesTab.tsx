@@ -12,26 +12,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Search, FileText, BookOpen, MoreHorizontal } from 'lucide-react';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Search, FileText, BookOpen, User } from 'lucide-react';
 import { Loader } from '@/components/common/Loader/Loader';
 import { AssignTestModal } from '../Modals/AssignTestModal';
 import { AssignMaterialModal } from '../Modals/AssignMaterialModal';
 import { ViewEmployeeModal } from '../Modals/ViewEmployeeModal';
+import { ExtendedUserData, UserData } from '@/types/entities';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import useSupervisorPanelByPosition from '@/lib/api/queries/Education/useSupervisorPanelByPosition';
-import { UserData } from '@/types/entities';
 
-export default function EmployeesTab() {
+export default function EmployeesTab({
+	departmentUsers,
+	isLoading,
+}: {
+	departmentUsers: ExtendedUserData[] | undefined;
+	isLoading: boolean;
+}) {
 	const { user } = useAuth();
-	const { data: departmentUsers, isLoading } = useSupervisorPanelByPosition(
-		user?.positionId || '',
-	);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedEmployee, setSelectedEmployee] = useState<
 		UserData | undefined
@@ -117,25 +113,14 @@ export default function EmployeesTab() {
 										>
 											<BookOpen className="h-4 w-4" />
 										</Button>
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button variant="outline" size="sm">
-													<MoreHorizontal className="h-4 w-4" />
-												</Button>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent align="end">
-												<DropdownMenuItem
-													onClick={() => handleViewEmployee(employee)}
-												>
-													Просмотр профиля
-												</DropdownMenuItem>
-												<DropdownMenuItem
-													onClick={() => handleViewEmployee(employee)}
-												>
-													История обучения
-												</DropdownMenuItem>
-											</DropdownMenuContent>
-										</DropdownMenu>
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => handleViewEmployee(employee)}
+											title="Посмотреть профиль"
+										>
+											<User className="h-4 w-4" />
+										</Button>
 									</div>
 								</TableCell>
 							</TableRow>

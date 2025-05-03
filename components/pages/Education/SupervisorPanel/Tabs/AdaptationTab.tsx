@@ -10,177 +10,98 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Search, Plus, FileText, Pencil, Trash2 } from 'lucide-react';
+import {
+	Plus,
+	FileText,
+	Pencil,
+	Trash2,
+	CheckCircle,
+	Eye,
+	EyeOff,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useQuery } from '@tanstack/react-query';
 import { Loader } from '@/components/common/Loader/Loader';
-import { format, differenceInDays } from 'date-fns';
+import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CreateAdaptationPlanModal } from '../Modals/CreateAdaptationPlanModal';
 import { EditAdaptationPlanModal } from '../Modals/EditAdaptationPlanModal';
 import { DeleteAdaptationPlanModal } from '../Modals/DeleteAdaptationPlanModal';
-import { ViewAdaptationPlanModal } from '../Modals/ViewAdaptationPlanModal';
+import { CompleteAdaptationModal } from '../Modals/CompleteAdaptationModal';
+import { ExtendedUserData } from '@/types/entities';
+import { Assignment } from '@/types/education';
 
-export default function AdaptationTab() {
-	const [searchQuery, setSearchQuery] = useState('');
-	const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
-	const [selectedPlan, setSelectedPlan] = useState<any>(null);
-	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+export default function AdaptationTab({
+	departmentUsers,
+	isLoading,
+}: {
+	departmentUsers: ExtendedUserData[] | undefined;
+	isLoading: boolean;
+}) {
+	const [expandedEmployees, setExpandedEmployees] = useState<
+		Record<string, boolean>
+	>({});
+	const [selectedEmployee, setSelectedEmployee] =
+		useState<ExtendedUserData | null>(null);
+	const [selectedAssignment, setSelectedAssignment] =
+		useState<Assignment | null>(null);
 
-	// Fetch employees with adaptation plans
-	const { data: employees = [], isLoading } = useQuery({
-		queryKey: ['adaptation-employees'],
-		queryFn: async () => {
-			// In a real implementation, you would fetch from your API
-			// const response = await api.get("/api/supervisor/adaptation")
-			// return response.data
-
-			// Mock data for demonstration
-			return [
-				{
-					id: '1',
-					name: 'Белая',
-					surname: 'Алина',
-					patronymic: 'Андреевна',
-					department: 'Коммерция',
-					position: 'Специалист по продажам',
-					startDate: '2023-01-15',
-					adaptationPlan: {
-						id: 'plan1',
-						fileUrl: '#',
-						fileName: 'План адаптации - Белая А.А.docx',
-						uploadedAt: '2023-01-16T10:30:00Z',
-						status: 'IN_PROGRESS',
-						endDate: '2023-04-15',
-					},
-				},
-				{
-					id: '2',
-					name: 'Гижук',
-					surname: 'Екатерина',
-					patronymic: 'Евгеньевна',
-					department: 'Отдел продаж',
-					position: 'Специалист по продажам',
-					startDate: '2022-05-20',
-					adaptationPlan: {
-						id: 'plan2',
-						fileUrl: '#',
-						fileName: 'План адаптации - Гижук Е.Е.docx',
-						uploadedAt: '2022-05-21T14:15:00Z',
-						status: 'COMPLETED',
-						endDate: '2022-08-20',
-					},
-				},
-				{
-					id: '3',
-					name: 'Гуцалова',
-					surname: 'Елена',
-					patronymic: '',
-					department: 'Коммерция',
-					position: 'Специалист по продажам',
-					startDate: '2023-03-10',
-					adaptationPlan: null,
-				},
-				{
-					id: '5',
-					name: 'Дубина',
-					surname: 'Дмитрий',
-					patronymic: '',
-					department: 'Коммерция',
-					position: 'Ведущий менеджер',
-					startDate: '2023-04-01',
-					adaptationPlan: {
-						id: 'plan3',
-						fileUrl: '#',
-						fileName: 'План адаптации - Дубина Д.docx',
-						uploadedAt: '2023-04-02T09:45:00Z',
-						status: 'IN_PROGRESS',
-						endDate: '2023-07-01',
-					},
-				},
-			];
-		},
-	});
-
-	// Filter employees based on search query
-	const filteredEmployees = employees.filter(
-		(employee) =>
-			employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			employee.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			employee.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			employee.position.toLowerCase().includes(searchQuery.toLowerCase()),
-	);
-
-	const handleCreatePlan = (employee: any) => {
-		setSelectedEmployee(employee);
-		setIsCreateModalOpen(true);
+	const getAdaptationUserAssignments = (employee: ExtendedUserData) => {
+		return employee?.userPanel?.assignments?.filter((a) => !!a?.adaptationPlan);
 	};
 
-	const handleEditPlan = (employee: any) => {
-		setSelectedEmployee(employee);
-		setSelectedPlan(employee.adaptationPlan);
-		setIsEditModalOpen(true);
+	// Modal states
+	const [createModalOpen, setCreateModalOpen] = useState(false);
+	const [editModalOpen, setEditModalOpen] = useState(false);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [completeModalOpen, setCompleteModalOpen] = useState(false);
+
+	const toggleEmployeeExpand = (employeeId: string) => {
+		setExpandedEmployees((prev) => ({
+			...prev,
+			[employeeId]: !prev[employeeId],
+		}));
 	};
 
-	const handleDeletePlan = (employee: any) => {
+	const handleCreatePlan = (employee: ExtendedUserData) => {
 		setSelectedEmployee(employee);
-		setSelectedPlan(employee.adaptationPlan);
-		setIsDeleteModalOpen(true);
+		setCreateModalOpen(true);
 	};
 
-	const handleViewPlan = (employee: any) => {
+	const handleEditPlan = (
+		employee: ExtendedUserData,
+		assignment: Assignment,
+	) => {
 		setSelectedEmployee(employee);
-		setSelectedPlan(employee.adaptationPlan);
-		setIsViewModalOpen(true);
+		setSelectedAssignment(assignment);
+		setEditModalOpen(true);
 	};
 
-	const getStatusBadge = (status: string) => {
-		switch (status) {
-			case 'IN_PROGRESS':
-				return <Badge className="bg-blue-500">В процессе</Badge>;
-			case 'COMPLETED':
-				return <Badge className="bg-green-500">Завершен</Badge>;
-			case 'NOT_STARTED':
-				return <Badge variant="outline">Не начат</Badge>;
-			default:
-				return null;
+	const handleDeletePlan = (
+		employee: ExtendedUserData,
+		assignment: Assignment,
+	) => {
+		setSelectedEmployee(employee);
+		setSelectedAssignment(assignment);
+		setDeleteModalOpen(true);
+	};
+
+	const handleCompletePlan = (
+		employee: ExtendedUserData,
+		assignment: Assignment,
+	) => {
+		setSelectedEmployee(employee);
+		setSelectedAssignment(assignment);
+		setCompleteModalOpen(true);
+	};
+
+	const getStatusBadge = (assignment: Assignment) => {
+		if (!assignment) return null;
+		if (assignment?.completedAt) {
+			return <Badge className="bg-green-500">Завершен</Badge>;
+		} else {
+			return <Badge className="bg-blue-500">В процессе</Badge>;
 		}
-	};
-
-	const getAdaptationProgress = (employee: any) => {
-		if (!employee.adaptationPlan) return null;
-
-		const startDate = new Date(employee.startDate);
-		const endDate = new Date(employee.adaptationPlan.endDate);
-		const today = new Date();
-
-		const totalDays = differenceInDays(endDate, startDate);
-		const passedDays = differenceInDays(today, startDate);
-
-		const progress = Math.min(
-			Math.max(Math.round((passedDays / totalDays) * 100), 0),
-			100,
-		);
-
-		return (
-			<div className="w-full">
-				<div className="flex justify-between text-xs mb-1">
-					<span>{progress}%</span>
-					<span>{differenceInDays(endDate, today)} дней осталось</span>
-				</div>
-				<div className="w-full bg-muted rounded-full h-2">
-					<div
-						className="bg-primary h-2 rounded-full"
-						style={{ width: `${progress}%` }}
-					/>
-				</div>
-			</div>
-		);
 	};
 
 	if (isLoading) {
@@ -195,19 +116,9 @@ export default function AdaptationTab() {
 		<div>
 			<div className="flex justify-between items-center mb-6">
 				<div className="text-xl font-medium">Адаптация сотрудников</div>
-				<div className="flex items-center gap-4">
-					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-						<Input
-							placeholder="Поиск сотрудников..."
-							className="pl-8 w-[250px]"
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-						/>
-					</div>
-				</div>
 			</div>
 
+			{/* Main employees table */}
 			<Card>
 				<Table>
 					<TableHeader>
@@ -215,93 +126,64 @@ export default function AdaptationTab() {
 							<TableHead className="w-[250px]">Сотрудник</TableHead>
 							<TableHead>Должность</TableHead>
 							<TableHead>Дата начала работы</TableHead>
-							<TableHead>План адаптации</TableHead>
-							<TableHead>Прогресс</TableHead>
+							<TableHead>Планы адаптации</TableHead>
 							<TableHead className="text-right">Действия</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{filteredEmployees.map((employee) => (
-							<TableRow key={employee.id}>
+						{departmentUsers?.map((employee) => (
+							<TableRow
+								key={employee.id}
+								className="cursor-pointer hover:bg-muted/50"
+							>
 								<TableCell className="font-medium">
-									{employee.surname} {employee.name} {employee.patronymic}
+									<div
+										className="flex items-center"
+										onClick={() => toggleEmployeeExpand(employee.id)}
+									>
+										{expandedEmployees[employee.id] ? (
+											<EyeOff className="h-4 w-4 inline mr-2" />
+										) : (
+											<Eye className="h-4 w-4 inline mr-2" />
+										)}
+										{employee.surname} {employee.name} {employee.patronymic}
+									</div>
 								</TableCell>
-								<TableCell>{employee.position}</TableCell>
+								<TableCell>{employee?.position?.title}</TableCell>
 								<TableCell>
-									{format(new Date(employee.startDate), 'dd MMMM yyyy', {
+									{format(new Date(employee?.startDate || ''), 'dd MMMM yyyy', {
 										locale: ru,
 									})}
 								</TableCell>
 								<TableCell>
-									{employee.adaptationPlan ? (
-										<div className="flex items-center gap-2">
-											<FileText className="h-4 w-4" />
-											<span className="text-sm truncate max-w-[200px]">
-												{employee.adaptationPlan.fileName}
-											</span>
-											{getStatusBadge(employee.adaptationPlan.status)}
-										</div>
+									{getAdaptationUserAssignments(employee)?.length ? (
+										<span>
+											{getAdaptationUserAssignments(employee)?.length} план(ов)
+										</span>
 									) : (
-										<span className="text-muted-foreground">Не загружен</span>
+										<span className="text-muted-foreground">Нет планов</span>
 									)}
 								</TableCell>
-								<TableCell>
-									{employee.adaptationPlan?.status === 'IN_PROGRESS' &&
-										getAdaptationProgress(employee)}
-								</TableCell>
 								<TableCell className="text-right">
-									<div className="flex justify-end gap-2">
-										{employee.adaptationPlan ? (
-											<>
-												<Button
-													variant="outline"
-													size="sm"
-													onClick={() => handleViewPlan(employee)}
-													title="Просмотреть план"
-												>
-													<FileText className="h-4 w-4" />
-												</Button>
-												<Button
-													variant="outline"
-													size="sm"
-													onClick={() => handleEditPlan(employee)}
-													title="Редактировать план"
-												>
-													<Pencil className="h-4 w-4" />
-												</Button>
-												<Button
-													variant="outline"
-													size="sm"
-													onClick={() => handleDeletePlan(employee)}
-													title="Удалить план"
-												>
-													<Trash2 className="h-4 w-4" />
-												</Button>
-											</>
-										) : (
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => handleCreatePlan(employee)}
-											>
-												<Plus className="h-4 w-4 mr-2" />
-												Добавить план
-											</Button>
-										)}
-									</div>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => handleCreatePlan(employee)}
+									>
+										<Plus className="h-4 w-4 mr-2" />
+										Добавить план
+									</Button>
 								</TableCell>
 							</TableRow>
 						))}
 
-						{filteredEmployees.length === 0 && (
+						{departmentUsers?.length === 0 && (
 							<TableRow>
 								<TableCell
-									colSpan={6}
+									colSpan={5}
 									className="text-center py-8 text-muted-foreground"
 								>
-									{searchQuery
-										? 'Сотрудники не найдены'
-										: 'У вас нет подчиненных сотрудников'}
+									У вас нет подчиненных сотрудников
 								</TableCell>
 							</TableRow>
 						)}
@@ -309,32 +191,185 @@ export default function AdaptationTab() {
 				</Table>
 			</Card>
 
+			{/* Expanded employee plans - separate tables for each employee */}
+			{departmentUsers?.map((employee) => {
+				if (!expandedEmployees[employee.id]) return null;
+				const userAssignments = getAdaptationUserAssignments(employee);
+				return (
+					<Card
+						key={`expanded-${employee.id}`}
+						className="mt-6 mb-4 border-t-0 rounded-t-none"
+					>
+						<div className="p-4">
+							<h3 className="text-sm font-medium mb-2">
+								Планы адаптации для {employee.surname} {employee.name}
+							</h3>
+
+							{userAssignments?.length > 0 ? (
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead>Файл плана</TableHead>
+											<TableHead>Статус</TableHead>
+											<TableHead>Дата загрузки</TableHead>
+											<TableHead>Дата окончания</TableHead>
+											<TableHead>Комментарий</TableHead>
+											<TableHead className="text-right">Действия</TableHead>
+										</TableRow>
+									</TableHeader>
+									<TableBody>
+										{userAssignments?.map((assignment: Assignment) => (
+											<TableRow key={assignment?.adaptationPlan?.id}>
+												<TableCell>
+													<div className="flex items-center gap-2">
+														<FileText className="h-4 w-4" />
+														<span className="text-sm truncate max-w-[150px]">
+															План адаптации
+														</span>
+													</div>
+												</TableCell>
+												<TableCell>{getStatusBadge(assignment)}</TableCell>
+												<TableCell>
+													{assignment?.createdAt
+														? format(
+																new Date(assignment?.createdAt),
+																'dd.MM.yyyy',
+																{
+																	locale: ru,
+																},
+															)
+														: ''}
+												</TableCell>
+												<TableCell>
+													{assignment?.completedAt
+														? format(
+																new Date(assignment?.completedAt),
+																'dd.MM.yyyy',
+																{
+																	locale: ru,
+																},
+															)
+														: ''}
+												</TableCell>
+												<TableCell>
+													<div
+														className="truncate max-w-[150px]"
+														title={
+															assignment?.adaptationPlan?.supervisorComment ||
+															'-'
+														}
+													>
+														{assignment?.adaptationPlan?.supervisorComment ||
+															'—'}
+													</div>
+												</TableCell>
+												<TableCell className="text-right">
+													<div className="flex justify-end gap-2">
+														<Button
+															variant="outline"
+															size="sm"
+															onClick={(e) => {
+																e.stopPropagation();
+																const fileUrl =
+																	assignment?.adaptationPlan?.fileUrl || '';
+																const anchor = document.createElement('a');
+																anchor.href = fileUrl;
+																anchor.download = `план_адаптации_${employee?.name}_${employee?.surname}`;
+																anchor.click();
+															}}
+															title="Скачать файл"
+														>
+															<FileText className="h-4 w-4" />
+														</Button>
+														{!assignment?.completedAt && (
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={(e) => {
+																	e.stopPropagation();
+																	handleEditPlan(employee, assignment);
+																}}
+																title="Редактировать план"
+															>
+																<Pencil className="h-4 w-4" />
+															</Button>
+														)}
+														{!assignment?.completedAt && (
+															<Button
+																variant="outline"
+																size="sm"
+																className="bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700"
+																onClick={(e) => {
+																	e.stopPropagation();
+																	handleCompletePlan(employee, assignment);
+																}}
+																title="Завершить адаптацию"
+															>
+																<CheckCircle className="h-4 w-4" />
+															</Button>
+														)}
+														<Button
+															variant="outline"
+															size="sm"
+															className="bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700"
+															onClick={(e) => {
+																e.stopPropagation();
+																handleDeletePlan(employee, assignment);
+															}}
+															title="Удалить план"
+														>
+															<Trash2 className="h-4 w-4" />
+														</Button>
+													</div>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							) : (
+								<div className="py-6 text-center text-muted-foreground">
+									У сотрудника нет планов адаптации. Нажмите &#34;Добавить
+									план&#34; для создания.
+								</div>
+							)}
+						</div>
+					</Card>
+				);
+			})}
+
+			{/* Modals */}
 			{selectedEmployee && (
 				<>
 					<CreateAdaptationPlanModal
-						isOpen={isCreateModalOpen}
-						onClose={() => setIsCreateModalOpen(false)}
+						isOpen={createModalOpen}
+						onClose={() => setCreateModalOpen(false)}
 						employee={selectedEmployee}
 					/>
-					{selectedPlan && (
+
+					{selectedAssignment && (
 						<>
 							<EditAdaptationPlanModal
-								isOpen={isEditModalOpen}
-								onClose={() => setIsEditModalOpen(false)}
+								isOpen={editModalOpen}
+								onClose={() => setEditModalOpen(false)}
 								employee={selectedEmployee}
-								plan={selectedPlan}
+								assignment={selectedAssignment}
 							/>
+
 							<DeleteAdaptationPlanModal
-								isOpen={isDeleteModalOpen}
-								onClose={() => setIsDeleteModalOpen(false)}
+								isOpen={deleteModalOpen}
+								onClose={() => {
+									setDeleteModalOpen(false);
+									setSelectedAssignment(null);
+								}}
 								employee={selectedEmployee}
-								plan={selectedPlan}
+								assignment={selectedAssignment}
 							/>
-							<ViewAdaptationPlanModal
-								isOpen={isViewModalOpen}
-								onClose={() => setIsViewModalOpen(false)}
+
+							<CompleteAdaptationModal
+								isOpen={completeModalOpen}
+								onClose={() => setCompleteModalOpen(false)}
 								employee={selectedEmployee}
-								plan={selectedPlan}
+								assignment={selectedAssignment}
 							/>
 						</>
 					)}

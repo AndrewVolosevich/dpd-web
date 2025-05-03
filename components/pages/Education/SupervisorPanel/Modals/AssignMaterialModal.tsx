@@ -18,9 +18,9 @@ import { Loader } from '@/components/common/Loader/Loader';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UserData } from '@/types/entities';
 import useEducationCabinetsList from '@/lib/api/queries/Education/useEducationCabinetsList';
-import { useAssignTaskToUser } from '@/lib/api/queries/Education/mutations/useAssignTaskToUser';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { addMonths } from 'date-fns';
+import { useAssignMaterialTask } from '@/lib/api/queries/Education/mutations/assign/useAssignMaterialTask';
 
 interface AssignMaterialModalProps {
 	isOpen: boolean;
@@ -90,10 +90,10 @@ export function AssignMaterialModal({
 	};
 
 	const { mutate: assignMaterials, isPending: isAssigning } =
-		useAssignTaskToUser();
+		useAssignMaterialTask();
 
 	const handleSubmit = () => {
-		if (!employee || selectedMaterials.length === 0 || !employee?.userPanelId) {
+		if (!employee || !selectedMaterials.length || !employee?.userPanelId) {
 			toast({
 				title: 'Ошибка',
 				description:
@@ -102,19 +102,21 @@ export function AssignMaterialModal({
 			});
 			return;
 		}
-		assignMaterials(
-			{
-				materialIds: selectedMaterials,
-				userPanelId: employee?.userPanelId,
-				dueDate,
-				supervisorPositionId,
-			},
-			{
-				onSuccess: () => {
-					onClose();
+		if (supervisorPositionId) {
+			assignMaterials(
+				{
+					materialIds: selectedMaterials,
+					userPanelId: employee?.userPanelId,
+					dueDate,
+					supervisorPositionId,
 				},
-			},
-		);
+				{
+					onSuccess: () => {
+						onClose();
+					},
+				},
+			);
+		}
 	};
 
 	// Reset selected materials when modal is opened

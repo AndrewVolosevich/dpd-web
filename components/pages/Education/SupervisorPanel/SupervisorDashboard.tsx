@@ -6,9 +6,17 @@ import EmployeesTab from './Tabs/EmployeesTab';
 import TestsTab from './Tabs/TestsTab';
 import AdaptationTab from './Tabs/AdaptationTab';
 import ReportsTab from './Tabs/ReportsTab';
+import { useAuth } from '@/components/providers/global/AuthProvider';
+import useSupervisorPanelByPosition from '@/lib/api/queries/Education/useSupervisorPanelByPosition';
+import MaterialsTab from '@/components/pages/Education/SupervisorPanel/Tabs/MaterialsTab';
 
 export default function SupervisorDashboard() {
 	const [activeTab, setActiveTab] = useState('employees');
+	const { user } = useAuth();
+	const { data: departmentUsers, isLoading } = useSupervisorPanelByPosition(
+		user?.positionId || '',
+	);
+
 	return (
 		<div className="w-full">
 			<div className="flex-1 p-6">
@@ -29,6 +37,12 @@ export default function SupervisorDashboard() {
 							Тесты
 						</TabsTrigger>
 						<TabsTrigger
+							value="materials"
+							className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none py-2 px-4"
+						>
+							Материалы
+						</TabsTrigger>
+						<TabsTrigger
 							value="adaptation"
 							className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none py-2 px-4"
 						>
@@ -43,15 +57,28 @@ export default function SupervisorDashboard() {
 					</TabsList>
 
 					<TabsContent value="employees" className="mt-6">
-						<EmployeesTab />
+						<EmployeesTab
+							isLoading={isLoading}
+							departmentUsers={departmentUsers}
+						/>
 					</TabsContent>
 
 					<TabsContent value="tests" className="mt-6">
-						<TestsTab />
+						<TestsTab isLoading={isLoading} departmentUsers={departmentUsers} />
+					</TabsContent>
+
+					<TabsContent value="materials" className="mt-6">
+						<MaterialsTab
+							isLoading={isLoading}
+							departmentUsers={departmentUsers}
+						/>
 					</TabsContent>
 
 					<TabsContent value="adaptation" className="mt-6">
-						<AdaptationTab />
+						<AdaptationTab
+							isLoading={isLoading}
+							departmentUsers={departmentUsers}
+						/>
 					</TabsContent>
 
 					<TabsContent value="reports" className="mt-6">
