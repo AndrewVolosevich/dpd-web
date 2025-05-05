@@ -75,7 +75,9 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							</div>
 							<div className="flex items-center">
 								<Building className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">{anotherUser?.position ?? ''}</span>
+								<span className="text-sm">
+									{anotherUser?.position?.title ?? ''}
+								</span>
 							</div>
 							<div className="flex items-center">
 								<Calendar className="mr-2 h-4 w-4 text-gray-400" />

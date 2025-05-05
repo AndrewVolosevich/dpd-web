@@ -22,11 +22,13 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
+import { useQueryClient } from '@tanstack/react-query';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { getStartDateISO } from '@/lib/date/helpers';
+import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
+import { useDepartmentPositions } from '@/lib/api/queries/Structure/useDepartmentPositions';
+import { useUpdateUser } from '@/lib/api/queries/Users/mutations/useUpdateUser';
+import { useCreateUser } from '@/lib/api/queries/Users/mutations/useCreateUser';
 
 const formSchema = z.object({
 	name: z.string().min(1, 'Имя обязательно'),
@@ -34,8 +36,8 @@ const formSchema = z.object({
 	password: z.string().optional(),
 	patronymic: z.string().optional(),
 	tel: z.string().min(1, 'Телефон обязателен'),
-	department: z.string().optional(),
-	position: z.string().optional(),
+	departmentId: z.string().optional(),
+	positionId: z.string().optional(),
 	isSupervisor: z.boolean().optional(),
 	startDate: z.date().optional(),
 	endDate: z.date().optional(),
@@ -50,7 +52,6 @@ interface EditUserFormProps {
 
 const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	const { isAdmin, updateUser: updateSelfUser } = useAuth();
-	const api = useApi();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -60,9 +61,9 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			patronymic: user?.patronymic ?? '',
 			password: '',
 			tel: user?.tel ?? '',
-			department: user?.department ?? '',
-			position: user?.position ?? '',
-			isSupervisor: user?.isSupervisor ?? false,
+			departmentId: user?.departmentId ?? '',
+			positionId: user?.positionId ?? '',
+			isSupervisor: false,
 			startDate: user?.startDate
 				? (new Date(user?.startDate) as Date)
 				: undefined,
@@ -72,78 +73,14 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	});
 
 	const queryClient = useQueryClient();
-	const { mutate: updateUser, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/auth/update-user`, { ...userData });
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное изменение пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			}
+	const { data: departments } = useDepartments();
+	// Получаем значение departmentId из формы
+	const departmentId = form.watch('departmentId');
+	// Загружаем позиции, передавая текущий departmentId
+	const { data: positions } = useDepartmentPositions(departmentId);
 
-			await queryClient.invalidateQueries({
-				queryKey: ['new-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['another-user'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['paginated-users'],
-			});
-			await queryClient.invalidateQueries({
-				queryKey: ['users-by-birthdays'],
-			});
-
-			toast({
-				title: 'Пользователь успешно изменен',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
-
-	const { mutate: createUser, isPending: createLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/auth/create-user`, { ...userData });
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (u) => {
-			if (isSelf) {
-				updateSelfUser(u);
-			} else {
-				await queryClient.invalidateQueries({
-					queryKey: ['another-user'],
-				});
-				await queryClient.invalidateQueries({
-					queryKey: ['paginated-users'],
-				});
-			}
-			toast({
-				title: 'Пользователь успешно создан',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
+	const { mutate: updateUser, isPending: updateLoading } = useUpdateUser();
+	const { mutate: createUser, isPending: createLoading } = useCreateUser();
 
 	const canEdit = useMemo(() => isSelf || isAdmin, [isAdmin, isSelf]);
 	const isLoading = useMemo(
@@ -161,9 +98,30 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			bornDate: getStartDateISO(values?.bornDate),
 		};
 		if (isForCreate) {
-			createUser(userToUpdate);
+			createUser(userToUpdate, {
+				onSuccess: async (u) => {
+					if (isSelf) {
+						updateSelfUser(u);
+					} else {
+						await queryClient.invalidateQueries({
+							queryKey: ['another-user'],
+						});
+						await queryClient.invalidateQueries({
+							queryKey: ['paginated-users'],
+						});
+					}
+				},
+			});
 		} else {
-			updateUser(userToUpdate);
+			updateUser(userToUpdate, {
+				onSuccess: (u) => {
+					if (isSelf) {
+						updateSelfUser(u);
+					}
+
+					onClose();
+				},
+			});
 		}
 	};
 
@@ -248,10 +206,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 									)}
 								/>
 							)}
+							{/* Поле выбора отдела */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<FormField
 									control={form.control}
-									name="department"
+									name="departmentId"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Отдел</FormLabel>
@@ -265,25 +224,51 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value="it">IT отдел</SelectItem>
-													<SelectItem value="hr">HR отдел</SelectItem>
-													<SelectItem value="sales">Отдел продаж</SelectItem>
+													{departments?.map((department) => (
+														<SelectItem
+															value={department?.id}
+															key={department?.id}
+														>
+															{department.title}
+														</SelectItem>
+													))}
 												</SelectContent>
 											</Select>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-
+								{/* Поле выбора позиции */}
 								<FormField
 									control={form.control}
-									name="position"
+									name="positionId"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Должность</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
+											<Select
+												disabled={!departmentId} // Отключаем, если departmentId не выбран
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue
+															placeholder={
+																!departmentId
+																	? 'Сначала выберите отдел'
+																	: 'Выберите должность'
+															}
+														/>
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{positions?.map((position) => (
+														<SelectItem value={position?.id} key={position?.id}>
+															{position.title}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
 											<FormMessage />
 										</FormItem>
 									)}

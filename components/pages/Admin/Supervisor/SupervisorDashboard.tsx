@@ -63,7 +63,7 @@ export default function SupervisorDashboard() {
 	};
 
 	return (
-		<div className="container py-6 space-y-6">
+		<div className="container py-6 space-y-6 mx-auto">
 			<div className="flex justify-between items-center">
 				<h1 className="text-3xl font-bold">Панель руководителя</h1>
 				<Button asChild className="bg-primary">

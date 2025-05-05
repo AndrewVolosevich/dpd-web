@@ -13,36 +13,11 @@ import { MagazineModel } from '@/types/entities';
 import Image from 'next/image';
 import React from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
+import { useDeleteMagazine } from '@/lib/api/queries/Magazines/mutations/useDeleteMagazine';
 
 export function MagazineItem({ magazine }: { magazine: MagazineModel }) {
 	const { isAdmin } = useAuth();
-	const api = useApi();
-	const queryClient = useQueryClient();
-
-	const { mutate: deleteMagazine } = useMutation({
-		mutationFn: async (magazineId: any) => {
-			return api(`/content/magazines/${magazineId}`, {
-				method: 'DELETE',
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление журнала',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['magazines'] });
-			toast({
-				title: 'Журнал успешно удален',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutate: deleteMagazine } = useDeleteMagazine();
 
 	const handleDownload = () => {
 		// Create an anchor element and trigger download

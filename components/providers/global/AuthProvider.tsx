@@ -28,10 +28,9 @@ export interface AuthUser {
 
 	roles?: string[];
 	department?: string;
-	position?: string;
-	isSupervisor?: boolean;
+	positionId?: string;
 	photo?: string;
-
+	userPanelId?: string;
 	endDate?: string;
 	startDate?: string;
 	bornDate?: string;
@@ -44,6 +43,7 @@ interface AuthContextInterface {
 	user: AuthUser | null;
 	updateUser: (u: AuthUser) => void;
 	isAdmin?: boolean;
+	isSupervisor?: boolean;
 	token: string;
 	login: (_: LoginProps) => void;
 	refreshToken: () => Promise<string | undefined>;
@@ -55,6 +55,7 @@ const AuthContext = createContext({
 	user: null,
 	updateUser: () => undefined,
 	isAdmin: false,
+	isSupervisor: false,
 	token: '',
 	login: async () => undefined,
 	logout: async () => undefined,
@@ -74,6 +75,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	const isAdmin = useMemo(() => {
 		return user?.roles?.some((r) => r === 'ADMIN');
+	}, [user]);
+	const isSupervisor = useMemo(() => {
+		return user?.roles?.some((r) => r === 'SUPERVISOR');
 	}, [user]);
 
 	const clearUserData = () => {
@@ -255,13 +259,24 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			loading,
 			user,
 			isAdmin,
+			isSupervisor,
 			token,
 			login,
 			logout,
 			refreshToken,
 			updateUser,
 		}),
-		[loading, user, isAdmin, token, login, logout, refreshToken, updateUser],
+		[
+			loading,
+			user,
+			isAdmin,
+			token,
+			login,
+			logout,
+			refreshToken,
+			updateUser,
+			isSupervisor,
+		],
 	);
 	return (
 		<AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -9,13 +9,10 @@ import {
 	EDITOR_TRANSFER_DATA,
 } from '@/const/editor';
 import { Card, CardContent } from '@/components/ui/card';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { UserData } from '@/types/entities';
+import { useUpdateUser } from '@/lib/api/queries/Users/mutations/useUpdateUser';
 
 const Presentation = ({ user }: { user: UserData }) => {
-	const { toast } = useToast();
 	const { isAdmin } = useAuth();
 	const [isEditing, setIsEditing] = useState(false);
 	const [editorData, setEditorData] = useState<any>(
@@ -24,31 +21,8 @@ const Presentation = ({ user }: { user: UserData }) => {
 	const [editorRenderData, setEditorRenderData] = useState<any>(null);
 	const [clearCounter, setClearCounter] = useState<number>(0);
 	const [renderCounter, setRenderCounter] = useState<number>(0);
-	const queryClient = useQueryClient();
-	const api = useApi();
 
-	const { mutateAsync: updateUser, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: any) => {
-			const resp = await api.post(`/auth/update-user`, { ...userData });
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное изменение пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries({
-				queryKey: ['another-user'],
-			});
-			toast({
-				title: 'Пользователь успешно изменен',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: updateUser, isPending: updateLoading } = useUpdateUser();
 
 	const handleSubmit = () => {
 		updateUser({

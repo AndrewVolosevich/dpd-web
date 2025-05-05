@@ -18,9 +18,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Routes } from '@/const/routes';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import {
 	Question,
 	QuestionType,
@@ -38,7 +36,8 @@ import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerP
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
 import { getStartDateISO } from '@/lib/date/helpers';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
-import { UserAssignment } from '@/components/pages/Admin/Surveys/SurveyForm/UserAssignment';
+import { useUpdateSurvey } from '@/lib/api/queries/Education/mutations/survey/useUpdateSurvey';
+import { useCreateSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateSurvey';
 
 export function SurveyForm({
 	initialData,
@@ -56,14 +55,12 @@ export function SurveyForm({
 		initialData?.description || '',
 	);
 	const [preface, setPreface] = useState(initialData?.preface || '');
-	const [type, setType] = useState(initialData?.type || 'ANONYMOUS');
+	const [type, setType] = useState(initialData?.type || 'PERSONALIZED');
 	const [status, setStatus] = useState(initialData?.status || 'DRAFT');
 	const [surveyVariant, setSurveyVariant] = useState(
 		initialData?.surveyVariant || 'SURVEY',
 	);
-	const [assignedUserIds, setAssignedUserIds] = useState<string[]>(
-		initialData?.assignedUserIds || [],
-	);
+	const [showForAll, setShowForAll] = useState(initialData?.showForAll);
 
 	const [questions, setQuestions] = useState<Question[]>(
 		initialData?.questions || [
@@ -77,52 +74,10 @@ export function SurveyForm({
 	);
 
 	const router = useRouter();
-	const api = useApi();
-	const queryClient = useQueryClient();
-	const { mutateAsync: createSurvey, isPending: createLoading } = useMutation({
-		mutationFn: async (surveyData: any) => {
-			return api.post(`/surveys`, {
-				...surveyData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное создание опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			toast({
-				title: 'Опрос успешно создан',
-				variant: 'default',
-			});
-		},
-	});
-
-	const { mutateAsync: updateSurvey, isPending: updateLoading } = useMutation({
-		mutationFn: async (surveyData: any) => {
-			return api.put(`/surveys/${surveyData.id}`, {
-				...surveyData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное редактирование опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			queryClient.invalidateQueries({ queryKey: ['survey'] });
-			toast({
-				title: 'Опрос успешно обновлен',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createSurvey, isPending: createLoading } =
+		useCreateSurvey();
+	const { mutateAsync: updateSurvey, isPending: updateLoading } =
+		useUpdateSurvey();
 
 	const addQuestion = () => {
 		setQuestions([
@@ -230,10 +185,10 @@ export function SurveyForm({
 			title,
 			description,
 			preface,
+			showForAll,
 			endDate: getStartDateISO(endDate),
 			type,
 			surveyVariant,
-			assignedUserIds,
 			status: (status || 'DRAFT') as SurveyStatus,
 			questions: updatedQuestions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
@@ -310,7 +265,11 @@ export function SurveyForm({
 					</div>
 
 					<div className="flex items-center space-x-2">
-						<DatePickerPopover value={endDate} onChange={setEndDate} />
+						<DatePickerPopover
+							value={endDate}
+							onChange={setEndDate}
+							title={'Введите дату окончания'}
+						/>
 					</div>
 
 					<div className="flex flex-col items-center space-x-2">
@@ -348,6 +307,19 @@ export function SurveyForm({
 
 					<div className="flex items-center space-x-2">
 						<Switch
+							id="show-for-all"
+							checked={showForAll}
+							onCheckedChange={() => {
+								setShowForAll(!showForAll);
+							}}
+						/>
+						<Label htmlFor="show-for-all">
+							Показать для всех на главной странице
+						</Label>
+					</div>
+
+					<div className="flex items-center space-x-2">
+						<Switch
 							id="collect-info"
 							checked={type === 'PERSONALIZED'}
 							onCheckedChange={() => {
@@ -362,14 +334,6 @@ export function SurveyForm({
 							Собирать информацию об участниках?
 						</Label>
 					</div>
-
-					{/* User Assignment Section */}
-					{surveyVariant === 'TEST' && (
-						<UserAssignment
-							assignedUserIds={assignedUserIds}
-							setAssignedUserIds={setAssignedUserIds}
-						/>
-					)}
 				</div>
 				<div className="space-y-4">
 					{questions.map((q, qIndex) => (

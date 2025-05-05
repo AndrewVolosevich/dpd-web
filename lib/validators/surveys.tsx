@@ -1,9 +1,9 @@
 import { Survey } from '@/types/entities';
 
-export const validateSurvey = (surveyData: Survey) => {
+export const validateSurvey = (surveyData: Partial<Survey>) => {
 	if (
-		!surveyData?.title.length ||
-		!surveyData.description?.length ||
+		!surveyData?.title?.length ||
+		!surveyData?.description?.length ||
 		!surveyData?.questions?.length
 	) {
 		return false;

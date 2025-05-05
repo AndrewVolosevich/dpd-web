@@ -85,7 +85,7 @@ export default function BirthdaySlider({
 					))}
 				</CarouselContent>
 			</Carousel>
-			<div className="flex justify-center mt-6">
+			<div className="flex justify-center">
 				{Array.from({ length: count }).map((_, index) => (
 					<div
 						key={index}

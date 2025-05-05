@@ -1,3 +1,6 @@
+import { Department, Position } from '@/types/structure';
+import { ExtendedAssignment, UserPanel } from '@/types/education';
+
 export type NewsModel = {
 	content?: any;
 	createdAt: string;
@@ -24,11 +27,14 @@ export interface UserData {
 	name: string;
 	surname: string;
 	patronymic?: string;
+	email?: string;
 
 	roles?: string[];
-	department?: string;
-	position?: string;
-	isSupervisor?: boolean;
+	department?: Department;
+	departmentId?: string;
+	position?: Position;
+	positionId?: string;
+	userPanelId?: string;
 
 	endDate?: string;
 	startDate?: string;
@@ -38,6 +44,10 @@ export interface UserData {
 
 	photo?: string;
 	presentation?: any;
+}
+
+export interface ExtendedUserData extends UserData {
+	userPanel: UserPanel;
 }
 
 export interface PaginatedUsers {
@@ -101,10 +111,11 @@ export interface Response {
 }
 
 export interface Survey {
-	id?: string;
+	id: string;
 	title: string;
 	description?: string;
 	preface?: string;
+	showForAll?: boolean;
 	afterword?: string;
 	endDate?: string;
 	type: SurveyType;

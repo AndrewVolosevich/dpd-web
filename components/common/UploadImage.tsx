@@ -1,9 +1,8 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
+import { useUploadImage } from '@/lib/api/queries/Common/mutation/useUploadImage';
 
 interface UploadNewsImageProps {
 	onClose: (val?: string) => void;
@@ -16,34 +15,7 @@ const UploadImage = ({ onClose, url, hideImage }: UploadNewsImageProps) => {
 	const formRef = useRef<HTMLFormElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const api = useApi();
-	const { mutate: updatePhoto, isPending: updateLoading } = useMutation({
-		mutationFn: async (userData: FormData) => {
-			const resp = await api.post(url, userData);
-			return resp?.data;
-		},
-		onError: (error) => {
-			onClose();
-			toast({
-				title: 'Неудачное изменение изображения',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async (r) => {
-			formRef.current?.reset();
-			setPreview(null);
-			if (fileInputRef.current) fileInputRef.current.value = '';
-			if (r?.url) {
-				onClose(r?.url);
-
-				toast({
-					title: 'Изображение успешно изменено',
-					variant: 'default',
-				});
-			}
-		},
-	});
+	const { mutate: updatePhoto, isPending: updateLoading } = useUploadImage(url);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -59,7 +31,24 @@ const UploadImage = ({ onClose, url, hideImage }: UploadNewsImageProps) => {
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
-		await updatePhoto(formData);
+		updatePhoto(formData, {
+			onSuccess: (r) => {
+				formRef.current?.reset();
+				setPreview(null);
+				if (fileInputRef.current) fileInputRef.current.value = '';
+				if (r?.url) {
+					onClose(r?.url);
+
+					toast({
+						title: 'Изображение успешно изменено',
+						variant: 'default',
+					});
+				}
+			},
+			onError: () => {
+				onClose();
+			},
+		});
 	};
 
 	return (

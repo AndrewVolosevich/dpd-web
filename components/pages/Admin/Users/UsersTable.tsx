@@ -25,18 +25,14 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 import EditUserModal from '@/components/pages/Profile/EditUserModal';
 import { UserData } from '@/types/entities';
 import DeleteAlert from '@/components/common/DeleteAlert/DeleteAlert';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import Link from 'next/link';
+import { useDeleteUser } from '@/lib/api/queries/Users/mutations/useDeleteUser';
 
 const limit = 20;
 
 export default function UsersTable() {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = React.useState(false);
-	const api = useApi();
-	const queryClient = useQueryClient();
 
 	const [updatedUser, setUpdatedUser] = useState<undefined | UserData>(
 		undefined,
@@ -57,25 +53,7 @@ export default function UsersTable() {
 		setPage((old) => old + 1);
 	};
 
-	const { mutate: deleteUser } = useMutation({
-		mutationFn: async (userId: string) => {
-			return api.delete(`/auth/${userId}`);
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное удаление пользователя',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['paginated-users'] });
-			toast({
-				title: 'Пользователь успешно удален',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutate: deleteUser } = useDeleteUser();
 
 	if (isLoading) {
 		return <FullPageLoader />;
@@ -129,8 +107,8 @@ export default function UsersTable() {
 									</TableCell>
 
 									<TableCell>{user?.tel}</TableCell>
-									<TableCell>{user?.department || '-'}</TableCell>
-									<TableCell>{user?.position || '-'}</TableCell>
+									<TableCell>{user?.department?.title || '-'}</TableCell>
+									<TableCell>{user?.position?.title || '-'}</TableCell>
 									<TableCell className={'flex flex-row justify-end'}>
 										{isAdmin ? (
 											<>
