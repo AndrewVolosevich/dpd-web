@@ -8,16 +8,17 @@ import { MaterialItem } from './MaterialItem';
 import { MaterialForm } from './MaterialForm';
 import { Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import Loader from '@/components/common/Loader/Loader';
+import { Loader } from '@/components/common/Loader/Loader';
 
 interface SectionCardProps {
 	section: TrainingSection;
 	onDeleteSection: (id: string) => void;
 	onAddMaterial: (
 		sectionId: string,
-		file: File,
+		file: File | string,
 		material: any,
 		section: TrainingSection,
+		isUrl?: boolean,
 	) => void; // Добавлен `file` в onAddMaterial
 	onDeleteMaterial: (materialId: string) => void;
 	materialLoading?: boolean;

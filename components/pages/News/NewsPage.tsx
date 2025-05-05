@@ -26,6 +26,7 @@ const NewsPage = ({
 	const router = useRouter();
 	const { data, isLoading } = useQuery({
 		queryKey: ['news', { newsId }],
+		enabled: !!newsId,
 		queryFn: async () => {
 			const resp = await api.get(`/news/${newsId}`);
 

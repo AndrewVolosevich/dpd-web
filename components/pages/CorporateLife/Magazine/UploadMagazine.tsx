@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { Input } from '@/components/ui/input';
+import { useUploadMagazine } from '@/lib/api/queries/Magazines/mutations/useUploadMagazine';
 
 interface UploadMagazineProps {
 	onClose: () => void;
@@ -14,40 +12,9 @@ const UploadMagazine = ({ onClose }: UploadMagazineProps) => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 	const [title, setTitle] = useState<string>('');
-	const queryClient = useQueryClient();
 
-	const api = useApi();
-	const { mutate: uploadMagazine, isPending: uploadingMagazine } = useMutation({
-		mutationFn: async (data: any) => {
-			const resp = await api.post(`/upload/magazine`, data);
-			return resp?.data;
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачная загрузка журнала',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: async () => {
-			// Reset the form and preview
-			formRef.current?.reset();
-			setPreview(null);
-			setTitle('');
-			await queryClient.invalidateQueries({
-				queryKey: ['magazines'],
-			});
-			if (fileInputRef.current) fileInputRef.current.value = '';
-
-			toast({
-				title: 'Журнал успешно загружен',
-				variant: 'default',
-			});
-		},
-		onSettled: () => {
-			onClose();
-		},
-	});
+	const { mutate: uploadMagazine, isPending: uploadingMagazine } =
+		useUploadMagazine();
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -67,7 +34,18 @@ const UploadMagazine = ({ onClose }: UploadMagazineProps) => {
 		if (title) {
 			formData.append('title', title);
 		}
-		await uploadMagazine(formData);
+		uploadMagazine(formData, {
+			onSuccess: async () => {
+				// Reset the form and preview
+				formRef.current?.reset();
+				setPreview(null);
+				setTitle('');
+				if (fileInputRef.current) fileInputRef.current.value = '';
+			},
+			onSettled: () => {
+				onClose();
+			},
+		});
 	};
 
 	return (

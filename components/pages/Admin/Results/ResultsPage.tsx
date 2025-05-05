@@ -11,7 +11,7 @@ import { OpenTextResults } from '@/components/pages/Admin/Results/OpenTextResult
 import { ChoiceResults } from '@/components/pages/Admin/Results/ChoiseResults';
 import { RatingResults } from '@/components/pages/Admin/Results/RatingResults';
 import { MatrixResults } from '@/components/pages/Admin/Results/MatrixResults';
-import useSurvey from '@/lib/api/queries/Surveys/useSurvey';
+import useSurvey from '@/lib/api/queries/Education/useSurvey';
 import { SurveyStatus } from '@/types/entities';
 import { PhotoResults } from '@/components/pages/Admin/Results/PhotoResults';
 

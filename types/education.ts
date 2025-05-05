@@ -1,3 +1,5 @@
+import { Survey } from '@/types/entities';
+
 export type MaterialType =
 	| 'document'
 	| 'presentation'
@@ -10,7 +12,8 @@ export interface TrainingMaterial {
 	id: string;
 	title: string;
 	type: MaterialType;
-	url: string;
+	url?: string;
+	fileUrl?: string;
 	createdAt: string;
 	updatedAt: string;
 
@@ -35,4 +38,51 @@ export interface TrainingCabinet {
 
 	createdAt?: string;
 	updatedAt?: string;
+}
+
+export interface AdaptationPlan {
+	id: string;
+	fileUrl: string;
+	supervisorComment: string;
+
+	createdAt?: string;
+	updatedAt?: string;
+	assignmentId?: string;
+}
+
+export interface Assignment {
+	assignedBy: string;
+	completedAt?: string;
+	createdAt: string;
+	dueDate: string;
+	id: string;
+	material: TrainingMaterial;
+	materialId: string;
+	survey: Survey;
+	surveyId: string;
+	adaptationPlan?: AdaptationPlan;
+	adaptationPlanId?: string;
+	updatedAt: string;
+	userPanelId: string;
+}
+
+export interface ExtendedSurvey extends Survey {
+	testResults: {
+		correctAnswers?: number;
+		passed?: boolean;
+		score?: number;
+		totalQuestions?: number;
+	};
+}
+
+export interface ExtendedAssignment extends Assignment {
+	survey: ExtendedSurvey;
+}
+
+export interface UserPanel {
+	createdAt: string;
+	id: string;
+	updatedAt: string;
+	userId: string;
+	assignments: ExtendedAssignment[];
 }

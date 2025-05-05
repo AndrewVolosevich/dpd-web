@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Calendar as CalendarIcon } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
 const months = [
 	'Январь',
@@ -43,14 +44,30 @@ const DatePickerPopoverWithFields = ({
 	value,
 	onChange,
 	disabled,
+	// name,
+	formControl = true,
 }: {
 	value: Date | undefined;
 	onChange: (date: Date | undefined) => void;
 	disabled?: (date: Date) => boolean;
+	formControl?: boolean;
+	name?: string;
 }) => {
 	const [date, setDate] = useState(value || new Date());
 	const [month, setMonth] = useState(date.getMonth());
 	const [year, setYear] = useState(date.getFullYear());
+
+	// Проверяем, находимся ли мы в контексте формы (FormProvider)
+	const formContext = useFormContext();
+	const isFormContextAvailable = !!formContext;
+
+	// const { getFieldState, formState } = formContext || {};
+
+	// Если `name` задан и форма доступна, получаем состояние поля
+	// const fieldState =
+	// 	name && isFormContextAvailable
+	// 		? getFieldState!(name, formState)
+	// 		: undefined;
 
 	const handleMonthChange = (newMonth: number) => {
 		setMonth(newMonth);
@@ -73,26 +90,42 @@ const DatePickerPopoverWithFields = ({
 		}
 	};
 
+	const renderButtonContent = () => {
+		if (value) {
+			return format(value, 'PPP', { locale: ru });
+		}
+		return <span>Выберите дату</span>;
+	};
+
 	return (
 		<>
 			<Popover modal>
 				<PopoverTrigger asChild>
-					<FormControl>
+					{formControl && isFormContextAvailable ? (
+						<FormControl>
+							<Button
+								variant="outline"
+								className={cn(
+									'w-full pl-3 text-left font-normal',
+									!value && 'text-muted-foreground',
+								)}
+							>
+								{renderButtonContent()}
+								<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+							</Button>
+						</FormControl>
+					) : (
 						<Button
-							variant={'outline'}
+							variant="outline"
 							className={cn(
 								'w-full pl-3 text-left font-normal',
 								!value && 'text-muted-foreground',
 							)}
 						>
-							{value ? (
-								format(value, 'PPP', { locale: ru })
-							) : (
-								<span>Выберите дату</span>
-							)}
+							{renderButtonContent()}
 							<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 						</Button>
-					</FormControl>
+					)}
 				</PopoverTrigger>
 				<PopoverContent
 					className="flex w-auto flex-col space-y-2 p-2"

@@ -12,70 +12,35 @@ import { OpenQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questi
 import { ChoiceQuestion } from './Questions/ChoiceQuestion';
 import { RatingQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/RatingQuestion';
 import { Progress } from '@/components/ui/progress';
-import useSurvey from '@/lib/api/queries/Surveys/useSurvey';
+import useSurvey from '@/lib/api/queries/Education/useSurvey';
 import { Answer, Question } from '@/types/entities';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { Routes } from '@/const/routes';
 import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/hooks/use-toast';
-import useApi from '@/hooks/useApi';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { MatrixQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/MatrixQuestion';
 import { PhotoQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/PhotoQuestion';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { useCreateResponseForSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateResponseForSurvey';
+import { useGetTestResults } from '@/lib/api/queries/Education/mutations/survey/useGetTestResults';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
 	const { user } = useAuth();
 	const router = useRouter();
-	const api = useApi();
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 	const [answers, setAnswers] = useState<Answer[]>([]);
 	const [started, setStarted] = useState(false);
 	const [showComment, setShowComment] = useState<boolean>(false);
 	const [testResults, setTestResults] = useState<any>(null);
-	const queryClient = useQueryClient();
 
-	const { mutateAsync: createResponse, isPending } = useMutation({
-		mutationFn: async (responseData: any) => {
-			return api.post(`/surveys/response`, {
-				...responseData,
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: 'Неудачное прохождение опроса',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['surveys-list'] });
-			toast({
-				title: 'Опрос успешно пройден',
-				variant: 'default',
-			});
-		},
-	});
+	const { mutateAsync: createResponse, isPending } =
+		useCreateResponseForSurvey();
 
-	const { mutateAsync: getResults, isPending: loadingResults } = useMutation({
-		mutationFn: async (params: { surveyId: string; userId: string }) => {
-			return api.get(`/surveys/${params.surveyId}/results`);
-		},
-		onError: (error) => {
-			toast({
-				title: 'Ошибка при получении результатов',
-				variant: 'destructive',
-				description: error.message,
-			});
-		},
-		onSuccess: (response) => {
-			setTestResults(response.data.testResults);
-		},
-	});
+	const { mutateAsync: getResults, isPending: loadingResults } =
+		useGetTestResults();
 
 	if (!surveyId || !data || !data?.questions?.length || !user?.id) {
 		return null;
@@ -151,7 +116,14 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 		await createResponse(respData);
 		// If this is a test, get the results
 		if (data.surveyVariant === 'TEST') {
-			await getResults({ surveyId, userId: user.id });
+			await getResults(
+				{ surveyId, userId: user.id },
+				{
+					onSuccess: (response: any) => {
+						setTestResults(response?.data?.testResults);
+					},
+				},
+			);
 		} else {
 			router.push(`${Routes.HOME}`);
 		}

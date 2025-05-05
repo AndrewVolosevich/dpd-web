@@ -15,10 +15,12 @@ const DatePickerPopover = ({
 	value,
 	onChange,
 	disabled,
+	title,
 }: {
 	value: Date | undefined;
 	onChange: (date: Date | undefined) => void;
 	disabled?: (date: Date) => boolean;
+	title?: string;
 }) => {
 	const [date, setDate] = useState(value || new Date());
 
@@ -43,7 +45,7 @@ const DatePickerPopover = ({
 						{value ? (
 							format(value, 'PPP', { locale: ru })
 						) : (
-							<span>Выберите дату</span>
+							<span>{title ? title : 'Выберите дату'}</span>
 						)}
 						<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 					</Button>
