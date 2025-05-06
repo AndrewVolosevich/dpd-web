@@ -38,7 +38,7 @@ export const NavLinks = [
 	},
 	{
 		title: 'База знаний',
-		href: `${Routes.EDUCATION}/my-training`,
+		href: `${Routes.EDUCATION}/materials`,
 	},
 	{
 		title: 'Корпоративная жизнь',

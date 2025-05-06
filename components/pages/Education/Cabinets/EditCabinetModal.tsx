@@ -7,20 +7,23 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { CabinetForm } from './CabinetForm';
+import type { TrainingCabinet } from '@/types/education';
 
-interface CreateCabinetModalProps {
+interface EditCabinetModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: (file: File | null, title: string) => void;
+	cabinet: TrainingCabinet | null;
 	isLoading: boolean;
 }
 
-export const CreateCabinetModal = ({
+export const EditCabinetModal = ({
 	isOpen,
 	onClose,
 	onSubmit,
+	cabinet,
 	isLoading,
-}: CreateCabinetModalProps) => {
+}: EditCabinetModalProps) => {
 	const handleClose = () => {
 		onClose();
 	};
@@ -29,13 +32,16 @@ export const CreateCabinetModal = ({
 		<Dialog open={isOpen} onOpenChange={handleClose}>
 			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
-					<DialogTitle>Создать новый кабинет</DialogTitle>
+					<DialogTitle>Редактировать кабинет</DialogTitle>
 				</DialogHeader>
-				<CabinetForm
-					onSubmit={onSubmit}
-					onCancel={handleClose}
-					isLoading={isLoading}
-				/>
+				{cabinet && (
+					<CabinetForm
+						onSubmit={onSubmit}
+						onCancel={handleClose}
+						initialData={cabinet}
+						isLoading={isLoading}
+					/>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
