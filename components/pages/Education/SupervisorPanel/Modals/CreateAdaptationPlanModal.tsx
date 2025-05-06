@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Upload, X } from 'lucide-react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useAssignAdaptationTask } from '@/lib/api/queries/Education/mutations/assign/useAssignAdaptationTask';
@@ -33,10 +32,10 @@ export function CreateAdaptationPlanModal({
 }: CreateAdaptationPlanModalProps) {
 	const { user } = useAuth();
 	const [file, setFile] = useState<File | null>(null);
+	const [startDate, setStartDate] = useState<Date | undefined>(new Date());
 	const [dueDate, setDueDate] = useState<Date | undefined>(
-		new Date(new Date().setMonth(new Date().getMonth() + 3)),
+		new Date(new Date().setMonth(new Date().getMonth() + 1)),
 	);
-	const [comment, setComment] = useState('');
 
 	const { mutate: assignAdaptationPlan, isPending } = useAssignAdaptationTask();
 
@@ -49,17 +48,16 @@ export function CreateAdaptationPlanModal({
 	const handleRefreshValues = () => {
 		setFile(null);
 		setDueDate(new Date(new Date().setMonth(new Date().getMonth() + 3)));
-		setComment('');
 	};
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
 
-		if (user?.positionId && dueDate && file) {
+		if (user?.positionId && dueDate && startDate && file) {
 			formData.append('file', file);
 			formData.append('userPanelId', employee?.userPanelId || '');
+			formData.append('startDate', startDate.toISOString());
 			formData.append('dueDate', dueDate.toISOString());
-			formData.append('supervisorComment', comment);
 			formData.append('supervisorPositionId', user?.positionId);
 
 			assignAdaptationPlan(formData, {
@@ -90,6 +88,20 @@ export function CreateAdaptationPlanModal({
 					</div>
 
 					<div className="space-y-2">
+						<Label htmlFor="startDate">Дата начала адаптации</Label>
+						<DatePickerPopoverWithFields
+							formControl={false}
+							value={startDate}
+							disabled={getDateInputDisabled}
+							onChange={(e) => {
+								if (e) {
+									setStartDate(e);
+								}
+							}}
+						/>
+					</div>
+
+					<div className="space-y-2">
 						<Label htmlFor="endDate">Дата окончания адаптации</Label>
 						<DatePickerPopoverWithFields
 							formControl={false}
@@ -100,17 +112,6 @@ export function CreateAdaptationPlanModal({
 									setDueDate(e);
 								}
 							}}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="comment">Комментарий руководителя</Label>
-						<Textarea
-							id="comment"
-							placeholder="Введите комментарий к плану адаптации"
-							value={comment}
-							onChange={(e) => setComment(e.target.value)}
-							rows={3}
 						/>
 					</div>
 

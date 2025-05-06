@@ -54,7 +54,8 @@ export interface Assignment {
 	assignedBy: string;
 	completedAt?: string;
 	createdAt: string;
-	dueDate: string;
+	startDate?: string;
+	dueDate?: string;
 	id: string;
 	material: TrainingMaterial;
 	materialId: string;

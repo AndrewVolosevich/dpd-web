@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { FileText, X } from 'lucide-react';
 import { ExtendedUserData } from '@/types/entities';
@@ -38,15 +37,14 @@ export function EditAdaptationPlanModal({
 }: EditAdaptationPlanModalProps) {
 	const { user } = useAuth();
 	const [file, setFile] = useState<File | null>(null);
+	const [startDate, setStartDate] = useState<Date | undefined>(new Date());
 	const [dueDate, setDueDate] = useState<Date | undefined>(
 		new Date(
 			assignment?.dueDate ||
-				new Date(new Date().setMonth(new Date().getMonth() + 3)),
+				new Date(new Date().setMonth(new Date().getMonth() + 1)),
 		),
 	);
-	const [comment, setComment] = useState(
-		assignment?.adaptationPlan?.supervisorComment || '',
-	);
+
 	const { mutate: updatePlan, isPending } = useUpdateAdaptationTask();
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
@@ -56,18 +54,17 @@ export function EditAdaptationPlanModal({
 	const handleRefreshValues = () => {
 		setFile(null);
 		setDueDate(new Date(new Date().setMonth(new Date().getMonth() + 3)));
-		setComment('');
 	};
 	const getDateInputDisabled = (date: Date) => date < new Date();
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
 
-		if (user?.positionId && dueDate && file) {
+		if (user?.positionId && dueDate && startDate && file) {
 			formData.append('file', file);
 			formData.append('userPanelId', employee?.userPanelId || '');
+			formData.append('startDate', startDate.toISOString());
 			formData.append('dueDate', dueDate.toISOString());
-			formData.append('supervisorComment', comment);
 			formData.append('planId', assignment?.adaptationPlan?.id || '');
 			formData.append('supervisorPositionId', user?.positionId);
 
@@ -99,6 +96,20 @@ export function EditAdaptationPlanModal({
 					</div>
 
 					<div className="space-y-2">
+						<Label htmlFor="startDate">Дата начала адаптации</Label>
+						<DatePickerPopoverWithFields
+							formControl={false}
+							value={startDate}
+							disabled={getDateInputDisabled}
+							onChange={(e) => {
+								if (e) {
+									setStartDate(e);
+								}
+							}}
+						/>
+					</div>
+
+					<div className="space-y-2">
 						<Label htmlFor="endDate">Дата окончания адаптации</Label>
 						<DatePickerPopoverWithFields
 							formControl={false}
@@ -109,17 +120,6 @@ export function EditAdaptationPlanModal({
 									setDueDate(e);
 								}
 							}}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="comment">Комментарий руководителя</Label>
-						<Textarea
-							id="comment"
-							placeholder="Введите комментарий к плану адаптации"
-							value={comment}
-							onChange={(e) => setComment(e.target.value)}
-							rows={3}
 						/>
 					</div>
 

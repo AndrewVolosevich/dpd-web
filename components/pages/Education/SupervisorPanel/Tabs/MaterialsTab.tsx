@@ -79,7 +79,7 @@ export default function MaterialsTab({
 							<TableHead className="w-[400px]">ФИО</TableHead>
 							<TableHead>Название</TableHead>
 							<TableHead>Статус</TableHead>
-							<TableHead>Посещено</TableHead>
+							<TableHead>Выполнено</TableHead>
 							<TableHead>Срок выполнения</TableHead>
 						</TableRow>
 					</TableHeader>

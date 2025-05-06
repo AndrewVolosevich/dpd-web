@@ -211,9 +211,8 @@ export default function AdaptationTab({
 										<TableRow>
 											<TableHead>Файл плана</TableHead>
 											<TableHead>Статус</TableHead>
-											<TableHead>Дата загрузки</TableHead>
-											<TableHead>Дата окончания</TableHead>
-											<TableHead>Комментарий</TableHead>
+											<TableHead>Начало адаптации</TableHead>
+											<TableHead>Конец адаптации</TableHead>
 											<TableHead className="text-right">Действия</TableHead>
 										</TableRow>
 									</TableHeader>
@@ -230,9 +229,9 @@ export default function AdaptationTab({
 												</TableCell>
 												<TableCell>{getStatusBadge(assignment)}</TableCell>
 												<TableCell>
-													{assignment?.createdAt
+													{assignment?.startDate
 														? format(
-																new Date(assignment?.createdAt),
+																new Date(assignment?.startDate),
 																'dd.MM.yyyy',
 																{
 																	locale: ru,
@@ -241,9 +240,9 @@ export default function AdaptationTab({
 														: ''}
 												</TableCell>
 												<TableCell>
-													{assignment?.completedAt
+													{assignment?.dueDate
 														? format(
-																new Date(assignment?.completedAt),
+																new Date(assignment?.dueDate),
 																'dd.MM.yyyy',
 																{
 																	locale: ru,
@@ -251,18 +250,7 @@ export default function AdaptationTab({
 															)
 														: ''}
 												</TableCell>
-												<TableCell>
-													<div
-														className="truncate max-w-[150px]"
-														title={
-															assignment?.adaptationPlan?.supervisorComment ||
-															'-'
-														}
-													>
-														{assignment?.adaptationPlan?.supervisorComment ||
-															'—'}
-													</div>
-												</TableCell>
+
 												<TableCell className="text-right">
 													<div className="flex justify-end gap-2">
 														<Button

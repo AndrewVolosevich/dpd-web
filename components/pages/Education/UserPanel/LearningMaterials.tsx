@@ -5,6 +5,7 @@ import { ru } from 'date-fns/locale';
 import { Clock, Download, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { getIconForMaterial } from '@/lib/getIconForMaterial';
+import { useFinishMaterial } from '@/lib/api/queries/Education/mutations/material/useFinishMaterial';
 
 interface LearningMaterialsProps {
 	materialAssignments?: Assignment[];
@@ -13,6 +14,14 @@ interface LearningMaterialsProps {
 export default function LearningMaterials({
 	materialAssignments,
 }: LearningMaterialsProps) {
+	const { mutate: finishMaterial } = useFinishMaterial();
+
+	const handleFinishMaterial = async (materialId?: string) => {
+		if (materialId) {
+			finishMaterial(materialId);
+		}
+	};
+
 	if (materialAssignments?.length === 0) {
 		return (
 			<div className="text-center py-8">
@@ -64,17 +73,30 @@ export default function LearningMaterials({
 										)}
 									</span>
 								</div>
-								<div className="flex items-center text-sm text-muted-foreground mb-4">
-									<Clock className="h-4 w-4 mr-1" />
-									<span>
-										Время готовности{' '}
-										{formatDistanceToNow(new Date(assignment?.dueDate), {
-											addSuffix: true,
-											locale: ru,
-										})}
-									</span>
-								</div>
+								{assignment?.dueDate && (
+									<div className="flex items-center text-sm text-muted-foreground mb-4">
+										<Clock className="h-4 w-4 mr-1" />
+										<span>
+											Время готовности{' '}
+											{formatDistanceToNow(new Date(assignment?.dueDate), {
+												addSuffix: true,
+												locale: ru,
+											})}
+										</span>
+									</div>
+								)}
 								<div className="flex justify-end">
+									{!assignment?.completedAt && (
+										<Button
+											className={'mr-2'}
+											onClick={() => {
+												handleFinishMaterial(assignment?.material?.id);
+											}}
+											variant="outline"
+										>
+											Ознакомился
+										</Button>
+									)}
 									<Link
 										href={
 											assignment?.material?.url ||
