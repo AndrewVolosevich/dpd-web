@@ -59,6 +59,19 @@ export default function UsersTable() {
 		return <FullPageLoader />;
 	}
 
+	// Группировка данных по отделам
+	const groupedUsers = data?.data.reduce(
+		(acc: Record<string, UserData[]>, user) => {
+			const departmentTitle = user.department?.title || 'Без отдела';
+			if (!acc[departmentTitle]) {
+				acc[departmentTitle] = [];
+			}
+			acc[departmentTitle].push(user);
+			return acc;
+		},
+		{},
+	);
+
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
 			<div className={'flex flex-col md:flex-row justify-between items-start'}>
@@ -98,38 +111,48 @@ export default function UsersTable() {
 								</TableCell>
 							</TableRow>
 						) : (
-							data?.data?.map((user) => (
-								<TableRow key={user.tel}>
-									<TableCell>
-										<Link href={`/profile/${user?.id}`}>
-											{user?.surname} {user?.name}
-										</Link>
-									</TableCell>
-
-									<TableCell>{user?.tel}</TableCell>
-									<TableCell>{user?.department?.title || '-'}</TableCell>
-									<TableCell>{user?.position?.title || '-'}</TableCell>
-									<TableCell className={'flex flex-row justify-end'}>
-										{isAdmin ? (
-											<>
-												<div className="flex gap-2">
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => {
-															setUpdatedUser(user);
-															setOpen(true);
-														}}
-													>
-														<Pencil className="h-4 w-4" />
-														<span className="sr-only">Редактировать</span>
-													</Button>
-													<DeleteAlert onProceed={() => deleteUser(user?.id)} />
-												</div>
-											</>
-										) : null}
-									</TableCell>
-								</TableRow>
+							// Рендеринг пользователей с заголовками отделов
+							Object.entries(groupedUsers || {}).map(([department, users]) => (
+								<React.Fragment key={department}>
+									{/* Заголовок отдела */}
+									<TableRow>
+										<TableCell colSpan={5} className="bg-gray-100 font-bold">
+											{department}
+										</TableCell>
+									</TableRow>
+									{/* Список пользователей из отдела */}
+									{users.map((user) => (
+										<TableRow key={user.id}>
+											<TableCell>
+												<Link href={`/profile/${user.id}`}>
+													{user.surname} {user.name}
+												</Link>
+											</TableCell>
+											<TableCell>{user.tel}</TableCell>
+											<TableCell>{user.department?.title || '-'}</TableCell>
+											<TableCell>{user.position?.title || '-'}</TableCell>
+											<TableCell className="flex flex-row justify-end">
+												{isAdmin && (
+													<div className="flex gap-2">
+														<Button
+															variant="ghost"
+															size="icon"
+															onClick={() => {
+																setUpdatedUser(user);
+																setOpen(true);
+															}}
+														>
+															<Pencil className="h-4 w-4" />
+														</Button>
+														<DeleteAlert
+															onProceed={() => deleteUser(user.id)}
+														/>
+													</div>
+												)}
+											</TableCell>
+										</TableRow>
+									))}
+								</React.Fragment>
 							))
 						)}
 					</TableBody>

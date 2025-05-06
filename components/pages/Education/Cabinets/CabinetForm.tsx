@@ -7,37 +7,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { TrainingCabinet } from '@/types/education';
-import UploadImage from '@/components/common/UploadImage';
+import FileSelector from '@/components/common/FileSelector';
 
 interface CabinetFormProps {
-	onSubmit: (cabinet: Omit<TrainingCabinet, 'id' | 'sections'>) => void;
+	onSubmit: (file: File | null, title: string) => void;
 	onCancel: () => void;
 	initialData?: Partial<TrainingCabinet>;
+	isLoading: boolean;
 }
 
 export const CabinetForm = ({
 	onSubmit,
 	onCancel,
 	initialData,
+	isLoading,
 }: CabinetFormProps) => {
 	const [title, setTitle] = useState(initialData?.title || '');
-	const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [file, setFile] = useState<File | null>(null);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
-
-		onSubmit({
-			title,
-			imageUrl,
-		});
-
-		setIsSubmitting(false);
-	};
-
-	const handleImageUploaded = (val?: string) => {
-		val && setImageUrl(val);
+		onSubmit(file, title);
 	};
 
 	return (
@@ -53,12 +43,12 @@ export const CabinetForm = ({
 				/>
 			</div>
 
-			<div className="space-y-2">
+			<div className="space-y-2 my-4">
 				<Label>Изображение кабинета</Label>
-				<UploadImage
-					onClose={handleImageUploaded}
-					url={'/upload/update-cabinet-image'}
-					hideImage={!!imageUrl}
+				<FileSelector
+					initialUrl={initialData?.imageUrl}
+					useFile={[file, setFile]}
+					isImage
 				/>
 			</div>
 
@@ -69,9 +59,9 @@ export const CabinetForm = ({
 				<Button
 					onClick={handleSubmit}
 					type="button"
-					disabled={isSubmitting || !title || !imageUrl}
+					disabled={isLoading || !(title || file)}
 				>
-					{isSubmitting ? 'Сохранение...' : 'Сохранить'}
+					{isLoading ? 'Сохранение...' : 'Сохранить'}
 				</Button>
 			</div>
 		</div>

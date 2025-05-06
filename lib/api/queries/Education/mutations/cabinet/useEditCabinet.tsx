@@ -4,22 +4,28 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
 
-export function useCreateCabinet() {
+export function useEditCabinet() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (formData: FormData) => {
-			return api.post(`/education/cabinet`, formData, {
+		mutationFn: async ({
+			formData,
+			cabinetId,
+		}: {
+			formData: FormData;
+			cabinetId: string;
+		}) => {
+			return api.post(`/education/update-cabinet/${cabinetId}`, formData, {
 				headers: {
-					'Content-Type': 'multipart/form-data',
+					'Content-Type': 'multipart/form-data', // Указываем тип контента
 				},
 			});
 		},
 		onError: (error) => {
 			toast({
-				title: 'Неудачное создание кабинета',
+				title: 'Неудачное обновление кабинета',
 				variant: 'destructive',
 				description: error.message,
 			});
@@ -29,7 +35,7 @@ export function useCreateCabinet() {
 				queryKey: ['education-cabinets-list'],
 			});
 			toast({
-				title: 'Кабинет успешно создан',
+				title: 'Кабинет успешно обновлен',
 				variant: 'default',
 			});
 		},

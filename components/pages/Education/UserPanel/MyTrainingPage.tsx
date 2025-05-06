@@ -23,7 +23,7 @@ export default function MyTrainingPage() {
 				onValueChange={setActiveTab}
 				className="w-full"
 			>
-				<TabsList className="grid grid-cols-3 mb-6 w-full max-w-2xl">
+				<TabsList className="grid grid-cols-1 sm:grid-cols-3 mb-6 w-full max-w-2xl h-auto">
 					<TabsTrigger value="assigned">Назначенные тесты</TabsTrigger>
 					<TabsTrigger value="completed">Пройденные тесты</TabsTrigger>
 					<TabsTrigger value="materials">Материалы для изучения</TabsTrigger>

@@ -4,32 +4,28 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
 
-export function useCreateCabinet() {
+export function useFinishMaterial() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (formData: FormData) => {
-			return api.post(`/education/cabinet`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			});
+		mutationFn: async (materialId: string) => {
+			return api.post(`/education/finish-material/${materialId}`);
 		},
 		onError: (error) => {
 			toast({
-				title: 'Неудачное создание кабинета',
+				title: 'Неудачная попытка',
 				variant: 'destructive',
 				description: error.message,
 			});
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['education-cabinets-list'],
+				queryKey: ['education-cabinet'],
 			});
 			toast({
-				title: 'Кабинет успешно создан',
+				title: 'Вы ознакомились',
 				variant: 'default',
 			});
 		},

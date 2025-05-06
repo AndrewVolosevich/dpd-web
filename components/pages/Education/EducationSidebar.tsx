@@ -15,6 +15,11 @@ import { Routes } from '@/const/routes';
 
 const sidebarItems = [
 	{
+		title: 'Учебные кабинеты',
+		href: `${Routes.EDUCATION}/materials`,
+		icon: FileText,
+	},
+	{
 		title: 'Мое обучение',
 		href: `${Routes.EDUCATION}/my-training`,
 		icon: GraduationCap,
@@ -28,11 +33,6 @@ const sidebarItems = [
 		title: 'Ежегодная оценка',
 		href: `${Routes.EDUCATION}/assessment`,
 		icon: LineChart,
-	},
-	{
-		title: 'Материалы для развития',
-		href: `${Routes.EDUCATION}/materials`,
-		icon: FileText,
 	},
 	{
 		title: 'Панель руководителя',
@@ -53,7 +53,7 @@ export function EducationSidebar({ className }: EducationSidebarProps) {
 	return (
 		<div
 			className={cn(
-				'w-64 border-r h-[calc(100vh-64px)] bg-background',
+				'max-w-64 border-r h-[calc(100vh-64px)] bg-background',
 				className,
 			)}
 		>
@@ -74,7 +74,7 @@ export function EducationSidebar({ className }: EducationSidebarProps) {
 							)}
 						>
 							<item.icon className="h-4 w-4" />
-							{item.title}
+							<span className={'hidden sm:block'}>{item.title}</span>
 						</Link>
 					))}
 			</div>
