@@ -30,6 +30,8 @@ import { DeleteAdaptationPlanModal } from '../Modals/DeleteAdaptationPlanModal';
 import { CompleteAdaptationModal } from '../Modals/CompleteAdaptationModal';
 import { ExtendedUserData } from '@/types/entities';
 import { Assignment } from '@/types/education';
+import useTemplatesList from '@/lib/api/queries/Education/useTemplatesList';
+import Link from 'next/link';
 
 export default function AdaptationTab({
 	departmentUsers,
@@ -45,11 +47,10 @@ export default function AdaptationTab({
 		useState<ExtendedUserData | null>(null);
 	const [selectedAssignment, setSelectedAssignment] =
 		useState<Assignment | null>(null);
-
+	const { data: templates } = useTemplatesList();
 	const getAdaptationUserAssignments = (employee: ExtendedUserData) => {
 		return employee?.userPanel?.assignments?.filter((a) => !!a?.adaptationPlan);
 	};
-
 	// Modal states
 	const [createModalOpen, setCreateModalOpen] = useState(false);
 	const [editModalOpen, setEditModalOpen] = useState(false);
@@ -324,6 +325,22 @@ export default function AdaptationTab({
 					</Card>
 				);
 			})}
+
+			<Card className={'mt-4 p-4'}>
+				<Table>
+					<TableBody>
+						{templates?.map((t) => (
+							<TableRow key={t.url}>
+								<Link href={t.url}>
+									<TableCell>
+										<div>{t.name}</div>
+									</TableCell>
+								</Link>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</Card>
 
 			{/* Modals */}
 			{selectedEmployee && (
