@@ -143,3 +143,56 @@ export const exportSurveyToCsv = (survey: Survey): void => {
 	link.click();
 	document.body.removeChild(link);
 };
+
+/**
+ * Экспорт данных в CSV файл
+ * @param {Array<{key: string, title: string}>} columns - Массив объектов с ключами и названиями столбцов
+ * @param {Object[]} data - Массив объектов с данными
+ * @param {string} [filename='export.csv'] - Имя файла для сохранения
+ */
+export const exportDataToCsv = (
+	columns: Array<{ key: string; title: string }>,
+	data: any,
+	filename = 'export.csv',
+) => {
+	if (!columns || !Array.isArray(columns) || columns.length === 0) {
+		console.error('Invalid columns configuration');
+		return;
+	}
+
+	if (!data || !Array.isArray(data)) {
+		console.error('Invalid data provided');
+		return;
+	}
+
+	// Добавляем BOM для правильной кодировки в Excel
+	let csv = '\uFEFF';
+
+	// Заголовки
+	csv +=
+		columns.map((col) => `"${col.title.replace(/"/g, '""')}"`).join(',') + '\n';
+
+	// Данные
+	data.forEach((row) => {
+		const rowValues = columns.map((col) => {
+			let value = row[col.key] !== undefined ? row[col.key] : '';
+			// Преобразуем null в пустую строку
+			if (value === null) value = '';
+			return `"${String(value).replace(/"/g, '""')}"`;
+		});
+		csv += rowValues.join(',') + '\n';
+	});
+
+	// Создаем Blob с правильной кодировкой
+	const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+	const link = document.createElement('a');
+	const url = URL.createObjectURL(blob);
+
+	link.setAttribute('href', url);
+	link.setAttribute('download', filename);
+	link.style.visibility = 'hidden';
+
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+};
