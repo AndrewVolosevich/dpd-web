@@ -82,7 +82,10 @@ export default function SupervisorDashboard() {
 					</TabsContent>
 
 					<TabsContent value="reports" className="mt-6">
-						<ReportsTab />
+						<ReportsTab
+							isLoading={isLoading}
+							departmentUsers={departmentUsers}
+						/>
 					</TabsContent>
 				</Tabs>
 			</div>
