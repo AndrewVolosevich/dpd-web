@@ -99,7 +99,7 @@ export const EDITOR_NEW_DATA = {
 		{
 			type: 'paragraph',
 			data: {
-				text: 'Коллеги, рады вам сообщить, что к команде филиала <mark class="cdx-marker">г. Минск</mark>&nbsp;на должность <mark class="cdx-marker">в роли начальника терминала</mark> присоединился <mark class="cdx-marker">Иванов Иван Иванович</mark>.',
+				text: 'Коллеги, рады вам сообщить, что в секторе сортировки терминала в г. Минске произошли кадровые перестановки. Иванов Иван переведен на должность начальника смены.&nbsp;',
 			},
 		},
 		{
@@ -109,20 +109,22 @@ export const EDITOR_NEW_DATA = {
 		{
 			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Иванов Иван Иванович&nbsp;</mark>',
+				text: 'Иванов Иван Иванович&nbsp;',
 				level: 3,
 			},
 		},
 		{
-			type: 'paragraph',
+			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Начальник терминала&nbsp;</mark>&nbsp;',
+				text: 'Начальник терминала&nbsp;',
+				level: 3,
 			},
 		},
 		{
-			type: 'paragraph',
+			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Филиал г. Минск&nbsp;<br></mark>',
+				text: 'Филиал г. Минск&nbsp;',
+				level: 3,
 			},
 		},
 		{
@@ -138,7 +140,7 @@ export const EDITOR_NEW_DATA = {
 		{
 			type: 'paragraph',
 			data: {
-				text: '<mark class="cdx-marker">Иван</mark> будет отвечать за:&nbsp;',
+				text: '<b>Иван будет отвечать за:&nbsp;</b>',
 			},
 		},
 		{
@@ -180,13 +182,13 @@ export const EDITOR_NEW_DATA = {
 		{
 			type: 'paragraph',
 			data: {
-				text: 'Рабочий телефон: <mark class="cdx-marker">123-123-123</mark>',
+				text: '<b>Рабочий телефон:</b> 123-123-123',
 			},
 		},
 		{
 			type: 'paragraph',
 			data: {
-				text: '<mark class="cdx-marker">Иван</mark>, добро пожаловать в команду, желаем успехов и удачи!&nbsp;',
+				text: '<b>Иван, желаем быстрой адаптации в новой должности и надеемся на успешное и плодотворное сотрудничество!&nbsp;</b>',
 			},
 		},
 	],
@@ -216,20 +218,22 @@ export const EDITOR_TRANSFER_DATA = {
 		{
 			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Иванов Иван Иванович&nbsp;</mark>',
+				text: 'Иванов Иван Иванович&nbsp;',
 				level: 3,
 			},
 		},
 		{
-			type: 'paragraph',
+			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Начальник смены&nbsp;</mark>&nbsp;',
+				text: 'Начальник смены&nbsp;',
+				level: 3,
 			},
 		},
 		{
-			type: 'paragraph',
+			type: 'header',
 			data: {
-				text: '<mark class="cdx-marker">Филиал г. Минск&nbsp;<br></mark>',
+				text: 'Филиал г. Минск&nbsp;',
+				level: 3,
 			},
 		},
 		{
@@ -245,7 +249,7 @@ export const EDITOR_TRANSFER_DATA = {
 		{
 			type: 'paragraph',
 			data: {
-				text: '<mark class="cdx-marker">Иван</mark> будет отвечать за:&nbsp;',
+				text: '<b>Иван будет отвечать за:&nbsp;</b>',
 			},
 		},
 		{
@@ -276,13 +280,13 @@ export const EDITOR_TRANSFER_DATA = {
 		{
 			type: 'paragraph',
 			data: {
-				text: 'Рабочий телефон: <mark class="cdx-marker">123-123-123</mark>',
+				text: '<b>Рабочий телефон:</b> 123-123-123',
 			},
 		},
 		{
 			type: 'paragraph',
 			data: {
-				text: '<mark class="cdx-marker">Иван</mark>, желаем быстрой адаптации в новой должности и надеемся на успешное и плодотворное сотрудничество!&nbsp;',
+				text: '<b>Иван, желаем быстрой адаптации в новой должности и надеемся на успешное и плодотворное сотрудничество!</b>',
 			},
 		},
 	],

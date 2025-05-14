@@ -92,7 +92,7 @@ const Presentation = ({ user }: { user: UserData }) => {
 						variant={'outline'}
 						onClick={() => handleSample(EDITOR_TRANSFER_DATA)}
 					>
-						При преводе
+						При переводе
 					</Button>
 				</div>
 			)}
