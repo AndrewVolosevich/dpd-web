@@ -39,7 +39,7 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 				</div>
 				<div className={'flex flex-col'}>
 					<Link
-						href={`profile/${user?.id}`}
+						href={`/profile/${user?.id}`}
 						className={
 							'font-medium text-base mb-1 truncate self-center text-red-600'
 						}

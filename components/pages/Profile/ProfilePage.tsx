@@ -4,7 +4,14 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { Button } from '@/components/ui/button';
-import { Building, Calendar, Edit2, Mail, Phone } from 'lucide-react';
+import {
+	Building,
+	Calendar,
+	Edit2,
+	GraduationCap,
+	Mail,
+	Phone,
+} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import UserCard from '@/components/pages/Home/UserCard';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
@@ -75,6 +82,12 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							</div>
 							<div className="flex items-center">
 								<Building className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">
+									{anotherUser?.department?.title ?? ''}
+								</span>
+							</div>
+							<div className="flex items-center">
+								<GraduationCap className="mr-2 h-4 w-4 text-gray-400" />
 								<span className="text-sm">
 									{anotherUser?.position?.title ?? ''}
 								</span>

@@ -37,8 +37,8 @@ export const NavLinks = [
 		],
 	},
 	{
-		title: 'База знаний',
-		href: `${Routes.EDUCATION}/materials`,
+		title: 'Новости',
+		href: Routes.NEWS,
 	},
 	{
 		title: 'Корпоративная жизнь',
@@ -59,8 +59,8 @@ export const NavLinks = [
 		],
 	},
 	{
-		title: 'Новости',
-		href: Routes.NEWS,
+		title: 'База знаний',
+		href: `${Routes.EDUCATION}/materials`,
 	},
 	{
 		title: 'Администратор',

@@ -22,16 +22,16 @@ const renderers = {
 };
 
 const customClassNames = {
-	paragraph: 'mb-4 text-base text-gray-700',
+	paragraph: 'mb-4 text-base',
 	header: {
-		h1: 'text-4xl font-bold mb-4',
-		h2: 'text-3xl font-semibold mb-3',
-		h3: 'text-2xl font-medium mb-2',
-		h4: 'text-xl mb-1',
+		h1: 'text-4xl font-bold mb-4 text-red-600',
+		h2: 'text-3xl font-semibold mb-3 text-red-600',
+		h3: 'text-2xl font-medium mb-2 text-red-600',
+		h4: 'text-xl mb-1 text-red-600',
 		h5: 'text-lg',
 		h6: 'text-base',
 	},
-	link: 'text-blue-600 hover:underline',
+	link: 'hover:underline',
 	image: 'my-4 mx-auto max-w-full rounded-lg shadow-lg',
 	delimiter: 'my-8 border-t-2 border-gray-300',
 };
