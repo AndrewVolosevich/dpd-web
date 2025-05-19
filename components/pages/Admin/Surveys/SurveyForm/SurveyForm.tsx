@@ -150,6 +150,26 @@ export function SurveyForm({
 		setQuestions(updated);
 	};
 
+	const toggleAllInCorrect = (qIndex: number) => {
+		// Создаем копию массива вопросов
+		const updatedQuestions = [...questions];
+
+		// Обновляем только поле options у вопроса с индексом qIndex
+		const targetQuestion = updatedQuestions[qIndex];
+		if (targetQuestion) {
+			updatedQuestions[qIndex] = {
+				...targetQuestion,
+				options: targetQuestion.options.map((o) => ({
+					...o,
+					correct: false,
+				})),
+			};
+		}
+
+		// Устанавливаем обновленный массив вопросов
+		setQuestions(updatedQuestions);
+	};
+
 	const setCorrectAnswer = (qIndex: number, oIndex: number) => {
 		setQuestions((prev) => {
 			const updated = [...prev];
@@ -352,9 +372,10 @@ export function SurveyForm({
 								</div>
 								<Select
 									value={q.type}
-									onValueChange={(value) =>
-										updateQuestion(qIndex, 'type', value as QuestionType)
-									}
+									onValueChange={(value) => {
+										toggleAllInCorrect(qIndex);
+										updateQuestion(qIndex, 'type', value as QuestionType);
+									}}
 								>
 									<SelectTrigger>
 										<SelectValue placeholder="Выберите тип вопроса" />
