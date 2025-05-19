@@ -20,8 +20,11 @@ export function useDeleteUser() {
 				description: error.message,
 			});
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['paginated-users'] });
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({ queryKey: ['paginated-users'] });
+			await queryClient.invalidateQueries({
+				queryKey: ['department-positions'],
+			});
 			toast({
 				title: 'Пользователь успешно удален',
 				variant: 'default',

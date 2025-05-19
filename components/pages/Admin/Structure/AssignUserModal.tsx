@@ -11,19 +11,26 @@ import {
 	DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import type { Position } from '@/types/structure';
 import { Loader } from '@/components/common/Loader/Loader';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { useUsers } from '@/lib/api/queries/Users/useUsers';
-import { Loader2 } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { useAssignUserToPosition } from '@/lib/api/queries/Structure/mutations/useAssignUserToPosition';
+import {
+	Popover,
+	WithoutPortalPopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from 'cmdk';
+import { cn } from '@/lib/utils';
+import { UserData } from '@/types/entities';
 
 interface AssignUserModalProps {
 	isOpen: boolean;
@@ -36,26 +43,27 @@ export default function AssignUserModal({
 	onClose,
 	position,
 }: AssignUserModalProps) {
-	const [selectedUserId, setSelectedUserId] = useState<string>('');
+	const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
 	const { data: users, isLoading: isLoadingUsers } = useUsers();
 	const { mutate: assignUser, isPending } = useAssignUserToPosition();
+	const [open, setOpen] = useState(false);
 
 	// Reset selection when modal opens
 	useEffect(() => {
 		if (isOpen) {
-			setSelectedUserId('');
+			setSelectedUser(null);
 		}
 	}, [isOpen]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (!selectedUserId) return;
+		if (!selectedUser?.id) return;
 
 		assignUser(
 			{
 				positionId: position.id,
-				userId: selectedUserId,
+				userId: selectedUser?.id,
 			},
 			{
 				onSuccess: () => {
@@ -78,27 +86,75 @@ export default function AssignUserModal({
 				<form onSubmit={handleSubmit}>
 					<div className="grid gap-4 py-4">
 						<div className="grid gap-2">
-							<Label htmlFor="user">Выберите сотрудника</Label>
 							{isLoadingUsers ? (
 								<div className="flex justify-center p-2">
 									<Loader />
 								</div>
 							) : availableUsers.length > 0 ? (
-								<Select
-									value={selectedUserId}
-									onValueChange={setSelectedUserId}
-								>
-									<SelectTrigger>
-										<SelectValue placeholder="Выберите сотрудника" />
-									</SelectTrigger>
-									<SelectContent>
-										{availableUsers.map((user) => (
-											<SelectItem key={user.id} value={user.id}>
-												{user.surname} {user.name} {user.patronymic}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
+								<Popover open={open} onOpenChange={setOpen}>
+									<PopoverTrigger asChild>
+										<Button
+											variant="outline"
+											role="combobox"
+											aria-expanded={open}
+											className="w-full justify-between"
+										>
+											{selectedUser?.surname && selectedUser?.name
+												? `${selectedUser.surname} ${selectedUser.name}`
+												: 'Выберите сотрудника'}
+											<ChevronsUpDown
+												size={16}
+												className="opacity-50 w-4 ml-2"
+											/>
+										</Button>
+									</PopoverTrigger>
+									<WithoutPortalPopoverContent
+										className="w-full p-0"
+										style={{ width: 'var(--radix-popover-trigger-width)' }}
+										align="start"
+										sideOffset={4}
+									>
+										<Command>
+											<CommandInput
+												className={'p-2 outline-none'}
+												placeholder="Поиск сотрудника..."
+											/>
+											<CommandList>
+												<CommandEmpty className={'p-2'}>
+													Сотрудник не найден
+												</CommandEmpty>
+												<CommandGroup>
+													{users?.map((user) => (
+														<CommandItem
+															key={user.id}
+															value={`${user.surname} ${user.name} ${user.patronymic}`}
+															onSelect={() => {
+																setSelectedUser(user);
+																setOpen(false);
+															}}
+														>
+															<div
+																className={
+																	'flex flex-row items-center justify-between cursor-pointer p-2'
+																}
+															>
+																{user.surname} {user.name} {user.patronymic}
+																<Check
+																	className={cn(
+																		'ml-auto',
+																		selectedUser?.id === user.id
+																			? 'opacity-100'
+																			: 'opacity-0',
+																	)}
+																/>
+															</div>
+														</CommandItem>
+													))}
+												</CommandGroup>
+											</CommandList>
+										</Command>
+									</WithoutPortalPopoverContent>
+								</Popover>
 							) : (
 								<div className="text-sm text-gray-500 p-2 border rounded-md">
 									Нет доступных сотрудников для назначения
@@ -110,7 +166,7 @@ export default function AssignUserModal({
 						<Button type="button" variant="outline" onClick={onClose}>
 							Отмена
 						</Button>
-						<Button type="submit" disabled={isPending || !selectedUserId}>
+						<Button type="submit" disabled={isPending || !selectedUser?.id}>
 							{isPending ? <Loader2 className="animate-spin mr-2" /> : null}
 							Назначить
 						</Button>

@@ -1,6 +1,6 @@
 'use client';
 
-import type React from 'react';
+import React, { useMemo } from 'react';
 
 import { useState } from 'react';
 import {
@@ -11,10 +11,10 @@ import {
 	DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useCreatePosition } from '@/lib/api/queries/Structure/mutations/useCreatePosition';
 import { Loader2 } from 'lucide-react';
+import { SearchSelectInput } from '@/components/common/SearchSelectInput/SearchSelectInput';
+import { useAllPositions } from '@/lib/api/queries/Structure/useAllPositions';
 
 interface CreatePositionModalProps {
 	isOpen: boolean;
@@ -29,6 +29,11 @@ export default function CreatePositionModal({
 }: CreatePositionModalProps) {
 	const [title, setTitle] = useState('');
 	const { mutate: createPosition, isPending } = useCreatePosition();
+	const { data } = useAllPositions();
+
+	const positions = useMemo(() => {
+		return (data?.map((position) => position.title) as string[]) || [];
+	}, [data]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -51,22 +56,25 @@ export default function CreatePositionModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent
+				className="sm:max-w-[425px]"
+				onOpenAutoFocus={(e) => e.preventDefault()}
+			>
 				<DialogHeader>
 					<DialogTitle>Создать должность</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<div className="grid gap-4 py-4">
-						<div className="grid gap-2">
-							<Label htmlFor="title">Название должности</Label>
-							<Input
-								id="title"
-								value={title}
-								onChange={(e) => setTitle(e.target.value)}
-								placeholder="Введите название должности"
-								required
-							/>
-						</div>
+						<SearchSelectInput
+							options={positions}
+							inputId={title}
+							value={title}
+							labelTitle={'Название должности'}
+							placeholder={'Введите название должности'}
+							inputRequired
+							onChange={(e) => setTitle(e)}
+							className={'grid gap-2 relative'}
+						/>
 					</div>
 					<DialogFooter>
 						<Button type="button" variant="outline" onClick={onClose}>

@@ -34,6 +34,9 @@ export function useUpdateUser() {
 			await queryClient.invalidateQueries({
 				queryKey: ['users-by-birthdays'],
 			});
+			await queryClient.invalidateQueries({
+				queryKey: ['department-positions'],
+			});
 
 			toast({
 				title: 'Пользователь успешно изменен',

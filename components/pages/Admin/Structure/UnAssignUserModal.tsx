@@ -43,7 +43,7 @@ export default function UnAssignUserModal({
 			{
 				onSuccess: () => {
 					queryClient.invalidateQueries({
-						queryKey: ['positions', position?.departmentId],
+						queryKey: ['department-positions', position?.departmentId],
 					});
 					queryClient.invalidateQueries({
 						queryKey: ['departments'],

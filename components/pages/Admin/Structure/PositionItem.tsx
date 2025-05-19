@@ -6,7 +6,7 @@ import DeletePositionModal from '@/components/pages/Admin/Structure/DeletePositi
 import AssignUserModal from '@/components/pages/Admin/Structure/AssignUserModal';
 import UnAssignUserModal from '@/components/pages/Admin/Structure/UnAssignUserModal';
 import { Position } from '@/types/structure';
-import AddSupervisorPanelModal from '@/components/pages/Admin/Supervisor/AddSupervisorPanelModal';
+import AddSupervisorPanelModal from '@/components/pages/Education/SupervisorPanel/Modals/AddSupervisorPanelModal';
 import { useAssignSupervisorPanel } from '@/lib/api/queries/Structure/mutations/useAssignSupervisorPanel';
 
 const PositionItem = ({ position }: { position: Position }) => {

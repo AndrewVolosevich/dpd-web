@@ -25,7 +25,7 @@ export function useAssignSupervisorPanel(departmentId: string) {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['positions', departmentId],
+				queryKey: ['department-positions', departmentId],
 			});
 			toast({
 				title: 'Панель успешно назначена',
