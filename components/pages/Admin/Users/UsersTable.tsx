@@ -184,7 +184,10 @@ export default function UsersTable() {
 				<EditUserModal
 					open={open}
 					user={updatedUser}
-					onClose={() => setOpen(false)}
+					onClose={() => {
+						setUpdatedUser(undefined);
+						setOpen(false);
+					}}
 					isSelf={user?.id === updatedUser?.id}
 				/>
 			)}
