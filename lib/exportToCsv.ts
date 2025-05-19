@@ -81,7 +81,17 @@ const getAnswerValue = (response: Response, question: Question): string[] => {
 };
 
 /**
- * Экспортирует результаты опроса в CSV
+ * Преобразует значение ответа в строку для CSV с учётом кириллицы и экранирования
+ */
+const formatValueForCsv = (value: any): string => {
+	if (value === null || value === undefined) {
+		return '""';
+	}
+	return `"${String(value).replace(/"/g, '""')}"`;
+};
+
+/**
+ * Экспорт результатов опроса в CSV
  */
 export const exportSurveyToCsv = (survey: Survey): void => {
 	if (!survey || !survey.questions || !survey.responses) {
@@ -91,52 +101,82 @@ export const exportSurveyToCsv = (survey: Survey): void => {
 
 	// Создаем заголовки CSV
 	const headers = ['ID респондента', 'Дата прохождения'];
-	const questionHeadersFlat: string[] = [];
 
 	// Добавляем заголовки для каждого вопроса
 	survey.questions.forEach((question) => {
-		const questionHeaders = getQuestionHeader(question).split(',');
-		questionHeadersFlat.push(...questionHeaders);
+		if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
+			// Для матричных вопросов добавляем отдельный заголовок для строк
+			question.ratingConfig.rows.forEach((row) => {
+				headers.push(`${question.text} - ${row}`.replace(/"/g, '""'));
+			});
+		} else {
+			headers.push(question.text.replace(/"/g, '""'));
+		}
 	});
 
-	headers.push(...questionHeadersFlat);
-
-	// Создаем строки с данными
-	const rows: string[][] = [];
-
-	survey.responses.forEach((response) => {
-		const row: string[] = [
-			response.userId,
-			new Date(response.createdAt).toLocaleString(),
+	// Создаем строки CSV
+	const rows: string[] = [];
+	survey?.responses?.forEach((response) => {
+		const row = [
+			formatValueForCsv(response.userId),
+			formatValueForCsv(new Date(response.createdAt).toLocaleString()),
 		];
 
-		// Добавляем ответы на каждый вопрос
-		survey.questions.forEach((question) => {
-			const answerValues = getAnswerValue(response, question);
-			row.push(...answerValues);
+		// Добавляем ответы для каждого вопроса
+		survey?.questions?.forEach((question) => {
+			const answer = response?.answers?.find(
+				(a) => a?.questionId === question?.id,
+			);
+
+			if (!answer) {
+				if (question?.type === 'MATRIX' && question?.ratingConfig?.rows) {
+					// Если матричный вопрос — добавляем пустые значения для строк
+					question?.ratingConfig?.rows?.forEach(() => {
+						row.push(formatValueForCsv(''));
+					});
+				} else {
+					// Для остальных вопросов добавляем просто пустое значение
+					row.push(formatValueForCsv(''));
+				}
+				return;
+			}
+
+			// Форматируем значение ответа
+			if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
+				// Для матричных вопросов добавляем значения строк
+				question.ratingConfig.rows.forEach((rowKey) => {
+					const rowValue =
+						answer?.value && typeof answer?.value === 'object'
+							? (answer.value[rowKey] ?? '')
+							: '';
+					row.push(formatValueForCsv(rowValue));
+				});
+			} else {
+				// Для остальных типов формируем значение через общую функцию
+				row.push(formatValueForCsv(answer.value));
+			}
 		});
 
-		rows.push(row);
+		rows.push(row.join(','));
 	});
 
-	// Формируем CSV строку
-	let csvContent =
-		headers.map((h) => `"${h.replace(/"/g, '""')}"`).join(',') + '\n';
-
-	rows.forEach((row) => {
-		csvContent += row.join(',') + '\n';
-	});
+	// Добавляем BOM в начало для корректного поведения Excel
+	const csvContent =
+		'\uFEFF' +
+		headers.map((header) => formatValueForCsv(header)).join(',') +
+		'\n' +
+		rows.join('\n');
 
 	// Создаем и скачиваем файл
 	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 	const url = URL.createObjectURL(blob);
 	const link = document.createElement('a');
 
+	// Имя файла для скачивания
+	const filename = `export-test-results.csv`;
+
 	link.setAttribute('href', url);
-	link.setAttribute(
-		'download',
-		`${survey.title.replace(/[^\w\s]/gi, '')}_results.csv`,
-	);
+	link.setAttribute('download', filename);
 	link.style.visibility = 'hidden';
 
 	document.body.appendChild(link);
