@@ -31,7 +31,10 @@ export function useAssignUserToPosition() {
 		},
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
-				queryKey: ['positions', data?.position?.departmentId],
+				queryKey: ['department-positions', data?.position?.departmentId],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['users'],
 			});
 			toast({
 				title: 'Пользователь успешно назначен',

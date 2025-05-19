@@ -4,17 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import type { Position } from '@/types/structure';
 import useApi from '@/hooks/useApi';
 
-export function useDepartmentPositions(departmentId?: string) {
+export function useAllPositions() {
 	const api = useApi();
 
 	return useQuery<Position[]>({
-		queryKey: ['department-positions', departmentId],
+		queryKey: ['all-positions'],
 		queryFn: async () => {
-			const response = await api.get(
-				`/structure/department-positions/${departmentId}`,
-			);
+			const response = await api.get(`/structure/positions`);
 			return response.data;
 		},
-		enabled: !!departmentId,
 	});
 }

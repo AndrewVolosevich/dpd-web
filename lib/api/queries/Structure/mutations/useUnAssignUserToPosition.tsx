@@ -31,7 +31,7 @@ export function useUnAssignUserToPosition() {
 		},
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
-				queryKey: ['positions', data?.position?.departmentId],
+				queryKey: ['department-positions', data?.position?.departmentId],
 			});
 			toast({
 				title: 'Пользователь успешно снят',

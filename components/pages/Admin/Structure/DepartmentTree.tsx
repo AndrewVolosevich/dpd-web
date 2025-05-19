@@ -6,12 +6,14 @@ interface DepartmentTreeProps {
 	departments: Department[];
 	parentId?: string | null;
 	level?: number;
+	isAllExpanded?: boolean;
 }
 
 export default function DepartmentTree({
 	departments,
 	parentId = null,
 	level = 0,
+	isAllExpanded = false,
 }: DepartmentTreeProps) {
 	// Filter departments by parent ID
 	const filteredDepartments = departments.filter(
@@ -32,6 +34,7 @@ export default function DepartmentTree({
 					department={department}
 					allDepartments={departments}
 					level={level}
+					isAllExpanded={isAllExpanded}
 				/>
 			))}
 		</div>

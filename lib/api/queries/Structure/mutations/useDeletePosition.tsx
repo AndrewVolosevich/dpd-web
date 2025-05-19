@@ -23,7 +23,7 @@ export function useDeletePosition() {
 		},
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
-				queryKey: ['positions', data?.departmentId],
+				queryKey: ['department-positions', data?.departmentId],
 			});
 			toast({
 				title: 'Должность успешно удалена',

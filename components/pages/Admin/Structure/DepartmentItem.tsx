@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	ChevronRight,
 	ChevronDown,
@@ -22,12 +22,14 @@ interface DepartmentItemProps {
 	department: Department;
 	allDepartments: Department[];
 	level: number;
+	isAllExpanded: boolean;
 }
 
 export default function DepartmentItem({
 	department,
 	allDepartments,
 	level,
+	isAllExpanded = false,
 }: DepartmentItemProps) {
 	const [isExpanded, setIsExpanded] = useState(level === 0);
 	const [isCreateDeptModalOpen, setIsCreateDeptModalOpen] = useState(false);
@@ -48,6 +50,11 @@ export default function DepartmentItem({
 	const handleTogglePositions = () => {
 		setShowPositions(!showPositions);
 	};
+
+	useEffect(() => {
+		setIsExpanded(isAllExpanded);
+		// setShowPositions(isAllExpanded); ??
+	}, [isAllExpanded]);
 
 	return (
 		<div className="mb-2">
@@ -125,6 +132,7 @@ export default function DepartmentItem({
 					departments={allDepartments}
 					parentId={department.id}
 					level={level + 1}
+					isAllExpanded={isAllExpanded}
 				/>
 			)}
 

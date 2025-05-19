@@ -28,7 +28,7 @@ export function useCreatePosition() {
 		},
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
-				queryKey: ['positions', data?.departmentId],
+				queryKey: ['department-positions', data?.departmentId],
 			});
 			toast({
 				title: 'Должность успешно создана',

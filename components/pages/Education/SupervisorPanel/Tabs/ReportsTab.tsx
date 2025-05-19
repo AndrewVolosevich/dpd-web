@@ -406,7 +406,7 @@ export default function ReportsTab({
 											<TableHead className="font-semibold">Статус</TableHead>
 											<TableHead className="font-semibold">Тип теста</TableHead>
 											<TableHead className="font-semibold">
-												Дата активации
+												Дата назначения
 											</TableHead>
 										</TableRow>
 									</TableHeader>
