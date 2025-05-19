@@ -14,6 +14,7 @@ import { MatrixResults } from '@/components/pages/Admin/Results/MatrixResults';
 import useSurvey from '@/lib/api/queries/Education/useSurvey';
 import { SurveyStatus } from '@/types/entities';
 import { PhotoResults } from '@/components/pages/Admin/Results/PhotoResults';
+import { exportSurveyToCsv } from '@/lib/exportToCsv';
 
 export default function ResultsPage({ id }: { id: string }) {
 	const [activeTab, setActiveTab] = useState('overview');
@@ -35,8 +36,9 @@ export default function ResultsPage({ id }: { id: string }) {
 	};
 
 	const exportToExcel = () => {
-		// Логика экспорта в Excel
-		alert('Экспорт в Excel будет реализован в реальном приложении');
+		if (survey) {
+			exportSurveyToCsv(survey);
+		}
 	};
 
 	if (isLoading) {
