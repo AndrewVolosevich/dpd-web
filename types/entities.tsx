@@ -102,7 +102,7 @@ export interface Question {
 	answers?: Answer[];
 }
 
-export interface Response {
+export interface SurveyResponse {
 	id: string;
 	surveyId: string;
 	userId: string;
@@ -124,7 +124,7 @@ export interface Survey {
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
-	responses?: Response[];
+	responses?: SurveyResponse[];
 	_count?: {
 		responses?: number;
 	};
