@@ -24,10 +24,14 @@ export interface PaginatedNews {
 export interface UserData {
 	tel: string;
 	id: string;
+	internalPhone?: string;
+	phone?: string;
+	email?: string;
+	badge: string;
+
 	name: string;
 	surname: string;
 	patronymic?: string;
-	email?: string;
 
 	roles?: string[];
 	department?: Department;

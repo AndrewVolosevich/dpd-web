@@ -36,8 +36,10 @@ const formSchema = z.object({
 	password: z.string().optional(),
 	patronymic: z.string().optional(),
 	tel: z.string().min(1, 'Телефон обязателен'),
-	departmentId: z.string().optional(),
-	positionId: z.string().optional(),
+	internalPhone: z.string().optional(),
+	phone: z.string().optional(),
+	email: z.string().optional(),
+	badge: z.string().optional(),
 	isSupervisor: z.boolean().optional(),
 	startDate: z.date().optional(),
 	endDate: z.date().optional(),
@@ -51,7 +53,7 @@ interface EditUserFormProps {
 }
 
 const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
-	const { isAdmin, updateUser: updateSelfUser } = useAuth();
+	const { updateUser: updateSelfUser } = useAuth();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -61,9 +63,11 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 			patronymic: user?.patronymic ?? '',
 			password: '',
 			tel: user?.tel ?? '',
-			departmentId: user?.departmentId ?? '',
-			positionId: user?.positionId ?? '',
-			isSupervisor: false,
+			internalPhone: user?.internalPhone ?? '',
+			phone: user?.phone ?? '',
+			email: user?.email ?? '',
+			badge: user?.badge ?? '',
+			isSupervisor: user?.roles?.some((r) => r === 'SUPERVISOR'),
 			startDate: user?.startDate
 				? (new Date(user?.startDate) as Date)
 				: undefined,
@@ -73,16 +77,10 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 	});
 
 	const queryClient = useQueryClient();
-	const { data: departments } = useDepartments();
-	// Получаем значение departmentId из формы
-	const departmentId = form.watch('departmentId');
-	// Загружаем позиции, передавая текущий departmentId
-	const { data: positions } = useDepartmentPositions(departmentId);
 
 	const { mutate: updateUser, isPending: updateLoading } = useUpdateUser();
 	const { mutate: createUser, isPending: createLoading } = useCreateUser();
 
-	const canEdit = useMemo(() => isSelf || isAdmin, [isAdmin, isSelf]);
 	const isLoading = useMemo(
 		() => updateLoading || createLoading,
 		[updateLoading, createLoading],
@@ -110,6 +108,8 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 							queryKey: ['paginated-users'],
 						});
 					}
+					form.reset();
+					onClose();
 				},
 			});
 		} else {
@@ -118,7 +118,7 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 					if (isSelf) {
 						updateSelfUser(u);
 					}
-
+					form.reset();
 					onClose();
 				},
 			});
@@ -174,173 +174,157 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 							</FormItem>
 						)}
 					/>
-
-					<FormField
-						control={form.control}
-						name="tel"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Телефон</FormLabel>
-								<FormControl>
-									<Input {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					{canEdit && (
-						<>
-							{!user && (
-								<FormField
-									control={form.control}
-									name="password"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Пароль</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<FormField
+							control={form.control}
+							name="tel"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Телефон</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
 							)}
-							{/* Поле выбора отдела */}
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<FormField
-									control={form.control}
-									name="departmentId"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Отдел</FormLabel>
-											<Select
-												onValueChange={field.onChange}
-												defaultValue={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue placeholder="Выберите отдел" />
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{departments?.map((department) => (
-														<SelectItem
-															value={department?.id}
-															key={department?.id}
-														>
-															{department.title}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								{/* Поле выбора позиции */}
-								<FormField
-									control={form.control}
-									name="positionId"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Должность</FormLabel>
-											<Select
-												disabled={!departmentId} // Отключаем, если departmentId не выбран
-												onValueChange={field.onChange}
-												defaultValue={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue
-															placeholder={
-																!departmentId
-																	? 'Сначала выберите отдел'
-																	: 'Выберите должность'
-															}
-														/>
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{positions?.map((position) => (
-														<SelectItem value={position?.id} key={position?.id}>
-															{position.title}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
+						/>
+						<FormField
+							control={form.control}
+							name="internalPhone"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Внутренний телефон</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<>
+						<FormField
+							control={form.control}
+							name="password"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Пароль</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* Поле доп телефона и емейла */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<FormField
 								control={form.control}
-								name="isSupervisor"
+								name="phone"
 								render={({ field }) => (
-									<FormItem className="flex flex-row items-center space-x-3 space-y-0">
+									<FormItem>
+										<FormLabel>Доп. телефон</FormLabel>
 										<FormControl>
-											<Checkbox
-												checked={field.value}
-												onCheckedChange={field.onChange}
-											/>
+											<Input {...field} />
 										</FormControl>
-										<FormLabel className="font-normal">Руководитель</FormLabel>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email сотрудника</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<FormField
+							control={form.control}
+							name="badge"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Бейдж</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="isSupervisor"
+							render={({ field }) => (
+								<FormItem className="flex flex-row items-center space-x-3 space-y-0">
+									<FormControl>
+										<Checkbox
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+									<FormLabel className="font-normal">Руководитель</FormLabel>
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="bornDate"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Дата рождения</FormLabel>
+									<DatePickerPopoverWithFields
+										value={field.value}
+										onChange={field.onChange}
+										disabled={getDateInputDisabled}
+									/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<FormField
+								control={form.control}
+								name="startDate"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Дата начала работы</FormLabel>
+										<DatePickerPopoverWithFields
+											value={field.value}
+											onChange={field.onChange}
+											disabled={getDateInputDisabled}
+										/>
+										<FormMessage />
 									</FormItem>
 								)}
 							/>
 
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<FormField
-									control={form.control}
-									name="startDate"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Дата начала работы</FormLabel>
-											<DatePickerPopoverWithFields
-												value={field.value}
-												onChange={field.onChange}
-												disabled={getDateInputDisabled}
-											/>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-
-								<FormField
-									control={form.control}
-									name="endDate"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Дата окончания работы</FormLabel>
-											<DatePickerPopoverWithFields
-												value={field.value}
-												onChange={field.onChange}
-												disabled={getDateInputDisabled}
-											/>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
-						</>
-					)}
-
-					<FormField
-						control={form.control}
-						name="bornDate"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Дата рождения</FormLabel>
-								<DatePickerPopoverWithFields
-									value={field.value}
-									onChange={field.onChange}
-									disabled={getDateInputDisabled}
-								/>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+							<FormField
+								control={form.control}
+								name="endDate"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Дата окончания работы</FormLabel>
+										<DatePickerPopoverWithFields
+											value={field.value}
+											onChange={field.onChange}
+											disabled={getDateInputDisabled}
+										/>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					</>
 
 					<div className="flex justify-end space-x-4 pt-4">
 						<Button variant="outline" onClick={onClose} type="button">

@@ -5,12 +5,15 @@ import { useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { Button } from '@/components/ui/button';
 import {
+	Award,
+	BookUser,
 	Building,
 	Calendar,
 	Edit2,
 	GraduationCap,
 	Mail,
 	Phone,
+	Smartphone,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import UserCard from '@/components/pages/Home/UserCard';
@@ -64,7 +67,7 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							user={anotherUser}
 							full
 							big
-							onEdit={!!id || isAdmin ? () => setOpenPhoto(true) : undefined}
+							onEdit={isAdmin ? () => setOpenPhoto(true) : undefined}
 						/>
 					</CardContent>
 				</Card>
@@ -72,14 +75,6 @@ const ProfilePage = ({ id }: { id?: string }) => {
 				<Card className="col-span-1 md:col-span-2 pt-6">
 					<CardContent>
 						<div className="space-y-4">
-							<div className="flex items-center">
-								<Mail className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">возможная@почта.бу</span>
-							</div>
-							<div className="flex items-center">
-								<Phone className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">{anotherUser?.tel}</span>
-							</div>
 							<div className="flex items-center">
 								<Building className="mr-2 h-4 w-4 text-gray-400" />
 								<span className="text-sm">
@@ -93,6 +88,28 @@ const ProfilePage = ({ id }: { id?: string }) => {
 								</span>
 							</div>
 							<div className="flex items-center">
+								<Phone className="mr-2 h-4 w-4 text-gray-400" />
+								<span className="text-sm">{anotherUser?.tel}</span>
+							</div>
+							{anotherUser?.internalPhone && (
+								<div className="flex items-center">
+									<BookUser className="mr-2 h-4 w-4 text-gray-400" />
+									<span className="text-sm">{anotherUser?.internalPhone}</span>
+								</div>
+							)}
+							{anotherUser?.phone && (
+								<div className="flex items-center">
+									<Smartphone className="mr-2 h-4 w-4 text-gray-400" />
+									<span className="text-sm">{anotherUser?.phone}</span>
+								</div>
+							)}
+							{anotherUser?.email && (
+								<div className="flex items-center">
+									<Mail className="mr-2 h-4 w-4 text-gray-400" />
+									<span className="text-sm">{anotherUser?.email}</span>
+								</div>
+							)}
+							<div className="flex items-center">
 								<Calendar className="mr-2 h-4 w-4 text-gray-400" />
 								<span className="text-sm">
 									День рождения:{' '}
@@ -101,10 +118,22 @@ const ProfilePage = ({ id }: { id?: string }) => {
 										: ''}
 								</span>
 							</div>
-							<Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-								<Edit2 className="mr-2 h-4 w-4" />
-								Редактировать профиль
-							</Button>
+							{anotherUser?.badge && (
+								<div className="flex items-center">
+									<Award className="mr-2 h-4 w-4 text-gray-400" />
+									<span className="text-sm">{anotherUser?.badge}</span>
+								</div>
+							)}
+							{isAdmin && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => setOpen(true)}
+								>
+									<Edit2 className="mr-2 h-4 w-4" />
+									Редактировать профиль
+								</Button>
+							)}
 						</div>
 					</CardContent>
 				</Card>
@@ -122,7 +151,6 @@ const ProfilePage = ({ id }: { id?: string }) => {
 				open={openPhoto}
 				user={anotherUser}
 				onClose={() => setOpenPhoto(false)}
-				isSelf={!id}
 			/>
 		</div>
 	);

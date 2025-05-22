@@ -17,7 +17,7 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { Pencil } from 'lucide-react';
+import { Pencil, Image } from 'lucide-react';
 import React, { useState } from 'react';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import usePaginatedUsers from '@/lib/api/queries/Users/usePaginatedUsers';
@@ -27,16 +27,21 @@ import { UserData } from '@/types/entities';
 import DeleteAlert from '@/components/common/DeleteAlert/DeleteAlert';
 import Link from 'next/link';
 import { useDeleteUser } from '@/lib/api/queries/Users/mutations/useDeleteUser';
+import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
 
 const limit = 20;
 
 export default function UsersTable() {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = React.useState(false);
+	const [openPhoto, setOpenPhoto] = useState(false);
 
 	const [updatedUser, setUpdatedUser] = useState<undefined | UserData>(
 		undefined,
 	);
+	const [updatedPhotoUser, setUpdatedPhotoUser] = useState<
+		undefined | UserData
+	>(undefined);
 	const { data, isLoading } = usePaginatedUsers({ limit, page });
 	const { isAdmin, user } = useAuth();
 
@@ -138,6 +143,16 @@ export default function UsersTable() {
 															variant="ghost"
 															size="icon"
 															onClick={() => {
+																setUpdatedPhotoUser(user);
+																setOpenPhoto(true);
+															}}
+														>
+															<Image className="h-4 w-4" />
+														</Button>
+														<Button
+															variant="ghost"
+															size="icon"
+															onClick={() => {
 																setUpdatedUser(user);
 																setOpen(true);
 															}}
@@ -181,15 +196,25 @@ export default function UsersTable() {
 				</PaginationContent>
 			</Pagination>
 			{isAdmin && (
-				<EditUserModal
-					open={open}
-					user={updatedUser}
-					onClose={() => {
-						setUpdatedUser(undefined);
-						setOpen(false);
-					}}
-					isSelf={user?.id === updatedUser?.id}
-				/>
+				<>
+					<EditUserModal
+						open={open}
+						user={updatedUser}
+						onClose={() => {
+							setUpdatedUser(undefined);
+							setOpen(false);
+						}}
+						isSelf={user?.id === updatedUser?.id}
+					/>
+					<EditUserPhotoModal
+						open={openPhoto && !!updatedPhotoUser}
+						user={updatedPhotoUser}
+						onClose={() => {
+							setOpenPhoto(false);
+							setUpdatedPhotoUser(undefined);
+						}}
+					/>
+				</>
 			)}
 		</div>
 	);

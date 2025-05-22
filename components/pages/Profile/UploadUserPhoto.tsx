@@ -7,15 +7,14 @@ import { useUploadUserPhoto } from '@/lib/api/queries/Users/mutations/useUploadU
 
 interface UploadUserPhotoProps {
 	user?: UserData;
-	isSelf?: boolean;
 	onClose: () => void;
 }
 
-const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
+const UploadUserPhoto = ({ user, onClose }: UploadUserPhotoProps) => {
 	const [preview, setPreview] = useState<string | null>(null);
 	const formRef = useRef<HTMLFormElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const { updateUser: updateSelfUser } = useAuth();
+	const { updateUser: updateSelfUser, user: currentUser } = useAuth();
 	const { mutate: updatePhoto, isPending: updateLoading } =
 		useUploadUserPhoto();
 
@@ -40,7 +39,7 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 		}
 		updatePhoto(formData, {
 			onSuccess: async (u: any) => {
-				if (isSelf) {
+				if (currentUser?.id === u?.id) {
 					updateSelfUser(u);
 				}
 				// Reset the form and preview
@@ -77,7 +76,8 @@ const UploadUserPhoto = ({ user, isSelf, onClose }: UploadUserPhotoProps) => {
 						htmlFor="avatar"
 						className="block text-sm font-medium text-gray-700"
 					>
-						Выберите изображение
+						Выберите изображение <br />
+						(размер 200х200 / 300х300 и не более 2Mb)
 					</label>
 					<input
 						type="file"

@@ -116,15 +116,15 @@ export const EDITOR_NEW_DATA = {
 		{
 			type: 'header',
 			data: {
-				text: 'Начальник терминала&nbsp;',
-				level: 3,
+				text: '<b>Начальник терминала&nbsp;</b>',
+				level: 5,
 			},
 		},
 		{
 			type: 'header',
 			data: {
-				text: 'Филиал г. Минск&nbsp;',
-				level: 3,
+				text: '<b>Филиал г. Минск&nbsp;</b>',
+				level: 5,
 			},
 		},
 		{
@@ -225,15 +225,15 @@ export const EDITOR_TRANSFER_DATA = {
 		{
 			type: 'header',
 			data: {
-				text: 'Начальник смены&nbsp;',
-				level: 3,
+				text: '<b>Начальник смены&nbsp;</b>',
+				level: 5,
 			},
 		},
 		{
 			type: 'header',
 			data: {
-				text: 'Филиал г. Минск&nbsp;',
-				level: 3,
+				text: '<b>Филиал г. Минск&nbsp;</b>',
+				level: 5,
 			},
 		},
 		{
