@@ -14,19 +14,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import DatePickerPopoverWithFields from '@/components/common/DatePickerPopover/DatePickerPopoverWithFields';
 import { getStartDateISO } from '@/lib/date/helpers';
-import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
-import { useDepartmentPositions } from '@/lib/api/queries/Structure/useDepartmentPositions';
 import { useUpdateUser } from '@/lib/api/queries/Users/mutations/useUpdateUser';
 import { useCreateUser } from '@/lib/api/queries/Users/mutations/useCreateUser';
 

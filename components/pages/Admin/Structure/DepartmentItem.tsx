@@ -13,10 +13,10 @@ import { Button } from '@/components/ui/button';
 import type { Department } from '@/types/structure';
 import DepartmentTree from './DepartmentTree';
 import PositionsList from './PositionsList';
-import CreateDepartmentModal from './CreateDepartmentModal';
-import EditDepartmentModal from './EditDepartmentModal';
-import DeleteDepartmentModal from './DeleteDepartmentModal';
-import CreatePositionModal from './CreatePositionModal';
+import CreateDepartmentModal from './modals/CreateDepartmentModal';
+import EditDepartmentModal from './modals/EditDepartmentModal';
+import DeleteDepartmentModal from './modals/DeleteDepartmentModal';
+import CreatePositionModal from './modals/CreatePositionModal';
 
 interface DepartmentItemProps {
 	department: Department;
