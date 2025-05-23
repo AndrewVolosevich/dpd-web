@@ -13,7 +13,9 @@ const Logo = ({ className }: LogoProps) => {
 			className={cn('flex items-center self-start', className)}
 		>
 			<LogoIcon />
-			<span className="text-xl md:text-2xl ml-4">Корпоративный портал</span>
+			<span className="text-xl md:text-2xl ml-4 pr-[50px]">
+				Корпоративный портал <br className={'block md:hidden'} /> DPD в Беларуси
+			</span>
 		</Link>
 	);
 };

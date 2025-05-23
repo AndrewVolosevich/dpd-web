@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Loader } from '@/components/common/Loader/Loader';
 import DepartmentTree from '@/components/pages/Admin/Structure/DepartmentTree';
-import CreateDepartmentModal from '@/components/pages/Admin/Structure/CreateDepartmentModal';
+import CreateDepartmentModal from '@/components/pages/Admin/Structure/modals/CreateDepartmentModal';
 import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
 
 export default function StructurePage() {

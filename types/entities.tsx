@@ -24,10 +24,14 @@ export interface PaginatedNews {
 export interface UserData {
 	tel: string;
 	id: string;
+	internalPhone?: string;
+	phone?: string;
+	email?: string;
+	badge: string;
+
 	name: string;
 	surname: string;
 	patronymic?: string;
-	email?: string;
 
 	roles?: string[];
 	department?: Department;
@@ -102,7 +106,7 @@ export interface Question {
 	answers?: Answer[];
 }
 
-export interface Response {
+export interface SurveyResponse {
 	id: string;
 	surveyId: string;
 	userId: string;
@@ -124,7 +128,7 @@ export interface Survey {
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
-	responses?: Response[];
+	responses?: SurveyResponse[];
 	_count?: {
 		responses?: number;
 	};

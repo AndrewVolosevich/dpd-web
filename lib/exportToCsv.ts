@@ -1,85 +1,4 @@
-import type { Survey } from '@/types/entities';
-
-/**
- * Преобразует значение ответа в строку для CSV в зависимости от типа вопроса
- */
-// const formatAnswerValue = (value: any, question: Question): string => {
-// 	if (!value) return '';
-//
-// 	switch (question.type) {
-// 		case 'OPEN_TEXT':
-// 			return String(value).replace(/"/g, '""'); // Экранирование кавычек для CSV
-//
-// 		case 'SINGLE_CHOICE':
-// 			return String(value).replace(/"/g, '""');
-//
-// 		case 'MULTIPLE_CHOICE':
-// 			if (Array.isArray(value)) {
-// 				return value.map((v) => String(v).replace(/"/g, '""')).join(', ');
-// 			}
-// 			return String(value).replace(/"/g, '""');
-//
-// 		case 'RATING':
-// 			return String(value);
-//
-// 		case 'MATRIX':
-// 			if (typeof value === 'object') {
-// 				return Object.entries(value)
-// 					.map(([row, col]) => `${row}: ${col}`)
-// 					.join('; ');
-// 			}
-// 			return String(value);
-//
-// 		case 'PHOTO':
-// 			if (Array.isArray(value)) {
-// 				return value.map((v) => String(v)).join(', ');
-// 			}
-// 			return String(value);
-//
-// 		default:
-// 			return String(value);
-// 	}
-// };
-
-/**
- * Получает заголовок для вопроса в зависимости от его типа
- */
-// const getQuestionHeader = (question: Question): string => {
-// 	const header = question.text.replace(/"/g, '""');
-//
-// 	if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
-// 		// Для матричных вопросов добавляем подзаголовки для каждой строки
-// 		return question.ratingConfig.rows
-// 			.map((row) => `${header} - ${row}`)
-// 			.join(',');
-// 	}
-//
-// 	return header;
-// };
-
-/**
- * Получает значение ответа для вопроса в зависимости от его типа
- */
-// const getAnswerValue = (response: Response, question: Question): string[] => {
-// 	const answer = response.answers.find((a) => a.questionId === question.id);
-//
-// 	if (!answer) return [''];
-//
-// 	if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
-// 		// Для матричных вопросов возвращаем массив значений для каждой строки
-// 		return question.ratingConfig.rows.map((row) => {
-// 			const rowValue =
-// 				answer.value && typeof answer.value === 'object'
-// 					? answer.value[row]
-// 					: '';
-// 			return rowValue ? `"${String(rowValue).replace(/"/g, '""')}"` : '';
-// 		});
-// 	}
-//
-// 	// Для остальных типов вопросов возвращаем одно значение
-// 	return [`"${formatAnswerValue(answer.value, question)}"`];
-// };
-
+import type { Question, Survey, SurveyResponse } from '@/types/entities';
 /**
  * Преобразует значение ответа в строку для CSV с учётом кириллицы и экранирования
  */
@@ -90,93 +9,111 @@ const formatValueForCsv = (value: any): string => {
 	return `"${String(value).replace(/"/g, '""')}"`;
 };
 
-/**
- * Экспорт результатов опроса в CSV
- */
-export const exportSurveyToCsv = (survey: Survey): void => {
-	if (!survey || !survey.questions || !survey.responses) {
-		console.error('Нет данных для экспорта');
-		return;
-	}
-
-	// Создаем заголовки CSV
+// Генерация заголовков для CSV
+const generateCsvHeaders = (questions: Question[]): string[] => {
 	const headers = ['ID респондента', 'Дата прохождения'];
 
-	// Добавляем заголовки для каждого вопроса
-	survey.questions.forEach((question) => {
+	questions.forEach((question) => {
 		if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
-			// Для матричных вопросов добавляем отдельный заголовок для строк
-			question.ratingConfig.rows.forEach((row) => {
-				headers.push(`${question.text} - ${row}`.replace(/"/g, '""'));
-			});
+			// Добавляем заголовки строк для матричных вопросов
+			headers.push(
+				...question.ratingConfig.rows.map((row) =>
+					`${question.text} - ${row}`.replace(/"/g, '""'),
+				),
+			);
 		} else {
 			headers.push(question.text.replace(/"/g, '""'));
 		}
 	});
 
-	// Создаем строки CSV
-	const rows: string[] = [];
-	survey?.responses?.forEach((response) => {
-		const row = [
-			formatValueForCsv(response.userId),
-			formatValueForCsv(new Date(response.createdAt).toLocaleString()),
-		];
+	return headers;
+};
 
-		// Добавляем ответы для каждого вопроса
-		survey?.questions?.forEach((question) => {
-			const answer = response?.answers?.find(
-				(a) => a?.questionId === question?.id,
-			);
+// Генерация значений строки CSV на основе одного ответа
+const generateCsvRow = (
+	response: SurveyResponse,
+	questions: Question[],
+): string[] => {
+	const row = [
+		formatValueForCsv(response.userId),
+		formatValueForCsv(new Date(response.createdAt).toLocaleString()),
+	];
 
-			if (!answer) {
-				if (question?.type === 'MATRIX' && question?.ratingConfig?.rows) {
-					// Если матричный вопрос — добавляем пустые значения для строк
-					question?.ratingConfig?.rows?.forEach(() => {
-						row.push(formatValueForCsv(''));
-					});
-				} else {
-					// Для остальных вопросов добавляем просто пустое значение
-					row.push(formatValueForCsv(''));
-				}
-				return;
-			}
+	questions.forEach((question) => {
+		const answer = response?.answers?.find((a) => a.questionId === question.id);
 
-			// Форматируем значение ответа
+		// Если ответа нет
+		if (!answer) {
 			if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
-				// Для матричных вопросов добавляем значения строк
-				question.ratingConfig.rows.forEach((rowKey) => {
-					const rowValue =
-						answer?.value && typeof answer?.value === 'object'
-							? (answer.value[rowKey] ?? '')
-							: '';
-					row.push(formatValueForCsv(rowValue));
-				});
+				// Для матричных вопросов добавляем пустые значения для строк
+				row.push(
+					...question.ratingConfig.rows.map(() => formatValueForCsv('')),
+				);
 			} else {
-				// Для остальных типов формируем значение через общую функцию
-				row.push(formatValueForCsv(answer.value));
+				row.push(formatValueForCsv(''));
 			}
-		});
+			return;
+		}
 
-		rows.push(row.join(','));
+		// Объединение значения и комментария
+		const formatAnswerWithComment = (value: any, comment?: string): string => {
+			if (!comment) return String(value);
+			return `${String(value)} (комментарий: ${comment})`;
+		};
+
+		// Формирование значений для каждого типа вопросов
+		if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
+			// Обработка специфики матричных вопросов
+			question.ratingConfig.rows.forEach((_, rowIndex) => {
+				// Значение находится по индексу строки
+				const rowValue = answer.value?.[`${rowIndex}`] || '';
+				row.push(formatValueForCsv(rowValue));
+			});
+		} else if (Array.isArray(answer.value)) {
+			// Множественные выборы или фото
+			const combinedValue = formatAnswerWithComment(
+				answer.value.join(', '),
+				answer.comment,
+			);
+			row.push(formatValueForCsv(combinedValue));
+		} else {
+			// Остальные типы вопросов
+			const combinedValue = formatAnswerWithComment(
+				answer.value,
+				answer.comment,
+			);
+			row.push(formatValueForCsv(combinedValue));
+		}
 	});
 
-	// Добавляем BOM в начало для корректного поведения Excel
-	const csvContent =
-		'\uFEFF' +
-		headers.map((header) => formatValueForCsv(header)).join(',') +
-		'\n' +
-		rows.join('\n');
+	return row;
+};
 
-	// Создаем и скачиваем файл
+// Главная функция экспорта опроса в CSV
+export const exportSurveyToCsv = (survey: Survey): void => {
+	if (!survey || !survey.questions?.length || !survey.responses?.length) {
+		console.error('Нет данных для экспорта');
+		return;
+	}
+
+	// Генерируем заголовки CSV
+	const headers = generateCsvHeaders(survey.questions);
+
+	// Генерируем строки данных
+	const rows = survey.responses.map((response) =>
+		generateCsvRow(response, survey.questions).join(','),
+	);
+
+	// Содержание CSV (добавляем BOM для корректной кодировки)
+	const csvContent = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+
+	// Создаем и скачиваем CSV-файл
 	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-	const url = URL.createObjectURL(blob);
 	const link = document.createElement('a');
-
-	// Имя файла для скачивания
-	const filename = `export-test-results.csv`;
+	const url = URL.createObjectURL(blob);
 
 	link.setAttribute('href', url);
-	link.setAttribute('download', filename);
+	link.setAttribute('download', `${survey.title}_results.csv`);
 	link.style.visibility = 'hidden';
 
 	document.body.appendChild(link);

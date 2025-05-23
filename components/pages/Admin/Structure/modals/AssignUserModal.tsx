@@ -109,10 +109,11 @@ export default function AssignUserModal({
 										</Button>
 									</PopoverTrigger>
 									<WithoutPortalPopoverContent
-										className="w-full p-0"
+										className="w-full p-0 max-h-60 overflow-y-auto"
 										style={{ width: 'var(--radix-popover-trigger-width)' }}
 										align="start"
 										sideOffset={4}
+										side={'bottom'}
 									>
 										<Command>
 											<CommandInput

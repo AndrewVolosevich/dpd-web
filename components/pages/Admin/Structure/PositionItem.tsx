@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { Edit, Settings, Trash2, User, UserX } from 'lucide-react';
+import { Edit, Settings, Trash2, User, UserSearch, UserX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import EditPositionModal from '@/components/pages/Admin/Structure/EditPositionModal';
-import DeletePositionModal from '@/components/pages/Admin/Structure/DeletePositionModal';
-import AssignUserModal from '@/components/pages/Admin/Structure/AssignUserModal';
+import DeletePositionModal from '@/components/pages/Admin/Structure/modals/DeletePositionModal';
+import AssignUserModal from '@/components/pages/Admin/Structure/modals/AssignUserModal';
 import UnAssignUserModal from '@/components/pages/Admin/Structure/UnAssignUserModal';
 import { Position } from '@/types/structure';
 import AddSupervisorPanelModal from '@/components/pages/Education/SupervisorPanel/Modals/AddSupervisorPanelModal';
 import { useAssignSupervisorPanel } from '@/lib/api/queries/Structure/mutations/useAssignSupervisorPanel';
+import ReassignUserModal from '@/components/pages/Admin/Structure/modals/ReassignUserModal';
 
 const PositionItem = ({ position }: { position: Position }) => {
 	const [editingPosition, setEditingPosition] = useState<string | null>(null);
 	const [deletingPosition, setDeletingPosition] = useState<string | null>(null);
 	const [assigningPosition, setAssigningPosition] = useState<string | null>(
+		null,
+	);
+	const [reassigningPosition, setReassigningPosition] = useState<string | null>(
 		null,
 	);
 	const [unAssigningPosition, setUnAssigningPosition] =
@@ -63,6 +67,15 @@ const PositionItem = ({ position }: { position: Position }) => {
 				>
 					<User className="h-4 w-4" />
 				</Button>
+				{position?.userId && (
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => setReassigningPosition(position.id)}
+					>
+						<UserSearch className="h-4 w-4" />
+					</Button>
+				)}
 				<Button
 					variant="ghost"
 					size="sm"
@@ -104,6 +117,11 @@ const PositionItem = ({ position }: { position: Position }) => {
 			<AssignUserModal
 				isOpen={assigningPosition === position?.id && !unAssigningPosition}
 				onClose={() => setAssigningPosition(null)}
+				position={position}
+			/>
+			<ReassignUserModal
+				isOpen={reassigningPosition === position?.id && !unAssigningPosition}
+				onClose={() => setReassigningPosition(null)}
 				position={position}
 			/>
 			<UnAssignUserModal

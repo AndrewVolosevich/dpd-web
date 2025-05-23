@@ -11,7 +11,6 @@ import UploadUserPhoto from '@/components/pages/Profile/UploadUserPhoto';
 interface EditUserPhotoModalProps {
 	user?: UserData;
 	open: boolean;
-	isSelf: boolean;
 	onClose: () => void;
 }
 
@@ -19,7 +18,6 @@ const EditUserPhotoModal = ({
 	user,
 	open,
 	onClose,
-	isSelf,
 }: EditUserPhotoModalProps) => {
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
@@ -27,7 +25,7 @@ const EditUserPhotoModal = ({
 				<DialogHeader>
 					<DialogTitle>{'Редактировать фото профиля'}</DialogTitle>
 				</DialogHeader>
-				<UploadUserPhoto onClose={onClose} user={user} isSelf={isSelf} />
+				<UploadUserPhoto onClose={onClose} user={user} />
 			</DialogContent>
 		</Dialog>
 	);

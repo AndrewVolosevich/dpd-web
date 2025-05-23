@@ -14,8 +14,8 @@ export const HomePage = () => {
 				</div>
 				<PersonalBirthdays className="w-full lg:w-4/12" />
 			</div>
-			<PersonalChanges className={'w-full mt-4 container mx-auto'} />
 			<ActiveSurveys />
+			<PersonalChanges className={'w-full mt-4 container mx-auto'} />
 		</div>
 	);
 };
