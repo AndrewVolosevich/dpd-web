@@ -30,3 +30,7 @@ export function getStartDateISO(date: Date | undefined): string | undefined {
 			).toISOString()
 		: undefined;
 }
+
+export const formatBornDate = (dateString: string) => {
+	return format(new Date(dateString), 'dd MMMM', { locale: ru });
+};

@@ -173,3 +173,54 @@ export const exportDataToCsv = (
 	link.click();
 	document.body.removeChild(link);
 };
+
+export const exportStuctureToCsv = (data: any[], fileName: string) => {
+	const rows: string[] = [];
+
+	// Заголовки
+	const headers = [
+		'ID департамента ',
+		'Название департамента',
+		'ID позиции',
+		'Название позиции',
+		'Имя пользователя',
+		'Фамилия пользователя',
+		'Телефон пользователя',
+		'Внутренний телефон',
+		'Email пользователя',
+	];
+	rows.push(headers.map(formatValueForCsv).join(','));
+
+	// Рекурсивный обход данных
+	data.forEach((department) => {
+		department.positions.forEach((position: any) => {
+			const tel = position.user?.tel ? `'${position.user.tel}` : '';
+			const internalPhone = position.user?.internalPhone
+				? `'${position.user.internalPhone}`
+				: '';
+
+			const row = [
+				department?.id || '',
+				department?.title || '',
+				position?.id || '',
+				position?.title || '',
+				position?.user?.name || '',
+				position?.user?.surname || '',
+				tel,
+				internalPhone,
+				position?.user?.email || '',
+			];
+			rows.push(row.map(formatValueForCsv).join(','));
+		});
+	});
+
+	// Создание CSV
+	const csvContent = '\uFEFF' + rows.join('\n');
+
+	// Сохранение файла
+	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+	const link = document.createElement('a');
+	link.href = URL.createObjectURL(blob);
+	link.download = fileName;
+	link.click();
+};

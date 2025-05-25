@@ -8,7 +8,37 @@ import { Toaster } from '@/components/ui/toaster';
 import './styles/globals.css';
 import GlobalProviders from '@/components/providers/global/GlobalProviders';
 
+// app/fonts.ts
 const inter = Inter({ subsets: ['latin'] });
+import localFont from 'next/font/local';
+import { cn } from '@/lib/utils';
+
+const plutoSans = localFont({
+	src: [
+		{
+			path: '../public/fonts/PlutoSansDPDThin.ttf',
+			weight: '100',
+			style: 'normal',
+		},
+		{
+			path: '../public/fonts/PlutoSansDPDExtraLight.ttf',
+			weight: '200',
+			style: 'normal',
+		},
+		{
+			path: '../public/fonts/PlutoSansDPDLight.ttf',
+			weight: '300',
+			style: 'normal',
+		},
+		{
+			path: '../public/fonts/PlutoSansDPDRegular.ttf',
+			weight: '400',
+			style: 'normal',
+		},
+	],
+	variable: '--font-pluto',
+	display: 'swap',
+});
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -22,7 +52,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={inter.className}>
+			<body className={cn(plutoSans.className, inter.className)}>
 				<GlobalProviders>
 					<div className="flex flex-col min-h-screen bg-gray-100">
 						<Header />

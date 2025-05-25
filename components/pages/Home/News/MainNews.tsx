@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { NewsModel } from '@/types/entities';
 import { Routes } from '@/const/routes';
+import { Button } from '@/components/ui/button';
+import { Eye } from 'lucide-react';
 
 type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 	mainNews?: NewsModel;
@@ -11,12 +13,22 @@ type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const MainNews = ({ className, mainNews }: MainNewsProps) => {
 	return (
-		<Link href={`${Routes.NEWS}/${mainNews?.id}`}>
-			<div className={cn(className, 'bg-white mb-2 w-full rounded relative')}>
+		<div className={cn(className, 'bg-white mb-2 w-full rounded relative')}>
+			<Link href={`${Routes.NEWS}`}>
+				<Button
+					type={'button'}
+					variant={'default'}
+					className={'absolute top-2 right-2 z-10'}
+				>
+					<Eye className={'mr-2'} />
+					Все новости
+				</Button>
+			</Link>
+			<Link href={`${Routes.NEWS}/${mainNews?.id}`}>
 				<div className={'h-72 lg:h-96 w-full relative'}>
 					<Image
-						layout="fill"
-						objectFit="cover"
+						fill
+						style={{ objectFit: 'cover' }}
 						src={mainNews?.titleImg || '/images/dpd-image.jpg'}
 						alt={`Главная новость`}
 					/>
@@ -29,8 +41,8 @@ const MainNews = ({ className, mainNews }: MainNewsProps) => {
 						{mainNews?.description}
 					</div>
 				</div>
-			</div>
-		</Link>
+			</Link>
+		</div>
 	);
 };
 

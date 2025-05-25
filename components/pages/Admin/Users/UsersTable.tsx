@@ -28,6 +28,8 @@ import DeleteAlert from '@/components/common/DeleteAlert/DeleteAlert';
 import Link from 'next/link';
 import { useDeleteUser } from '@/lib/api/queries/Users/mutations/useDeleteUser';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
+import { formatBornDate } from '@/lib/date/helpers';
+import { formatPhoneNumber } from '@/lib/phone';
 
 const limit = 20;
 
@@ -97,9 +99,11 @@ export default function UsersTable() {
 					<TableHeader>
 						<TableRow>
 							<TableHead>Работник</TableHead>
-							<TableHead>Телефон</TableHead>
 							<TableHead>Отдел</TableHead>
 							<TableHead>Должность</TableHead>
+							<TableHead>Телефон моб.</TableHead>
+							<TableHead>Телефон вн.</TableHead>
+							<TableHead>Дата рожд</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -133,9 +137,16 @@ export default function UsersTable() {
 													{user.surname} {user.name}
 												</Link>
 											</TableCell>
-											<TableCell>{user.tel}</TableCell>
 											<TableCell>{user.department?.title || '-'}</TableCell>
 											<TableCell>{user.position?.title || '-'}</TableCell>
+											<TableCell>{formatPhoneNumber(user.tel)}</TableCell>
+											<TableCell>
+												{formatPhoneNumber(user?.internalPhone)}
+											</TableCell>
+											<TableCell>
+												{user?.bornDate ? formatBornDate(user?.bornDate) : ''}
+											</TableCell>
+
 											<TableCell className="flex flex-row justify-end">
 												{isAdmin && (
 													<div className="flex gap-2">

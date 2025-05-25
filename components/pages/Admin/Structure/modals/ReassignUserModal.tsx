@@ -83,7 +83,7 @@ export default function ReassignUserModal({
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Переназначить сотрудника на новую должность</DialogTitle>
+					<DialogTitle>Переместить сотрудника на новую должность</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<div className="grid gap-4 py-4">
@@ -174,7 +174,7 @@ export default function ReassignUserModal({
 							disabled={mutateLoading || !selectedPosition?.id}
 						>
 							{isPending ? <Loader2 className="animate-spin mr-2" /> : null}
-							Назначить
+							Переместить
 						</Button>
 					</DialogFooter>
 				</form>

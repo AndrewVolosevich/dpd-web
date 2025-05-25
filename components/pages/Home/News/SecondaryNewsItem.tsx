@@ -21,8 +21,8 @@ const SecondaryNewsItem = ({ className, news }: MainNewsProps) => {
 				<div className={'w-full max-h-[200px] min-h-32 relative'}>
 					<Image
 						src={news?.titleImg || '/images/dpd-image.jpg'}
-						layout="fill"
-						objectFit="cover"
+						fill
+						style={{ objectFit: 'cover' }}
 						alt={`Secondary news`}
 					/>
 				</div>

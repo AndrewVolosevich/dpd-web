@@ -20,6 +20,8 @@ import {
 	Clock,
 } from 'lucide-react';
 import { UserData } from '@/types/entities';
+import { formatBornDate } from '@/lib/date/helpers';
+import { formatPhoneNumber } from '@/lib/phone';
 
 interface ViewEmployeeModalProps {
 	isOpen: boolean;
@@ -35,10 +37,6 @@ export function ViewEmployeeModal({
 }: ViewEmployeeModalProps) {
 	const getInitials = (name: string, surname: string) => {
 		return `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
-	};
-
-	const formatDate = (dateString: string) => {
-		return format(new Date(dateString), 'dd MMMM', { locale: ru });
 	};
 
 	return (
@@ -79,7 +77,7 @@ export function ViewEmployeeModal({
 								</div>
 								<div className="flex items-center gap-2">
 									<Phone className="h-4 w-4 text-muted-foreground" />
-									<span>{employee?.tel}</span>
+									<span>{formatPhoneNumber(employee?.tel)}</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<Building className="h-4 w-4 text-muted-foreground" />
@@ -92,13 +90,17 @@ export function ViewEmployeeModal({
 								{employee?.bornDate && (
 									<div className="flex items-center gap-2">
 										<Calendar className="h-4 w-4 text-muted-foreground" />
-										<span>Дата рождения: {formatDate(employee?.bornDate)}</span>
+										<span>
+											Дата рождения: {formatBornDate(employee?.bornDate)}
+										</span>
 									</div>
 								)}
 								{employee?.startDate && (
 									<div className="flex items-center gap-2">
 										<Clock className="h-4 w-4 text-muted-foreground" />
-										<span>Работает с: {formatDate(employee?.startDate)}</span>
+										<span>
+											Работает с: {formatBornDate(employee?.startDate)}
+										</span>
 									</div>
 								)}
 							</div>

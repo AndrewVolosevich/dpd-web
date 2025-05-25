@@ -76,7 +76,7 @@ const NewsPage = ({
 		<div className={containerClasses}>
 			<div className={'flex flex-col'}>
 				<h2 className={headerClasses}>{'Новость'}</h2>
-				<div className="relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden mb-4">
+				<div className="relative w-full aspect-[16/4] bg-gray-100 rounded-lg overflow-hidden mb-4">
 					<Image
 						src={data?.titleImg || '/placeholder.svg'}
 						alt="Preview"
