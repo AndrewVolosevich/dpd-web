@@ -9,7 +9,7 @@ import './styles/globals.css';
 import GlobalProviders from '@/components/providers/global/GlobalProviders';
 
 // app/fonts.ts
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 import localFont from 'next/font/local';
 import { cn } from '@/lib/utils';
 

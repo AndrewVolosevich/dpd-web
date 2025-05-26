@@ -1,9 +1,4 @@
-import {
-	FetchQueryOptions,
-	QueryFunction,
-	QueryKey,
-	useQueryClient,
-} from '@tanstack/react-query';
+import { QueryFunction, QueryKey, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
 export function useLazyQuery<

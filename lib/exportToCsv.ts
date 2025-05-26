@@ -1,4 +1,4 @@
-import type { Question, Survey, SurveyResponse } from '@/types/entities';
+import { Question, Survey, SurveyResponse } from '@/types/entities';
 /**
  * Преобразует значение ответа в строку для CSV с учётом кириллицы и экранирования
  */
@@ -6,12 +6,20 @@ const formatValueForCsv = (value: any): string => {
 	if (value === null || value === undefined) {
 		return '""';
 	}
-	return `"${String(value).replace(/"/g, '""')}"`;
+	return `"${String(value)
+		.replace(/"/g, '""')
+		.replace(/\n/g, ' ')
+		.replace(/\r/g, '')}"`;
 };
 
 // Генерация заголовков для CSV
-const generateCsvHeaders = (questions: Question[]): string[] => {
-	const headers = ['ID респондента', 'Дата прохождения'];
+const generateCsvHeaders = (
+	questions: Question[],
+	hideUser: boolean,
+): string[] => {
+	const headers = hideUser
+		? ['Дата прохождения']
+		: ['ID респондента', 'Дата прохождения'];
 
 	questions.forEach((question) => {
 		if (question.type === 'MATRIX' && question.ratingConfig?.rows) {
@@ -22,7 +30,7 @@ const generateCsvHeaders = (questions: Question[]): string[] => {
 				),
 			);
 		} else {
-			headers.push(question.text.replace(/"/g, '""'));
+			headers.push(formatValueForCsv(question.text));
 		}
 	});
 
@@ -33,12 +41,18 @@ const generateCsvHeaders = (questions: Question[]): string[] => {
 const generateCsvRow = (
 	response: SurveyResponse,
 	questions: Question[],
+	hideUser?: boolean,
 ): string[] => {
-	const row = [
-		formatValueForCsv(response.userId),
-		formatValueForCsv(new Date(response.createdAt).toLocaleString()),
-	];
-
+	const row = hideUser
+		? [formatValueForCsv(new Date(response.createdAt).toLocaleString())]
+		: [
+				formatValueForCsv(
+					response.user?.name && response.user?.surname
+						? `${response.user?.name} ${response.user?.surname}`
+						: response.userId,
+				),
+				formatValueForCsv(new Date(response.createdAt).toLocaleString()),
+			];
 	questions.forEach((question) => {
 		const answer = response?.answers?.find((a) => a.questionId === question.id);
 
@@ -85,7 +99,6 @@ const generateCsvRow = (
 			row.push(formatValueForCsv(combinedValue));
 		}
 	});
-
 	return row;
 };
 
@@ -97,11 +110,17 @@ export const exportSurveyToCsv = (survey: Survey): void => {
 	}
 
 	// Генерируем заголовки CSV
-	const headers = generateCsvHeaders(survey.questions);
-
+	const headers = generateCsvHeaders(
+		survey.questions,
+		survey.type === 'ANONYMOUS',
+	);
 	// Генерируем строки данных
 	const rows = survey.responses.map((response) =>
-		generateCsvRow(response, survey.questions).join(','),
+		generateCsvRow(
+			response,
+			survey.questions,
+			survey.type === 'ANONYMOUS',
+		).join(','),
 	);
 
 	// Содержание CSV (добавляем BOM для корректной кодировки)
@@ -174,7 +193,7 @@ export const exportDataToCsv = (
 	document.body.removeChild(link);
 };
 
-export const exportStuctureToCsv = (data: any[], fileName: string) => {
+export const exportStructureToCsv = (data: any[], fileName: string) => {
 	const rows: string[] = [];
 
 	// Заголовки

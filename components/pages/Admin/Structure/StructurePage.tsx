@@ -7,7 +7,7 @@ import { Loader } from '@/components/common/Loader/Loader';
 import DepartmentTree from '@/components/pages/Admin/Structure/DepartmentTree';
 import CreateDepartmentModal from '@/components/pages/Admin/Structure/modals/CreateDepartmentModal';
 import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
-import { exportStuctureToCsv } from '@/lib/exportToCsv';
+import { exportStructureToCsv } from '@/lib/exportToCsv';
 import { useLazyQuery } from '@/lib/api/queries/Common/useLazyQuery';
 import useApi from '@/hooks/useApi';
 
@@ -36,7 +36,7 @@ export default function StructurePage() {
 						className={'mr-2'}
 						onClick={async () => {
 							const fullStructure = await trigger(['department-positions-all']);
-							exportStuctureToCsv(fullStructure, 'structure.csv');
+							exportStructureToCsv(fullStructure, 'structure.csv');
 						}}
 						variant={'outline'}
 					>

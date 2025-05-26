@@ -77,6 +77,13 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 		}
 	};
 
+	const getSurveyResultsLink = (id: string, isTest?: boolean) => {
+		if (isTest) {
+			return `${Routes.ADMIN}/results/${id}/test-results`;
+		}
+		return `${Routes.ADMIN}/results/${id}`;
+	};
+
 	return (
 		<div className="space-y-4">
 			{surveys.map((survey) => {
@@ -185,9 +192,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 											<NotepadTextDashed className="h-4 w-4 mr-2" /> В черновик
 										</DropdownMenuItem>
 									)}
-									<Link
-										href={`${Routes.ADMIN}/results/${survey?.id}${isTest ? '/user-test-results' : ''}`}
-									>
+									<Link href={getSurveyResultsLink(survey?.id, isTest)}>
 										<DropdownMenuItem>
 											<Eye className="h-4 w-4 mr-2" />
 											Посмотреть результаты

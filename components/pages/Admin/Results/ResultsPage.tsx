@@ -15,6 +15,7 @@ import useSurvey from '@/lib/api/queries/Education/useSurvey';
 import { SurveyStatus } from '@/types/entities';
 import { PhotoResults } from '@/components/pages/Admin/Results/PhotoResults';
 import { exportSurveyToCsv } from '@/lib/exportToCsv';
+import { OrderingResults } from '@/components/pages/Admin/Results/OrderingResults';
 
 export default function ResultsPage({ id }: { id: string }) {
 	const [activeTab, setActiveTab] = useState('overview');
@@ -116,7 +117,9 @@ export default function ResultsPage({ id }: { id: string }) {
 				<TabsList className="mb-4">
 					<TabsTrigger value="overview">Обзор</TabsTrigger>
 					<TabsTrigger value="questions">По вопросам</TabsTrigger>
-					<TabsTrigger value="respondents">Респонденты</TabsTrigger>
+					{survey?.type === 'PERSONALIZED' && (
+						<TabsTrigger value="respondents">Респонденты</TabsTrigger>
+					)}
 				</TabsList>
 
 				<TabsContent value="overview" className="space-y-4">
@@ -146,6 +149,9 @@ export default function ResultsPage({ id }: { id: string }) {
 										)}
 										{question.type === 'PHOTO' && (
 											<PhotoResults question={question as any} />
+										)}
+										{question.type === 'ORDERING' && (
+											<OrderingResults question={question as any} />
 										)}
 									</div>
 								))}
@@ -198,6 +204,9 @@ export default function ResultsPage({ id }: { id: string }) {
 											{question.type === 'PHOTO' && (
 												<PhotoResults question={question as any} />
 											)}
+											{question.type === 'ORDERING' && (
+												<OrderingResults question={question as any} />
+											)}
 										</div>
 									</TabsContent>
 								))}
@@ -206,27 +215,29 @@ export default function ResultsPage({ id }: { id: string }) {
 					</Card>
 				</TabsContent>
 
-				<TabsContent value="respondents" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<CardTitle>Список респондентов</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-2">
-								{survey?.responses?.map((response) => (
-									<div key={response.id} className="p-2 border rounded-md">
-										<div className="flex justify-between">
-											<span>ID: {response.userId}</span>
-											<span className="text-sm text-muted-foreground">
-												{new Date(response.createdAt).toLocaleDateString()}
-											</span>
+				{survey?.type === 'PERSONALIZED' && (
+					<TabsContent value="respondents" className="space-y-4">
+						<Card>
+							<CardHeader>
+								<CardTitle>Список респондентов</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-2">
+									{survey?.responses?.map((response) => (
+										<div key={response.id} className="p-2 border rounded-md">
+											<div className="flex justify-between">
+												<span>ID: {response.userId}</span>
+												<span className="text-sm text-muted-foreground">
+													{new Date(response.createdAt).toLocaleDateString()}
+												</span>
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					</TabsContent>
+				)}
 			</Tabs>
 		</div>
 	);

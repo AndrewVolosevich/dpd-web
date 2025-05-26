@@ -24,7 +24,8 @@ import { PhotoQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Quest
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useCreateResponseForSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateResponseForSurvey';
-import { useGetTestResults } from '@/lib/api/queries/Education/mutations/survey/useGetTestResults';
+import { useGetTestResults } from '@/lib/api/queries/Education/useGetTestResults';
+import { OrderingQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/OrderingQuestion';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -190,6 +191,20 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 						onChange={handleAnswer}
 					/>
 				);
+			case 'ORDERING':
+				return (
+					<OrderingQuestion
+						question={currentQuestion as any}
+						value={
+							getAnswerById(currentQuestion.id)?.value ||
+							currentQuestion.options.map((o) => o.value)
+						}
+						onChange={(newOrder) => {
+							handleAnswer(newOrder);
+						}}
+					/>
+				);
+
 			default:
 				return null;
 		}
