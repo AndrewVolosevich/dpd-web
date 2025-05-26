@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Edit, Settings, Trash2, User, UserSearch, UserX } from 'lucide-react';
+import { Edit, Settings, Trash2, User, UsersRound, UserX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import EditPositionModal from '@/components/pages/Admin/Structure/EditPositionModal';
 import DeletePositionModal from '@/components/pages/Admin/Structure/modals/DeletePositionModal';
@@ -73,7 +73,7 @@ const PositionItem = ({ position }: { position: Position }) => {
 						size="sm"
 						onClick={() => setReassigningPosition(position.id)}
 					>
-						<UserSearch className="h-4 w-4" />
+						<UsersRound className="h-4 w-4" />
 					</Button>
 				)}
 				<Button

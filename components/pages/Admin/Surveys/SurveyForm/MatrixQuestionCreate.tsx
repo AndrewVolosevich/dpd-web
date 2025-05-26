@@ -15,7 +15,10 @@ interface MatrixQuestionProps {
 	onChange: (updates: { rows?: string[]; columns?: string[] }) => void;
 }
 
-export function MatrixQuestion({ question, onChange }: MatrixQuestionProps) {
+export function MatrixQuestionCreate({
+	question,
+	onChange,
+}: MatrixQuestionProps) {
 	const [isBulkRowsModalOpen, setBulkRowsModalOpen] = useState(false);
 	const [isBulkColumnsModalOpen, setBulkColumnsModalOpen] = useState(false);
 

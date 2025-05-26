@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
 import { Question } from '@/types/entities';
+import { icons } from '@/const/icons';
 
 interface RatingQuestionProps {
 	question: Question;
@@ -18,14 +19,14 @@ export function RatingQuestion({
 			case 'EMOTIONS':
 				return (
 					<div className="flex gap-4 items-center justify-center">
-						{['😡', '🙁', '😐', '🙂', '😊'].map((emoji, index) => (
+						{icons.map((Icon, index) => (
 							<button
 								key={index}
-								className={`text-2xl hover:scale-110 transition-transform ${value === index + 1 ? 'scale-125' : ''}`}
+								className={`w-24 h-24 text-2xl hover:scale-110 transition-transform ${value === index + 1 ? 'scale-125' : ''}`}
 								onClick={() => onChange(index + 1)}
 								type="button"
 							>
-								{emoji}
+								{Icon}
 							</button>
 						))}
 					</div>

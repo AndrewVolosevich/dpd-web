@@ -45,8 +45,8 @@ export function MagazineItem({ magazine }: { magazine: MagazineModel }) {
 					<Image
 						src={magazine.titleImg}
 						alt={`${magazine.title}`}
-						layout="fill"
-						objectFit="cover"
+						fill
+						style={{ objectFit: 'cover' }}
 					/>
 				)}
 			</div>

@@ -1,17 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { Loader } from '@/components/common/Loader/Loader';
 import DepartmentTree from '@/components/pages/Admin/Structure/DepartmentTree';
 import CreateDepartmentModal from '@/components/pages/Admin/Structure/modals/CreateDepartmentModal';
 import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
+import { exportStructureToCsv } from '@/lib/exportToCsv';
+import { useLazyQuery } from '@/lib/api/queries/Common/useLazyQuery';
+import useApi from '@/hooks/useApi';
 
 export default function StructurePage() {
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [expandAll, setExpandAll] = useState(false);
 	const { data: departments, isLoading } = useDepartments();
+	const api = useApi();
+	const { isLoading: fullStructureLoading, trigger } = useLazyQuery(
+		async () => {
+			const response = await api.get(`/structure/departments-with-positions`);
+			return response.data;
+		},
+	);
 
 	const toggleAllDepartments = () => {
 		setExpandAll(!expandAll);
@@ -22,6 +32,21 @@ export default function StructurePage() {
 			<div className="flex flex-col items-start md:flex-row md:items-center md:justify-between mb-6">
 				<h1 className="text-2xl font-bold">Штатная структура компании</h1>
 				<div className={'flex flex-row items-center justify-end mt-2 md:mt-0'}>
+					<Button
+						className={'mr-2'}
+						onClick={async () => {
+							const fullStructure = await trigger(['department-positions-all']);
+							exportStructureToCsv(fullStructure, 'structure.csv');
+						}}
+						variant={'outline'}
+					>
+						{fullStructureLoading ? (
+							<Loader2 className="animate-spin mr-2" />
+						) : (
+							'Выгрузить в exel'
+						)}
+					</Button>
+
 					<Button
 						className={'mr-2'}
 						onClick={() => toggleAllDepartments()}

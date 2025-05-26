@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { Progress } from '@/components/ui/progress';
+import { icons } from '@/const/icons';
 
 interface RatingResultsProps {
 	question: {
@@ -79,10 +80,10 @@ export function RatingResults({ question }: RatingResultsProps) {
 			case 'EMOTIONS':
 				return (
 					<div className="flex justify-center items-center text-4xl mb-4">
-						{['😡', '🙁', '😐', '🙂', '😊'].map((emoji, index) => (
+						{icons.map((emoji, index) => (
 							<span
 								key={index}
-								className={`mx-2 ${Number(results.averageRating) >= index + 1 ? 'opacity-100' : 'opacity-30'}`}
+								className={`w-12 h-12 mx-2 ${Number(results.averageRating) === index + 1 ? 'opacity-100' : 'opacity-30'}`}
 							>
 								{emoji}
 							</span>

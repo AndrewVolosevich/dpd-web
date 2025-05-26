@@ -2,6 +2,7 @@ import React from 'react';
 import { Question } from '@/types/entities';
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
+import { icons } from '@/const/icons';
 
 const QuestionPreview = ({ question }: { question: Question }) => {
 	if (!question.ratingConfig) return null;
@@ -9,13 +10,9 @@ const QuestionPreview = ({ question }: { question: Question }) => {
 	if (question.ratingConfig.type === 'EMOTIONS') {
 		return (
 			<div className="flex gap-4 items-center justify-center">
-				{['😡', '🙁', '😐', '🙂', '😊'].map((emoji, index) => (
-					<button
-						key={index}
-						className="text-2xl hover:scale-110 transition-transform"
-						type="button"
-					>
-						{emoji}
+				{icons.map((Icon, index) => (
+					<button key={index} className={`w-12 h-12 text-2xl}`} type="button">
+						{Icon}
 					</button>
 				))}
 			</div>
@@ -23,7 +20,7 @@ const QuestionPreview = ({ question }: { question: Question }) => {
 	}
 	if (question.ratingConfig.type === 'STARS') {
 		return (
-			<div className="flex gap-1">
+			<div className="flex gap-1 justify-center">
 				{Array.from({ length: 5 }, (_, i) => (
 					<Button key={i} variant="outline" size="lg" className="p-2">
 						<Star className="h-6 w-6" />

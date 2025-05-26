@@ -79,7 +79,8 @@ export type QuestionType =
 	| 'MULTIPLE_CHOICE'
 	| 'RATING'
 	| 'MATRIX'
-	| 'PHOTO';
+	| 'PHOTO'
+	| 'ORDERING';
 
 export type RatingType = 'EMOTIONS' | 'STARS' | 'SCALE' | 'MATRIX';
 export type SurveyType = 'ANONYMOUS' | 'PERSONALIZED';
@@ -90,7 +91,7 @@ export interface Question {
 	id?: string;
 	type: QuestionType;
 	text: string;
-	options: { value: string; correct?: boolean }[];
+	options: { value: string; correct?: boolean; correctOrder?: number }[];
 	isRequired: boolean;
 	allowComment?: boolean;
 	ratingConfig?: {
@@ -110,8 +111,22 @@ export interface SurveyResponse {
 	id: string;
 	surveyId: string;
 	userId: string;
+	user?: {
+		name?: string;
+		surname?: string;
+	};
+
 	createdAt: string;
 	answers: Answer[];
+}
+
+export interface SurveyTestResponse extends SurveyResponse {
+	testResults?: {
+		correctAnswers: number;
+		passed: boolean;
+		score: number;
+		totalQuestions: number;
+	};
 }
 
 export interface Survey {
@@ -128,7 +143,7 @@ export interface Survey {
 	updatedAt?: string;
 	createdAt?: string;
 	questions: Question[];
-	responses?: SurveyResponse[];
+	responses?: SurveyTestResponse[];
 	_count?: {
 		responses?: number;
 	};

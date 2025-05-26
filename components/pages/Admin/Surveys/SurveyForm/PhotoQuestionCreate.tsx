@@ -23,7 +23,10 @@ interface PhotoQuestionProps {
 	}) => void;
 }
 
-export function PhotoQuestion({ question, onChange }: PhotoQuestionProps) {
+export function PhotoQuestionCreate({
+	question,
+	onChange,
+}: PhotoQuestionProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [uploading, setUploading] = useState(false);
 

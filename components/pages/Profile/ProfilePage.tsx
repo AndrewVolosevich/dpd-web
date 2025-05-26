@@ -25,6 +25,7 @@ import Presentation from '@/components/pages/Profile/Presentation';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
 import BirthdayCelebration from '@/components/pages/Profile/BirthdaySelebration';
 import { ru } from 'date-fns/locale';
+import { formatPhoneNumber } from '@/lib/phone';
 
 const ProfilePage = ({ id }: { id?: string }) => {
 	const { user, isAdmin } = useAuth();
@@ -89,18 +90,24 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							</div>
 							<div className="flex items-center">
 								<Phone className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">{anotherUser?.tel}</span>
+								<span className="text-sm">
+									{formatPhoneNumber(anotherUser?.tel)}
+								</span>
 							</div>
 							{anotherUser?.internalPhone && (
 								<div className="flex items-center">
 									<BookUser className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">{anotherUser?.internalPhone}</span>
+									<span className="text-sm">
+										{formatPhoneNumber(anotherUser?.internalPhone)}
+									</span>
 								</div>
 							)}
 							{anotherUser?.phone && (
 								<div className="flex items-center">
 									<Smartphone className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">{anotherUser?.phone}</span>
+									<span className="text-sm">
+										{formatPhoneNumber(anotherUser?.phone)}
+									</span>
 								</div>
 							)}
 							{anotherUser?.email && (

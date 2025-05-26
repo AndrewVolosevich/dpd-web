@@ -26,10 +26,31 @@ const formSchema = z.object({
 	surname: z.string().min(1, 'Фамилия обязательна'),
 	password: z.string().optional(),
 	patronymic: z.string().optional(),
-	tel: z.string().min(1, 'Телефон обязателен'),
-	internalPhone: z.string().optional(),
-	phone: z.string().optional(),
-	email: z.string().optional(),
+	tel: z
+		.string()
+		.min(9, 'Телефон обязателен, 9 цифр')
+		.refine((val) => /^\d+$/.test(val), {
+			message: 'Телефон должен содержать только цифры',
+		}),
+	internalPhone: z
+		.string()
+		.optional()
+		.refine((val) => !val || (val.length >= 4 && /^\d+$/.test(val)), {
+			message: 'Внутренний телефон должен содержать только цифры, минимум 4',
+		}),
+	phone: z
+		.string()
+		.optional()
+		.refine((val) => !val || (val.length >= 9 && /^\d+$/.test(val)), {
+			message:
+				'Дополнительный телефон должен содержать только цифры, минимум 9',
+		}),
+	email: z
+		.string()
+		.optional()
+		.refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+			message: 'Неверный формат email',
+		}),
 	badge: z.string().optional(),
 	isSupervisor: z.boolean().optional(),
 	startDate: z.date().optional(),

@@ -11,6 +11,7 @@ import { Search } from 'lucide-react';
 import useApi from '@/hooks/useApi';
 import { useQuery } from '@tanstack/react-query';
 import type { UserData } from '@/types/entities';
+import { formatPhoneNumber } from '@/lib/phone';
 
 interface UserAssignmentProps {
 	assignedUserIds: string[];
@@ -112,7 +113,7 @@ export function UserAssignment({
 												{user.surname} {user.name}
 											</span>
 											<span className="text-muted-foreground text-sm">
-												{user.tel}
+												{formatPhoneNumber(user.tel)}
 											</span>
 										</div>
 										{user.position && (

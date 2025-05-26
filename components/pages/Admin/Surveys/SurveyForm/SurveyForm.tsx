@@ -33,11 +33,12 @@ import { useRouter } from 'next/navigation';
 import { BulkOptionsModal } from '@/components/common/BulkOptionsModal/BulkOptionsModal';
 import QuestionPreview from '@/components/pages/Admin/Surveys/SurveyForm/QuestionPreview';
 import DatePickerPopover from '@/components/common/DatePickerPopover/DatePickerPopover';
-import { MatrixQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestion';
+import { MatrixQuestionCreate } from '@/components/pages/Admin/Surveys/SurveyForm/MatrixQuestionCreate';
 import { getStartDateISO } from '@/lib/date/helpers';
-import { PhotoQuestion } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestion';
+import { PhotoQuestionCreate } from '@/components/pages/Admin/Surveys/SurveyForm/PhotoQuestionCreate';
 import { useUpdateSurvey } from '@/lib/api/queries/Education/mutations/survey/useUpdateSurvey';
 import { useCreateSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateSurvey';
+import OrderingQuestionCreate from '@/components/pages/Admin/Surveys/SurveyForm/OrderingQuestionCreate';
 
 export function SurveyForm({
 	initialData,
@@ -391,6 +392,7 @@ export function SurveyForm({
 										<SelectItem value="RATING">Оценка</SelectItem>
 										<SelectItem value="MATRIX">Матрица</SelectItem>
 										<SelectItem value="PHOTO">Голосование за фото</SelectItem>
+										<SelectItem value="ORDERING">Порядок</SelectItem>
 									</SelectContent>
 								</Select>
 
@@ -437,7 +439,7 @@ export function SurveyForm({
 								)}
 
 								{q.type === 'MATRIX' && (
-									<MatrixQuestion
+									<MatrixQuestionCreate
 										question={{
 											rows: q.ratingConfig?.rows || [],
 											columns: q.ratingConfig?.columns || [],
@@ -697,7 +699,7 @@ export function SurveyForm({
 									</div>
 								)}
 								{q.type === 'PHOTO' && (
-									<PhotoQuestion
+									<PhotoQuestionCreate
 										question={{
 											photos: q.photos || [],
 											allowMultipleSelection:
@@ -712,6 +714,14 @@ export function SurveyForm({
 													allowMultipleSelection;
 											setQuestions(newQuestions);
 										}}
+									/>
+								)}
+								{q.type === 'ORDERING' && (
+									<OrderingQuestionCreate
+										initialOptions={q.options || []}
+										onSave={(newOptions) =>
+											updateQuestion(qIndex, 'options', newOptions)
+										}
 									/>
 								)}
 							</CardContent>
