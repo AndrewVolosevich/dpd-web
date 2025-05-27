@@ -62,6 +62,12 @@ export function SurveyForm({
 		initialData?.surveyVariant || 'SURVEY',
 	);
 	const [showForAll, setShowForAll] = useState(initialData?.showForAll);
+	const [passLimit, setPassLimit] = useState(initialData?.passLimit);
+	const [attemptsLimit, setAttemptsLimit] = useState(
+		initialData?.attemptsLimit,
+	);
+	const [timeLimit, setTimeLimit] = useState(initialData?.timeLimit);
+	const [isMixed, setIsMixed] = useState(initialData?.isMixed || false);
 
 	const [questions, setQuestions] = useState<Question[]>(
 		initialData?.questions || [
@@ -213,6 +219,10 @@ export function SurveyForm({
 			status: (status || 'DRAFT') as SurveyStatus,
 			questions: updatedQuestions,
 			...(initialData?.id && !forCopy ? { id: initialData.id } : {}),
+			isMixed,
+			timeLimit,
+			attemptsLimit,
+			passLimit,
 		};
 		const isValid = validateSurvey(surveyData);
 
@@ -355,6 +365,64 @@ export function SurveyForm({
 							Собирать информацию об участниках?
 						</Label>
 					</div>
+					{surveyVariant === 'TEST' && (
+						<div className={'!mt-8 space-y-4'}>
+							<div>Дополнительные поля для теста</div>
+							<div className="flex items-center space-x-2">
+								<Switch
+									id="is-mixed"
+									checked={isMixed}
+									onCheckedChange={() => {
+										setIsMixed(!isMixed);
+									}}
+								/>
+								<Label htmlFor="is-mixed">
+									Показывать вопросы в случайном порядке
+								</Label>
+							</div>
+							<div className="flex items-center space-x-2">
+								<Label htmlFor="pass-limit">Ограничение на прохождение</Label>
+								<Input
+									id="pass-limit"
+									type="number"
+									placeholder="минимальный %"
+									min={1}
+									max={100}
+									value={passLimit || ''}
+									onChange={(e) =>
+										setPassLimit(Number(e.target.value) || undefined)
+									}
+								/>
+							</div>
+							<div className="flex items-center space-x-2">
+								<Label htmlFor="attempts-limit">
+									Ограничение на количество попыток
+								</Label>
+								<Input
+									id="attempts-limit"
+									type="number"
+									placeholder="колличество раз"
+									value={attemptsLimit || ''}
+									onChange={(e) =>
+										setAttemptsLimit(Number(e.target.value) || undefined)
+									}
+								/>
+							</div>
+							<div className="flex items-center space-x-2">
+								<Label htmlFor="time-limit">Ограничение по времени</Label>
+								<Input
+									id="time-limit"
+									type="number"
+									placeholder="в минутах"
+									value={timeLimit || ''}
+									onChange={(e) =>
+										setTimeLimit(Number(e.target.value) || undefined)
+									}
+								/>
+							</div>
+							<div className="flex items-center space-x-2"></div>
+						</div>
+					)}
 				</div>
 				<div className="space-y-4">
 					{questions.map((q, qIndex) => (
@@ -503,7 +571,7 @@ export function SurveyForm({
 																onCheckedChange={() =>
 																	toggleCorrect(qIndex, optionIndex)
 																}
-																className="ml-2"
+																className="ml-2 hidden"
 															/>
 														)}
 														<Button

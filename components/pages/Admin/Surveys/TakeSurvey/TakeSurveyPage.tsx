@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	ArrowLeft,
@@ -13,7 +13,12 @@ import { ChoiceQuestion } from './Questions/ChoiceQuestion';
 import { RatingQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/RatingQuestion';
 import { Progress } from '@/components/ui/progress';
 import useSurvey from '@/lib/api/queries/Education/useSurvey';
-import { Answer, Question } from '@/types/entities';
+import {
+	Answer,
+	Question,
+	TestResults,
+	UserResponseForSurvey,
+} from '@/types/entities';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { Routes } from '@/const/routes';
 import { useRouter } from 'next/navigation';
@@ -26,6 +31,8 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 import { useCreateResponseForSurvey } from '@/lib/api/queries/Education/mutations/survey/useCreateResponseForSurvey';
 import { useGetTestResults } from '@/lib/api/queries/Education/useGetTestResults';
 import { OrderingQuestion } from '@/components/pages/Admin/Surveys/TakeSurvey/Questions/OrderingQuestion';
+import { useIncreaseSurveyAttempts } from '@/lib/api/queries/Education/mutations/survey/useIncreaseSurveyAttempts';
+import CustomTimer from '@/components/common/CustomTimer';
 
 const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { data } = useSurvey(surveyId);
@@ -36,6 +43,18 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const [started, setStarted] = useState(false);
 	const [showComment, setShowComment] = useState<boolean>(false);
 	const [testResults, setTestResults] = useState<any>(null);
+	const [questions, setQuestions] = useState<Question[]>([]); // Добавляем состояние для вопросов
+	const [timeExceedResponse, setTimeExceedResponse] =
+		useState<UserResponseForSurvey | null>(null);
+
+	useEffect(() => {
+		if (data?.questions) {
+			const mixedQuestions = data?.isMixed
+				? [...data.questions].sort(() => Math.random() - 0.5) // Перемешиваем вопросы
+				: data.questions;
+			setQuestions(mixedQuestions); // Устанавливаем перемешанные или упорядоченные вопросы
+		}
+	}, [data]);
 
 	const { mutateAsync: createResponse, isPending } =
 		useCreateResponseForSurvey();
@@ -43,15 +62,16 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	const { mutateAsync: getResults, isPending: loadingResults } =
 		useGetTestResults();
 
-	if (!surveyId || !data || !data?.questions?.length || !user?.id) {
+	const { mutateAsync: increaseAttempts } = useIncreaseSurveyAttempts();
+
+	if (!surveyId || !data || !questions?.length || !user?.id) {
 		return null;
 	}
-
-	const currentQuestion = data.questions[currentQuestionIndex] as Question & {
+	const currentQuestion = questions[currentQuestionIndex] as Question & {
 		id: string;
 	};
 	const progress = started
-		? ((currentQuestionIndex + 1) / data?.questions?.length) * 100
+		? ((currentQuestionIndex + 1) / questions?.length) * 100
 		: 0;
 
 	const handleAnswer = (value: any) => {
@@ -76,6 +96,14 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 		});
 	};
 
+	const handleTimeExceed = async () => {
+		const resp = await increaseAttempts({
+			surveyId,
+			userId: user.id,
+		});
+		setTimeExceedResponse(resp?.data);
+	};
+
 	const addComment = (comment: string) => {
 		setAnswers((prevAnswers) => {
 			const existingAnswerIndex = prevAnswers.findIndex(
@@ -95,7 +123,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	};
 
 	const handleNext = () => {
-		if (currentQuestionIndex < (data?.questions?.length || 1) - 1) {
+		if (currentQuestionIndex < (questions?.length || 1) - 1) {
 			setShowComment(false);
 			setCurrentQuestionIndex((prev) => prev + 1);
 		}
@@ -109,10 +137,18 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	};
 
 	const handleSubmit = async () => {
+		const sortedAnswers = answers.sort((a, b) => {
+			const originalOrder = data.questions.map((q) => q.id); // Получаем порядок вопросов из изначального массива
+			return (
+				originalOrder.indexOf(a.questionId) -
+				originalOrder.indexOf(b.questionId)
+			);
+		});
+
 		const respData = {
 			surveyId,
 			userId: user.id,
-			answers,
+			answers: sortedAnswers,
 		};
 		await createResponse(respData);
 		// If this is a test, get the results
@@ -121,7 +157,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 				{ surveyId, userId: user.id },
 				{
 					onSuccess: (response: any) => {
-						setTestResults(response?.data?.testResults);
+						setTestResults(response?.data);
 					},
 				},
 			);
@@ -239,9 +275,13 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 	};
 
 	const renderTestResults = () => {
-		if (!testResults) return null;
+		if (!testResults || !testResults?.testResults) return null;
 
-		const { correctAnswers, totalQuestions, score, passed } = testResults;
+		const { correctAnswers, totalQuestions, score, passed } =
+			testResults?.testResults as TestResults;
+		const hasAttempts =
+			testResults?.survey?.attemptsLimit > testResults?.response?.attempts &&
+			!passed;
 
 		return (
 			<div className="space-y-4">
@@ -263,6 +303,49 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 				</Alert>
 
 				<div className="flex justify-center">
+					{hasAttempts && (
+						<Button
+							variant={'outline'}
+							className={'mr-2'}
+							onClick={() => {
+								window?.location?.reload();
+							}}
+						>
+							Пройти еще раз
+						</Button>
+					)}
+					<Button onClick={() => router.push(Routes.HOME)}>
+						Вернуться на главную
+					</Button>
+				</div>
+			</div>
+		);
+	};
+
+	const renderTimeExceed = () => {
+		if (!timeExceedResponse) return null;
+		const hasAttempts =
+			(data?.attemptsLimit ?? 0) > timeExceedResponse?.attempts;
+
+		return (
+			<div className="space-y-4">
+				<div>
+					К сожалению, вы не закончили тест вовремя. Попробуйте ещё раз, если
+					попытки ещё доступны.
+				</div>
+
+				<div className="flex justify-center">
+					{hasAttempts && (
+						<Button
+							variant={'outline'}
+							className={'mr-2'}
+							onClick={() => {
+								window?.location?.reload();
+							}}
+						>
+							Пройти еще раз
+						</Button>
+					)}
 					<Button onClick={() => router.push(Routes.HOME)}>
 						Вернуться на главную
 					</Button>
@@ -276,6 +359,15 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 			<div className="container py-6 space-y-6 m-auto">
 				<h2 className="text-2xl font-bold mb-4">{data.title} - Результаты</h2>
 				{renderTestResults()}
+			</div>
+		);
+	}
+
+	if (timeExceedResponse) {
+		return (
+			<div className="container py-6 space-y-6 m-auto">
+				<h2 className="text-2xl font-bold mb-4">Время истекло</h2>
+				{renderTimeExceed()}
 			</div>
 		);
 	}
@@ -307,6 +399,18 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 						)}
 					</div>
 					<Progress value={progress} className="h-2" />
+				</div>
+
+				<div className="space-y-2">
+					{data?.timeLimit && !started && (
+						<span>Это тест на время, у вас будет {data?.timeLimit} минут</span>
+					)}
+					{data?.timeLimit && started && (
+						<CustomTimer
+							timeLimit={data?.timeLimit}
+							onTimeout={handleTimeExceed}
+						/>
+					)}
 				</div>
 
 				<Card className="p-6">

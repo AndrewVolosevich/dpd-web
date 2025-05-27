@@ -71,7 +71,9 @@ const ActiveSurveys = () => {
 										variant="default"
 										size="sm"
 									>
-										Пройти опрос
+										{survey?.surveyVariant === 'TEST'
+											? 'Пройти тест'
+											: 'Пройти опрос'}
 										<ChevronRight className="ml-2 h-4 w-4" />
 									</Button>
 								</Link>

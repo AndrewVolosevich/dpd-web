@@ -43,8 +43,6 @@ const SurveysPage = () => {
 
 			<div className="flex gap-4 items-center">
 				<div className="relative flex-1">
-					{/*<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />*/}
-					{/*<Input placeholder="Поиск опроса..." className="pl-8" />*/}
 					<Search
 						searchState={[search, setSearch]}
 						placeholder={'Поиск опроса...'}
