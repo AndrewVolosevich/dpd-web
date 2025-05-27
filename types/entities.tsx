@@ -120,13 +120,25 @@ export interface SurveyResponse {
 	answers: Answer[];
 }
 
+export interface TestResults {
+	correctAnswers: number;
+	passed: boolean;
+	score: number;
+	totalQuestions: number;
+}
+
 export interface SurveyTestResponse extends SurveyResponse {
-	testResults?: {
-		correctAnswers: number;
-		passed: boolean;
-		score: number;
-		totalQuestions: number;
-	};
+	testResults?: TestResults;
+}
+
+export interface UserResponseForSurvey {
+	id: string;
+	userId: string;
+	surveyId: string;
+	createdAt: string;
+	answers: Answer[];
+	attempts: number;
+	score: number;
 }
 
 export interface Survey {
@@ -149,6 +161,11 @@ export interface Survey {
 	};
 	assignments?: SurveyAssignment[]; // Added assignments
 	assignedUserIds?: string[]; // Added for form handling
+
+	passLimit?: number;
+	attemptsLimit?: number;
+	timeLimit?: number;
+	isMixed?: boolean;
 }
 
 export interface Answer {
