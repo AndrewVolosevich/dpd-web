@@ -85,6 +85,7 @@ export default function DepartmentItem({
 						size="sm"
 						onClick={handleTogglePositions}
 						className="flex items-center"
+						tooltip={'Показать/скрыть должности'}
 					>
 						<Users className="h-4 w-4 mr-1" />
 						<span className="text-xs">Должности</span>
@@ -94,6 +95,7 @@ export default function DepartmentItem({
 						variant="ghost"
 						size="sm"
 						onClick={() => setIsCreatePositionModalOpen(true)}
+						tooltip={'Добавить новую должность'}
 					>
 						<Plus className="h-4 w-4" />
 					</Button>
@@ -102,6 +104,7 @@ export default function DepartmentItem({
 						variant="ghost"
 						size="sm"
 						onClick={() => setIsCreateDeptModalOpen(true)}
+						tooltip={'Добавить новый отдел'}
 					>
 						<Plus className="h-4 w-4 mr-1" />
 						<span className="text-xs">Отдел</span>
@@ -111,6 +114,7 @@ export default function DepartmentItem({
 						variant="ghost"
 						size="sm"
 						onClick={() => setIsEditDeptModalOpen(true)}
+						tooltip={'Редактировать отдел'}
 					>
 						<Edit className="h-4 w-4" />
 					</Button>
@@ -119,6 +123,7 @@ export default function DepartmentItem({
 						variant="ghost"
 						size="sm"
 						onClick={() => setIsDeleteDeptModalOpen(true)}
+						tooltip={'Удалить отдел'}
 					>
 						<Trash2 className="h-4 w-4" />
 					</Button>

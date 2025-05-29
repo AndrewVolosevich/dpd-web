@@ -41,7 +41,7 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 					<Link
 						href={`/profile/${user?.id}`}
 						className={
-							'font-medium text-base mb-1 truncate self-center text-red-600'
+							'font-medium text-base mb-1 truncate self-center text-primary'
 						}
 					>
 						<h3 className="">{user?.name + ' ' + user?.surname}</h3>
@@ -70,7 +70,7 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 						!user?.position && 'justify-center',
 					)}
 				>
-					<p className="text-sm block self-start font-bold text-red-600">
+					<p className="text-sm block self-start font-bold text-primary">
 						{user?.name + ' ' + user?.surname}
 					</p>
 					<p className="line-clamp-2 text-xs sm:text-sm text-gray-600 block">

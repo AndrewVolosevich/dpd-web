@@ -41,7 +41,7 @@ interface EditNewsFormProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
-	useNonAdminRedirect(Routes.NEWS);
+	useNonAdminRedirect(`${Routes.CORPORATE_LIFE}/news`);
 	const router = useRouter();
 	const { isAdmin } = useAuth();
 	const [clearCounter, setClearCounter] = useState<number>(0);
@@ -85,7 +85,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 		const data = resp?.data;
 		if (data?.id) {
 			setTimeout(() => {
-				router.push(`${Routes.NEWS}/${data.id}`);
+				router.push(`${Routes.CORPORATE_LIFE}/news/${data.id}`);
 			}, 0);
 		} else {
 			setClearCounter((old) => old + 1);

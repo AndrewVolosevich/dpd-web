@@ -69,7 +69,7 @@ export const OrderingResults: React.FC<OrderingResultsProps> = ({
 							<b>Результат:</b>{' '}
 							<span
 								className={`${
-									result.isCorrect ? 'text-green-600' : 'text-red-600'
+									result.isCorrect ? 'text-green-600' : 'text-primary'
 								}`}
 							>
 								{result.isCorrect ? 'Правильно' : 'Неправильно'}

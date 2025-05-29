@@ -88,12 +88,14 @@ const ProfilePage = ({ id }: { id?: string }) => {
 									{anotherUser?.position?.title ?? ''}
 								</span>
 							</div>
-							<div className="flex items-center">
-								<Phone className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">
-									{formatPhoneNumber(anotherUser?.tel)}
-								</span>
-							</div>
+							{isAdmin && (
+								<div className="flex items-center">
+									<Phone className="mr-2 h-4 w-4 text-gray-400" />
+									<span className="text-sm">
+										{formatPhoneNumber(anotherUser?.tel)}
+									</span>
+								</div>
+							)}
 							{anotherUser?.internalPhone && (
 								<div className="flex items-center">
 									<BookUser className="mr-2 h-4 w-4 text-gray-400" />

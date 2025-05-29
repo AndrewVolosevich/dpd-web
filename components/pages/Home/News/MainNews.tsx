@@ -14,7 +14,7 @@ type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 const MainNews = ({ className, mainNews }: MainNewsProps) => {
 	return (
 		<div className={cn(className, 'bg-white mb-2 w-full rounded relative')}>
-			<Link href={`${Routes.NEWS}`}>
+			<Link href={`${Routes.CORPORATE_LIFE}/news`}>
 				<Button
 					type={'button'}
 					variant={'default'}
@@ -24,7 +24,7 @@ const MainNews = ({ className, mainNews }: MainNewsProps) => {
 					Все новости
 				</Button>
 			</Link>
-			<Link href={`${Routes.NEWS}/${mainNews?.id}`}>
+			<Link href={`${Routes.CORPORATE_LIFE}/news/${mainNews?.id}`}>
 				<div className={'h-72 lg:h-96 w-full relative'}>
 					<Image
 						fill

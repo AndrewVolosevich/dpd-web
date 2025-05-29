@@ -7,7 +7,7 @@ export default function NotFound() {
 		<div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">
 			<div className="container flex flex-col items-center justify-center max-w-md text-center px-4">
 				<div className="mb-8">
-					<Package className="h-24 w-24 text-red-600 mx-auto" />
+					<Package className="h-24 w-24 text-primary mx-auto" />
 				</div>
 				<h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
 				<h2 className="text-2xl font-semibold text-gray-700 mb-4">

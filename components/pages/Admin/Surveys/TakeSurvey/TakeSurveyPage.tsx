@@ -403,7 +403,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 
 				<div className="space-y-2">
 					{data?.timeLimit && !started && (
-						<span>Это тест на время, у вас будет {data?.timeLimit} минут</span>
+						<span>Это тест на время, у вас будет {data?.timeLimit} мин.</span>
 					)}
 					{data?.timeLimit && started && (
 						<CustomTimer
@@ -424,7 +424,7 @@ const TakeSurveyPage = ({ surveyId }: { surveyId: string }) => {
 							</div>
 							<Button
 								onClick={() => setStarted(true)}
-								className="w-full bg-primary hover:bg-red-600"
+								className="w-full bg-primary hover:bg-primary"
 							>
 								<PlayCircle className="h-4 w-4 mr-2" />
 								{data.surveyVariant === 'TEST' ? 'Начать тест' : 'Начать опрос'}

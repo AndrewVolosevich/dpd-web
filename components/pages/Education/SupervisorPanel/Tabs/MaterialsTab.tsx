@@ -57,7 +57,7 @@ export default function MaterialsTab({
 		} else {
 			return {
 				text: 'Не изучен',
-				color: 'text-red-600',
+				color: 'text-primary',
 			};
 		}
 	};

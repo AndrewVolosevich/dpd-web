@@ -9,14 +9,15 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
+import ContentPage from '@/components/pages/About/SubPages/ContentPage';
 
-const HeadPage = () => {
+const StructurePage = () => {
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
 			<Breadcrumb>
 				<BreadcrumbList className="p-0 list-none">
 					<BreadcrumbItem>
-						<BreadcrumbLink href="/">Главная</BreadcrumbLink>
+						<BreadcrumbLink href="/public">Главная</BreadcrumbLink>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
@@ -26,13 +27,14 @@ const HeadPage = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Первые лица DPD Беларусь</BreadcrumbPage>
+						<BreadcrumbPage>Орг. структура</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div>Первые лица DPD Беларусь</div>
+			<div>Орг. структура</div>
+			<ContentPage contentPageTitle={'structure'} />
 		</div>
 	);
 };
 
-export default HeadPage;
+export default StructurePage;
