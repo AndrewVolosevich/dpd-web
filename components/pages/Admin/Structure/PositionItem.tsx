@@ -56,6 +56,7 @@ const PositionItem = ({ position }: { position: Position }) => {
 					size="sm"
 					disabled={hasSupervisorPanel}
 					onClick={() => setIsSupervisorPanelModalOpen(true)}
+					tooltip={'Добавить панель руководителя'}
 				>
 					<Settings className="h-4 w-4 mr-1" />
 					<span className="text-xs">Панель руководителя</span>
@@ -64,6 +65,7 @@ const PositionItem = ({ position }: { position: Position }) => {
 					variant="ghost"
 					size="sm"
 					onClick={() => setAssigningPosition(position.id)}
+					tooltip={'Назначить на должность'}
 				>
 					<User className="h-4 w-4" />
 				</Button>
@@ -72,24 +74,29 @@ const PositionItem = ({ position }: { position: Position }) => {
 						variant="ghost"
 						size="sm"
 						onClick={() => setReassigningPosition(position.id)}
+						tooltip={'Перевести с должности'}
 					>
 						<UsersRound className="h-4 w-4" />
+					</Button>
+				)}
+				{position?.userId && (
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => {
+							setUnAssigningPosition(true);
+							setAssigningPosition(position.id);
+						}}
+						tooltip={'Снять с должности'}
+					>
+						<UserX className="h-4 w-4" />
 					</Button>
 				)}
 				<Button
 					variant="ghost"
 					size="sm"
-					onClick={() => {
-						setUnAssigningPosition(true);
-						setAssigningPosition(position.id);
-					}}
-				>
-					<UserX className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
 					onClick={() => setEditingPosition(position.id)}
+					tooltip={'Редактировать должность'}
 				>
 					<Edit className="h-4 w-4" />
 				</Button>
@@ -97,6 +104,7 @@ const PositionItem = ({ position }: { position: Position }) => {
 					variant="ghost"
 					size="sm"
 					onClick={() => setDeletingPosition(position.id)}
+					tooltip={'Удалить должность'}
 				>
 					<Trash2 className="h-4 w-4" />
 				</Button>

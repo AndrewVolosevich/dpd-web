@@ -41,7 +41,7 @@ const ActiveSurveys = () => {
 							className="border shadow-sm hover:shadow-md transition-shadow w-[49%]"
 						>
 							<CardHeader className="pb-2">
-								<CardTitle className="text-xl font-bold text-red-600">
+								<CardTitle className="text-xl font-bold text-primary">
 									{survey.title}
 								</CardTitle>
 							</CardHeader>

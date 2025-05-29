@@ -203,7 +203,7 @@ export function SurveysList({ surveys }: { surveys: Survey[] }) {
 										Выгрузить в Excel
 									</DropdownMenuItem>
 									<DropdownMenuItem
-										className="text-red-600"
+										className="text-primary"
 										onClick={() => {
 											if (survey?.id) {
 												deleteSurvey(survey.id);

@@ -11,7 +11,7 @@ type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const SecondaryNewsItem = ({ className, news }: MainNewsProps) => {
 	return (
-		<Link href={`${Routes.NEWS}/${news?.id}`}>
+		<Link href={`${Routes.CORPORATE_LIFE}/news/${news?.id}`}>
 			<div
 				className={cn(
 					'bg-white rounded shadow overflow-hidden h-full',

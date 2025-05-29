@@ -2,7 +2,6 @@ export enum Routes {
 	HOME = '/',
 	ABOUT = '/about',
 	CORPORATE_LIFE = '/corporate-life',
-	NEWS = '/news',
 	PROFILE = '/profile',
 	SIGN_IN = '/sign-in',
 	ADMIN = '/admin',
@@ -34,11 +33,11 @@ export const NavLinks = [
 				title: 'Реквизиты',
 				href: `${Routes.ABOUT}/details`,
 			},
+			{
+				title: 'Справочник сотрудников',
+				href: `${Routes.ABOUT}/users`,
+			},
 		],
-	},
-	{
-		title: 'Новости',
-		href: Routes.NEWS,
 	},
 	{
 		title: 'Корпоративная жизнь',
@@ -56,27 +55,27 @@ export const NavLinks = [
 				title: 'Видео',
 				href: `${Routes.CORPORATE_LIFE}/video`,
 			},
+			{
+				title: 'Новости',
+				href: `${Routes.CORPORATE_LIFE}/news`,
+			},
 		],
 	},
 	{
-		title: 'База знаний',
+		title: 'Обучение и развитие',
 		href: `${Routes.EDUCATION}/materials`,
 	},
 	{
 		title: 'Администратор',
-		href: `${Routes.ADMIN}/users`,
+		href: `${Routes.ADMIN}/structure`,
 		items: [
 			{
-				title: 'Пользователи',
-				href: `${Routes.ADMIN}/users`,
+				title: 'Должностная структура',
+				href: `${Routes.ADMIN}/structure`,
 			},
 			{
 				title: 'Опросы и тесты',
 				href: `${Routes.ADMIN}/surveys`,
-			},
-			{
-				title: 'Должностная структура',
-				href: `${Routes.ADMIN}/structure`,
 			},
 		],
 	},
@@ -86,7 +85,6 @@ export const PROTECTED_ROUTES = [
 	Routes.HOME,
 	Routes.ABOUT,
 	Routes.CORPORATE_LIFE,
-	Routes.NEWS,
 	Routes.PROFILE,
 ];
 export const UNPROTECTED_ROUTES = [Routes.SIGN_IN];

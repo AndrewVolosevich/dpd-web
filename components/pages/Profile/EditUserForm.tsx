@@ -215,19 +215,6 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 						/>
 					</div>
 					<>
-						<FormField
-							control={form.control}
-							name="password"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Пароль</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
 						{/* Поле доп телефона и емейла */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<FormField
@@ -257,6 +244,20 @@ const EditUserForm = ({ user, onClose, isSelf }: EditUserFormProps) => {
 								)}
 							/>
 						</div>
+						{/*Пароль*/}
+						<FormField
+							control={form.control}
+							name="password"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Пароль</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
 						<FormField
 							control={form.control}

@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import EditNewsForm from '@/components/pages/News/EditNewsForm';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
-import Image from 'next/image';
 
 const containerClasses = 'container mx-auto p-4 h-full';
 const headerClasses = 'text-2xl font-bold mb-4';
@@ -35,7 +34,7 @@ const NewsPage = ({
 	});
 
 	const handleEdit = () => {
-		router.push(`${Routes.NEWS}/edit/${newsId}`);
+		router.push(`${Routes.CORPORATE_LIFE}/news/edit/${newsId}`);
 	};
 
 	if (!newsId) {
@@ -76,14 +75,14 @@ const NewsPage = ({
 		<div className={containerClasses}>
 			<div className={'flex flex-col'}>
 				<h2 className={headerClasses}>{'Новость'}</h2>
-				<div className="relative w-full aspect-[16/4] bg-gray-100 rounded-lg overflow-hidden mb-4">
-					<Image
-						src={data?.titleImg || '/placeholder.svg'}
-						alt="Preview"
-						fill
-						className="object-cover"
-					/>
-				</div>
+				{/*<div className="relative w-full aspect-[16/4] bg-gray-100 rounded-lg overflow-hidden mb-4">*/}
+				{/*	<Image*/}
+				{/*		src={data?.titleImg || '/placeholder.svg'}*/}
+				{/*		alt="Preview"*/}
+				{/*		fill*/}
+				{/*		className="object-cover"*/}
+				{/*	/>*/}
+				{/*</div>*/}
 				{isAdmin && (
 					<ContextButton
 						tooltip={'Изменить'}

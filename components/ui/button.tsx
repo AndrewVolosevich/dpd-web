@@ -4,6 +4,12 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const buttonVariants = cva(
 	'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
@@ -42,11 +48,34 @@ export interface ButtonProps
 		VariantProps<typeof buttonVariants> {
 	asChild?: boolean;
 	href?: string;
+	tooltip?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	({ className, variant, size, asChild = false, href, ...props }, ref) => {
+	(
+		{ className, variant, size, asChild = false, tooltip, href, ...props },
+		ref,
+	) => {
 		const Comp = asChild ? Slot : 'button';
+
+		if (tooltip) {
+			return (
+				<TooltipProvider delayDuration={400}>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Comp
+								className={cn(buttonVariants({ variant, size, className }))}
+								ref={ref}
+								{...props}
+							/>
+						</TooltipTrigger>
+						<TooltipContent collisionPadding={20} sideOffset={10}>
+							<p>{tooltip}</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+			);
+		}
 
 		if (href && variant === 'buttonLink') {
 			return (

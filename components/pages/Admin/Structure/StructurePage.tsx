@@ -43,7 +43,7 @@ export default function StructurePage() {
 						{fullStructureLoading ? (
 							<Loader2 className="animate-spin mr-2" />
 						) : (
-							'Выгрузить в exel'
+							'Выгрузить в Excel'
 						)}
 					</Button>
 

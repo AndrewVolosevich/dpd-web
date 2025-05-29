@@ -20,7 +20,7 @@ export default function NavLink({
 		<Link
 			aria-current={isActive ? 'page' : undefined}
 			className={cn(
-				'text-gray-600 hover:text-red-600 px-2 block py-6 text-base transition-colors',
+				'text-gray-600 hover:text-primary px-2 block py-6 text-base transition-colors',
 				isDisabled && 'pointer-events-none opacity-50',
 				className,
 			)}

@@ -9,6 +9,7 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
+import ContentPage from '@/components/pages/About/SubPages/ContentPage';
 
 const MissionPage = () => {
 	return (
@@ -31,6 +32,7 @@ const MissionPage = () => {
 				</BreadcrumbList>
 			</Breadcrumb>
 			<div>Миссия и ценности</div>
+			<ContentPage contentPageTitle={'mission'} />
 		</div>
 	);
 };

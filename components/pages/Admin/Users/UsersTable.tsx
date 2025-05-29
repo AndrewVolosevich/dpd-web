@@ -125,7 +125,10 @@ export default function UsersTable() {
 								<React.Fragment key={department}>
 									{/* Заголовок отдела */}
 									<TableRow>
-										<TableCell colSpan={5} className="bg-gray-100 font-bold">
+										<TableCell
+											colSpan={5}
+											className="bg-gray-100 font-bold text-primary"
+										>
 											{department}
 										</TableCell>
 									</TableRow>
@@ -139,7 +142,7 @@ export default function UsersTable() {
 											</TableCell>
 											<TableCell>{user.department?.title || '-'}</TableCell>
 											<TableCell>{user.position?.title || '-'}</TableCell>
-											<TableCell>{formatPhoneNumber(user.tel)}</TableCell>
+											<TableCell>{formatPhoneNumber(user?.phone)}</TableCell>
 											<TableCell>
 												{formatPhoneNumber(user?.internalPhone)}
 											</TableCell>

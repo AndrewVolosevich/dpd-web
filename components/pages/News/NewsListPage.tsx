@@ -108,7 +108,7 @@ const NewsListPage = () => {
 												className="mt-4"
 												variant="buttonLink"
 												size="sm"
-												href={`${Routes.NEWS}/${item.id}`}
+												href={`${Routes.CORPORATE_LIFE}/news/${item.id}`}
 											>
 												Читать далее
 											</Button>
@@ -150,7 +150,7 @@ const NewsListPage = () => {
 					{isAdmin && (
 						<Button
 							onClick={() => {
-								router.push(`${Routes.NEWS}/create`);
+								router.push(`${Routes.CORPORATE_LIFE}/news/create`);
 							}}
 							type={'button'}
 						>

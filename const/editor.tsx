@@ -5,7 +5,7 @@ import Header from '@editorjs/header';
 // @ts-ignore
 import List from '@editorjs/list';
 // @ts-ignore
-import LinkTool from '@editorjs/link';
+// import LinkTool from '@editorjs/link';
 // @ts-ignore
 import Delimiter from '@coolbytes/editorjs-delimiter';
 // import Delimiter from '@editorjs/delimiter';
@@ -41,14 +41,16 @@ export const getEditorJsTools = (token: string) => {
 		},
 		list: List,
 		// checkList: CheckList,
-		linkTool: {
-			placeholder: 'Вставьте ссылку...',
-			class: LinkTool,
-			config: {
-				endpoint: '/api/link',
-			},
-			inlineToolbar: true,
-		},
+
+		// linkTool: {
+		// 	placeholder: 'Вставьте ссылку...',
+		// 	class: LinkTool,
+		// 	config: {
+		// 		endpoint: '/api/link',
+		// 	},
+		// 	inlineToolbar: true,
+		// },
+
 		// delimiter: Delimiter,
 		delimiter: {
 			class: Delimiter,

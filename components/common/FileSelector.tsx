@@ -1,16 +1,24 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 interface FileSelectorProps {
 	initialUrl?: string;
 	useFile: [File | null, React.Dispatch<React.SetStateAction<File | null>>];
 	isImage?: boolean;
+	isAvatar?: boolean;
 }
+
+const wideImgCls =
+	'relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden';
+const avatarImgCls =
+	'relative w-[100px] h-[100px] bg-gray-100 rounded-full overflow-hidden flex shrink-0';
 
 const FileSelector = ({
 	initialUrl,
 	useFile,
 	isImage = false,
+	isAvatar = false,
 }: FileSelectorProps) => {
 	const [preview, setPreview] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +53,7 @@ const FileSelector = ({
 				{
 					<div className="flex items-center justify-center">
 						{preview || initialUrl ? (
-							<div className="relative w-full aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
+							<div className={isAvatar ? avatarImgCls : wideImgCls}>
 								<Image
 									src={preview || initialUrl || '/placeholder.svg'}
 									alt="Preview"
@@ -54,8 +62,20 @@ const FileSelector = ({
 								/>
 							</div>
 						) : (
-							<div className="w-full aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center">
-								<span className="text-gray-500">Нет изображения</span>
+							<div
+								className={cn(
+									isAvatar ? avatarImgCls : wideImgCls,
+									'flex items-center justify-center',
+								)}
+							>
+								<span
+									className={cn(
+										isAvatar && 'text-xs px-1 text-center',
+										'text-gray-500',
+									)}
+								>
+									Нет изображения
+								</span>
 							</div>
 						)}
 					</div>

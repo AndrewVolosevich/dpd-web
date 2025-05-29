@@ -76,7 +76,7 @@ const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
 							onChange(false);
 						}}
 						className={
-							'text-gray-600 hover:text-red-600 px-2 block py-6 text-base transition-colors cursor-pointer mb-2 w-full'
+							'text-gray-600 hover:text-primary px-2 block py-6 text-base transition-colors cursor-pointer mb-2 w-full'
 						}
 						key={Routes.PROFILE}
 					>
