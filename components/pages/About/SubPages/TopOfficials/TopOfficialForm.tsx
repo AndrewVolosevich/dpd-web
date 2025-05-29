@@ -33,13 +33,6 @@ export const TopOfficialForm = ({
 		onSubmit(file, { name, jobTitle, content });
 	};
 
-	const resetFields = () => {
-		setName('');
-		setJobTitle('');
-		setContent('');
-		setFile(null);
-	};
-
 	return (
 		<div className="space-y-4">
 			<div className="space-y-2">
