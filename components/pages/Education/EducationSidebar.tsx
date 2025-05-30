@@ -8,12 +8,18 @@ import {
 	FileText,
 	GraduationCap,
 	LineChart,
+	UserPlus,
 	Users,
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { Routes } from '@/const/routes';
 
 const sidebarItems = [
+	{
+		title: 'Новому сотруднику',
+		href: `${Routes.EDUCATION}/new-employee`,
+		icon: UserPlus,
+	},
 	{
 		title: 'Учебные кабинеты',
 		href: `${Routes.EDUCATION}/materials`,
