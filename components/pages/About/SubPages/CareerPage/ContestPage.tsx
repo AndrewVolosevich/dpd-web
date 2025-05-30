@@ -9,8 +9,9 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
+import ContentPage from '@/components/pages/About/SubPages/ContentPage';
 
-const CareerPage = () => {
+const ContestPage = () => {
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
 			<Breadcrumb>
@@ -26,13 +27,20 @@ const CareerPage = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Карьера в DPD</BreadcrumbPage>
+						<BreadcrumbLink href={`${Routes.ABOUT}/career`}>
+							Карьера в DPD
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+					<BreadcrumbSeparator />
+					<BreadcrumbItem>
+						<BreadcrumbPage>Конкурсы на вакансии</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div>Карьера в DPD</div>
+			<div>Конкурсы на вакансии</div>
+			<ContentPage contentPageTitle={'contest'} />
 		</div>
 	);
 };
 
-export default CareerPage;
+export default ContestPage;
