@@ -37,6 +37,10 @@ export const NavLinks = [
 				title: 'Справочник сотрудников',
 				href: `${Routes.ABOUT}/users`,
 			},
+			{
+				title: 'Карьера в DPD',
+				href: `${Routes.ABOUT}/career`,
+			},
 		],
 	},
 	{
