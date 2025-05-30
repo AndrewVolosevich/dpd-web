@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ContextButton, ContextIcons } from '@/components/ui/context-button';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
-import useGetContentPage from '@/lib/api/queries/Content/useGetContentPage';
+import useGetContentPage from '@/lib/api/queries/Content/useContentPage';
 import OutputBlock from '@/components/Editor/OutputBlock';
 import EditorBlock from '@/components/Editor/EditorBlock';
 import { EDITOR_INITIAL_DATA } from '@/const/editor';
