@@ -17,3 +17,9 @@ export interface TopOfficial {
 	createdAt?: string;
 	updatedAt?: string;
 }
+
+export interface TimeLine {
+	id?: string;
+	year: number;
+	content: string[];
+}
