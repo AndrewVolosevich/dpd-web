@@ -64,7 +64,9 @@ const NewsListPage = () => {
 	};
 
 	const handlePublish = async (item: NewsModel) => {
-		await updateNews({ ...item, isPublished: !item.isPublished });
+		// @ts-ignore
+		const { likes, comments, ...newsToSave } = item;
+		await updateNews({ ...newsToSave, isPublished: !item.isPublished });
 	};
 
 	const newsToShow = useMemo((): NewsModel[] => {

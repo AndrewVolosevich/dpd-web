@@ -101,6 +101,7 @@ export default function UsersTable() {
 							<TableHead>Работник</TableHead>
 							<TableHead>Отдел</TableHead>
 							<TableHead>Должность</TableHead>
+							<TableHead>Почта</TableHead>
 							<TableHead>Телефон моб.</TableHead>
 							<TableHead>Телефон вн.</TableHead>
 							<TableHead>Дата рожд</TableHead>
@@ -142,6 +143,7 @@ export default function UsersTable() {
 											</TableCell>
 											<TableCell>{user.department?.title || '-'}</TableCell>
 											<TableCell>{user.position?.title || '-'}</TableCell>
+											<TableCell>{user.email || '-'}</TableCell>
 											<TableCell>{formatPhoneNumber(user?.phone)}</TableCell>
 											<TableCell>
 												{formatPhoneNumber(user?.internalPhone)}
