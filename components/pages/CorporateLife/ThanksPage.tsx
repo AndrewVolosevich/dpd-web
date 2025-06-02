@@ -11,7 +11,7 @@ import {
 import { Routes } from '@/const/routes';
 import ContentPage from '@/components/pages/About/SubPages/ContentPage';
 
-const ContestPage = () => {
+const ThanksPage = () => {
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
 			<Breadcrumb>
@@ -21,26 +21,20 @@ const ContestPage = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbLink href={`${Routes.ABOUT}/history`}>
-							О компании
+						<BreadcrumbLink href={`${Routes.CORPORATE_LIFE}/magazines`}>
+							Корпоративная жизнь
 						</BreadcrumbLink>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbLink href={`${Routes.ABOUT}/career`}>
-							Карьера в DPD
-						</BreadcrumbLink>
-					</BreadcrumbItem>
-					<BreadcrumbSeparator />
-					<BreadcrumbItem>
-						<BreadcrumbPage>Конкурсы на вакансии</BreadcrumbPage>
+						<BreadcrumbPage>Благодарности</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div>Конкурсы на вакансии</div>
-			<ContentPage contentPageTitle={'contest'} />
+			<div>Благодарности</div>
+			<ContentPage contentPageTitle={'thanks'} />
 		</div>
 	);
 };
 
-export default ContestPage;
+export default ThanksPage;

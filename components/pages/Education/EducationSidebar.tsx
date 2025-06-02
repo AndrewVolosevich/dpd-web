@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+	Book,
 	BookOpen,
 	FileText,
 	GraduationCap,
@@ -24,6 +25,11 @@ const sidebarItems = [
 		title: 'Учебные кабинеты',
 		href: `${Routes.EDUCATION}/materials`,
 		icon: FileText,
+	},
+	{
+		title: 'Материалы для саморазвития',
+		href: `${Routes.EDUCATION}/self-development`,
+		icon: Book,
 	},
 	{
 		title: 'Мое обучение',
@@ -79,7 +85,7 @@ export function EducationSidebar({ className }: EducationSidebarProps) {
 									: 'text-muted-foreground',
 							)}
 						>
-							<item.icon className="h-4 w-4" />
+							<item.icon className="h-4 w-4 flex-shrink-0" />
 							<span className={'hidden sm:block'}>{item.title}</span>
 						</Link>
 					))}

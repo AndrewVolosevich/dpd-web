@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { NewsModel } from '@/types/entities';
 import { cn } from '@/lib/utils';
 import { Routes } from '@/const/routes';
+import { NewsStatsOverlay } from '@/components/pages/News/NewsStatsOverlay';
 
 type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 	news?: NewsModel;
@@ -24,6 +25,11 @@ const SecondaryNewsItem = ({ className, news }: MainNewsProps) => {
 						fill
 						style={{ objectFit: 'cover' }}
 						alt={`Secondary news`}
+					/>
+					<NewsStatsOverlay
+						commentsCount={news?.comments?.length || 0}
+						likesCount={news?.likes?.length || 0}
+						position={'bottom-right'}
 					/>
 				</div>
 				<div

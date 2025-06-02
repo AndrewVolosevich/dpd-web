@@ -14,7 +14,7 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/const/routes';
 import { endOfDay, format } from 'date-fns';
-import { Trash2 } from 'lucide-react';
+import { BookCheck, BookDashed, Trash2 } from 'lucide-react';
 import { NewsModel } from '@/types/entities';
 import useNewsList from '@/lib/api/queries/News/useNewsList';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
@@ -23,6 +23,8 @@ import { DateRange } from 'react-day-picker';
 import Search from '@/components/common/Search/Search';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useDeleteNews } from '@/lib/api/queries/News/mutations/useDeleteNews';
+import { useUpdateNews } from '@/lib/api/queries/News/mutations/useUpdateNews';
+import { NewsStatsOverlay } from '@/components/pages/News/NewsStatsOverlay';
 
 const limit = 10;
 
@@ -43,8 +45,10 @@ const NewsListPage = () => {
 		limit,
 		dateRange,
 		search: debouncedSearch,
+		published: isAdmin ? 'false' : 'true',
 	});
 	const { mutate: deleteNews } = useDeleteNews();
+	const { mutateAsync: updateNews, isPending: updateLoading } = useUpdateNews();
 
 	const handlePrev = () => {
 		if (page <= 1) {
@@ -59,10 +63,14 @@ const NewsListPage = () => {
 		setPage((old) => old + 1);
 	};
 
+	const handlePublish = async (item: NewsModel) => {
+		await updateNews({ ...item, isPublished: !item.isPublished });
+	};
+
 	const newsToShow = useMemo((): NewsModel[] => {
 		if (!data) return [];
 		const { data: newsList, main } = data;
-		return [...(newsList || []), ...(main ? [main] : [])];
+		return [...(main ? [main] : []), ...(newsList || [])];
 	}, [data]);
 
 	const getContent = () => {
@@ -80,22 +88,39 @@ const NewsListPage = () => {
 									className="bg-white rounded-lg shadow overflow-hidden"
 								>
 									<div className="md:flex">
-										<div className="md:flex-shrink-0">
+										<div className="md:flex-shrink-0 relative">
 											<img
 												className="w-full h-full object-cover md:w-48 "
 												src={item?.titleImg || '/images/dpd-image.jpg'}
 												alt={item?.title}
 											/>
+											<NewsStatsOverlay
+												commentsCount={item?.comments?.length || 0}
+												likesCount={item?.likes?.length || 0}
+											/>
 										</div>
 										<div className="p-8 w-full relative">
 											{isAdmin && (
-												<Button
-													className={'absolute right-4 top-4'}
-													variant={'ghost'}
-													onClick={() => deleteNews(item.id)}
-												>
-													<Trash2 className={'text-primary'} />
-												</Button>
+												<div className={'absolute right-4 top-4'}>
+													<Button
+														variant={'ghost'}
+														onClick={() => handlePublish(item)}
+														tooltip={
+															item?.isPublished
+																? 'Убрать с публикации'
+																: 'Опубликовать'
+														}
+														disabled={updateLoading}
+													>
+														{item?.isPublished ? <BookDashed /> : <BookCheck />}
+													</Button>
+													<Button
+														variant={'ghost'}
+														onClick={() => deleteNews(item.id)}
+													>
+														<Trash2 className={'text-primary'} />
+													</Button>
+												</div>
 											)}
 											<div className="uppercase tracking-wide text-sm font-semibold">
 												{format(new Date(item?.createdAt), 'dd.MM.yyyy')}

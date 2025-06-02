@@ -7,16 +7,18 @@ const useNewsList = ({
 	limit,
 	dateRange,
 	search,
+	published,
 }: {
 	page: number;
 	limit: number;
 	dateRange?: { from?: Date; to?: Date };
 	search?: string;
+	published?: string;
 }) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['news-list', { page, limit, dateRange, search }],
+		queryKey: ['news-list', { page, limit, dateRange, search, published }],
 		queryFn: async (): Promise<PaginatedNews> => {
 			const params = new URLSearchParams({
 				page: String(page),
@@ -24,6 +26,7 @@ const useNewsList = ({
 				...(dateRange?.from && { from: dateRange.from.toISOString() }),
 				...(dateRange?.to && { to: dateRange.to.toISOString() }),
 				...(search && { search }),
+				...(published && { published }),
 			});
 
 			const url = `/news/paginated?${params.toString()}`;

@@ -62,7 +62,7 @@ const NewsPage = ({
 		);
 	}
 
-	if (isEdit && data && !isLoading) {
+	if (isEdit && data && !isLoading && isAdmin) {
 		return (
 			<div className={containerClasses}>
 				<h2 className={headerClasses}>Редактировать новость</h2>

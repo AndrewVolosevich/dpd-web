@@ -2,13 +2,13 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { TrainingCabinet } from '@/types/education';
 
-const useEducationCabinetsList = (cabinetId: string) => {
+const useEducationCabinetByTitle = (title: string) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['education-cabinet', cabinetId],
+		queryKey: ['education-cabinet', title],
 		queryFn: async (): Promise<TrainingCabinet> => {
-			const url = `/education/cabinet/${cabinetId}`;
+			const url = `/education/cabinet/by-title/${title}`;
 			const resp = await api.get(url);
 			return resp?.data;
 		},
@@ -16,4 +16,4 @@ const useEducationCabinetsList = (cabinetId: string) => {
 	});
 };
 
-export default useEducationCabinetsList;
+export default useEducationCabinetByTitle;

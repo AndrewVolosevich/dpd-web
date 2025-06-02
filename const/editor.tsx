@@ -76,7 +76,7 @@ export const getEditorJsTools = (token: string) => {
 				},
 				endpoints: {
 					byFile: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/device`, // Your backend file uploader endpoint
-					byUrl: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/url`, // Your endpoint that provides uploading by Url
+					// byUrl: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/upload/url`, // Your endpoint that provides uploading by Url
 				},
 			},
 		},

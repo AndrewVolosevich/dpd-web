@@ -1,6 +1,25 @@
 import { Department, Position } from '@/types/structure';
-import { ExtendedAssignment, UserPanel } from '@/types/education';
+import { UserPanel } from '@/types/education';
 
+export type CommentModel = {
+	id: string;
+	content: string;
+	userId: string;
+	user?: UserData;
+	newsId: string;
+	news?: NewsModel;
+
+	createdAt: string;
+	updatedAt?: string;
+};
+export type LikeModel = {
+	id: string;
+	userId: string;
+	user?: UserData;
+
+	createdAt: string;
+	updatedAt?: string;
+};
 export type NewsModel = {
 	content?: any;
 	createdAt: string;
@@ -11,6 +30,10 @@ export type NewsModel = {
 	updatedAt: string;
 	userId: string;
 	isMain: boolean;
+	isPublished?: boolean;
+
+	comments?: CommentModel[];
+	likes?: LikeModel[];
 };
 
 export interface PaginatedNews {
