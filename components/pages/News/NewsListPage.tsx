@@ -64,7 +64,7 @@ const NewsListPage = () => {
 	};
 
 	const handlePublish = async (item: NewsModel) => {
-		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { likes, comments, ...newsToSave } = item;
 		await updateNews({ ...newsToSave, isPublished: !item.isPublished });
 	};
