@@ -99,7 +99,7 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 
 					{cabinet?.sections && (
 						<>
-							<div className="space-y-6">
+							<div className="grid grid-cols-2 gap-6">
 								{cabinet.sections.map((section) => (
 									<SectionCard
 										key={section.id}
@@ -110,28 +110,27 @@ export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 										materialLoading={materialLoading}
 									/>
 								))}
-
-								{isAdmin && (
-									<>
-										{showForm ? (
-											<SectionForm
-												onSubmit={handleAddSection}
-												onCancel={() => setShowForm(false)}
-											/>
-										) : (
-											<>
-												<Button
-													variant="outline"
-													className="w-full"
-													onClick={() => setShowForm(true)}
-												>
-													<Plus className="h-4 w-4 mr-2" /> Добавить раздел
-												</Button>
-											</>
-										)}
-									</>
-								)}
 							</div>
+							{isAdmin && (
+								<div className={'mt-6'}>
+									{showForm ? (
+										<SectionForm
+											onSubmit={handleAddSection}
+											onCancel={() => setShowForm(false)}
+										/>
+									) : (
+										<>
+											<Button
+												variant="outline"
+												className="w-full"
+												onClick={() => setShowForm(true)}
+											>
+												<Plus className="h-4 w-4 mr-2" /> Добавить раздел
+											</Button>
+										</>
+									)}
+								</div>
+							)}
 						</>
 					)}
 				</>

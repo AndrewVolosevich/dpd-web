@@ -16,7 +16,7 @@
 		--card-foreground: 240 10% 3.9%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 240 10% 3.9%;
-		--primary: 346 100% 43%;
+		--primary: 346.36, 100%, 43.14%;
 		--primary-foreground: 355.7 100% 97.3%;
 		--secondary: 240 4.8% 95.9%;
 		--secondary-foreground: 240 5.9% 10%;
@@ -35,6 +35,11 @@
 		--chart-3: 197 37% 24%;
 		--chart-4: 43 74% 66%;
 		--chart-5: 27 87% 67%;
+		--mid-black: 270, 1.54%, 25.49%;
+		--mid-grey: 216, 2.01%, 51.18%;
+		--light-grey: 210, 4.17%, 90.59%;
+		--warm-grey: 30, 10.17%, 76.86%;
+		--dark-green: 102.16, 54.15%, 40.2%;
 	}
 
 	.dark {
