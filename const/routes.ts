@@ -11,7 +11,7 @@ export enum Routes {
 export const NavLinks = [
 	{
 		title: 'О компании',
-		href: Routes.ABOUT,
+		href: '/',
 		items: [
 			{
 				title: 'История',

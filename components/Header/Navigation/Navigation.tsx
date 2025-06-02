@@ -66,7 +66,7 @@ export function Navigation({ className }: { className?: string }) {
 										/>
 									</>
 								) : (
-									<Link href={link.href} className="block font-medium">
+									<Link href={link.href || '/'} className="block font-medium">
 										{link.title}
 									</Link>
 								)}

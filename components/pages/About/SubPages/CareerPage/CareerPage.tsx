@@ -52,7 +52,7 @@ const CareerPage = () => {
 
 						{/* Конкурсы на вакансии */}
 						<Link href={`${Routes.ABOUT}/career/contest`} className="group">
-							<div className="bg-red-800 hover:bg-red-900 transition-colors duration-200 rounded-2xl p-8 h-48 flex flex-col justify-between text-white">
+							<div className="bg-midGrey hover:brightness-90 transition-colors duration-200 rounded-2xl p-8 h-48 flex flex-col justify-between text-white">
 								<h2 className="text-2xl font-semibold">Конкурсы на вакансии</h2>
 								<div className="flex items-center gap-2 text-white/90 group-hover:text-white">
 									<div className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center">
@@ -65,7 +65,7 @@ const CareerPage = () => {
 
 						{/* Акция - Приведи друга */}
 						<Link href={`${Routes.ABOUT}/career/promotion`} className="group">
-							<div className="bg-gray-400 hover:bg-gray-500 transition-colors duration-200 rounded-2xl p-8 h-48 flex flex-col justify-between text-white">
+							<div className="bg-warmGrey hover:brightness-90 transition-colors duration-200 rounded-2xl p-8 h-48 flex flex-col justify-between text-white">
 								<h2 className="text-2xl font-semibold">
 									Акция - Приведи друга
 								</h2>
