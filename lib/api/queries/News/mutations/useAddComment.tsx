@@ -3,22 +3,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
-import { NewsModel } from '@/types/entities';
 
-export function useUpdateNews() {
+export function useAddComment() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (newsData: Partial<NewsModel>) => {
-			return api.post(`/news/update`, {
-				...newsData,
+		mutationFn: async (commentData: { content: string; newsId: string }) => {
+			return api.post(`/news/comments`, {
+				...commentData,
 			});
 		},
 		onError: (error) => {
 			toast({
-				title: 'Неудачное обновление новости',
+				title: 'Неудачное создание комментария',
 				variant: 'destructive',
 				description: error.message,
 			});
@@ -27,7 +26,7 @@ export function useUpdateNews() {
 			queryClient.invalidateQueries({ queryKey: ['news'] });
 			queryClient.invalidateQueries({ queryKey: ['news-list'] });
 			toast({
-				title: 'Новость успешно обновлена',
+				title: 'Комментарий успешно добавлен',
 				variant: 'default',
 			});
 		},

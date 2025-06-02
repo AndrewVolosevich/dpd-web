@@ -6,6 +6,7 @@ import { NewsModel } from '@/types/entities';
 import { Routes } from '@/const/routes';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
+import { NewsStatsOverlay } from '@/components/pages/News/NewsStatsOverlay';
 
 type MainNewsProps = React.HTMLAttributes<HTMLDivElement> & {
 	mainNews?: NewsModel;
@@ -31,6 +32,11 @@ const MainNews = ({ className, mainNews }: MainNewsProps) => {
 						style={{ objectFit: 'cover' }}
 						src={mainNews?.titleImg || '/images/dpd-image.jpg'}
 						alt={`Главная новость`}
+					/>
+					<NewsStatsOverlay
+						commentsCount={mainNews?.comments?.length || 0}
+						likesCount={mainNews?.likes?.length || 0}
+						position={'bottom-right'}
 					/>
 				</div>
 				<div className="text-white absolute bottom-0 left-0 p-4 w-full bg-gradient-to-r from-primary to-secondary">

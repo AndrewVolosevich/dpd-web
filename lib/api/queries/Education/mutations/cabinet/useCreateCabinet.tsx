@@ -28,6 +28,9 @@ export function useCreateCabinet() {
 			queryClient.invalidateQueries({
 				queryKey: ['education-cabinets-list'],
 			});
+			queryClient.invalidateQueries({
+				queryKey: ['education-cabinet'],
+			});
 			toast({
 				title: 'Кабинет успешно создан',
 				variant: 'default',

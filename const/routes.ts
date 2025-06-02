@@ -52,16 +52,28 @@ export const NavLinks = [
 				href: `${Routes.CORPORATE_LIFE}/magazines`,
 			},
 			{
+				title: 'Галерея',
+				href: `${Routes.CORPORATE_LIFE}/gallery`,
+			},
+			{
+				title: 'Лучшие сотрудники',
+				href: `${Routes.CORPORATE_LIFE}/best-employees`,
+			},
+			{
+				title: 'Благодарности',
+				href: `${Routes.CORPORATE_LIFE}/thanks`,
+			},
+			{
+				title: 'Новости',
+				href: `${Routes.CORPORATE_LIFE}/news`,
+			},
+			{
 				title: 'Фото',
 				href: `${Routes.CORPORATE_LIFE}/photo`,
 			},
 			{
 				title: 'Видео',
 				href: `${Routes.CORPORATE_LIFE}/video`,
-			},
-			{
-				title: 'Новости',
-				href: `${Routes.CORPORATE_LIFE}/news`,
 			},
 		],
 	},

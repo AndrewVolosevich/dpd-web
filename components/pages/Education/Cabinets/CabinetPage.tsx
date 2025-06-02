@@ -6,7 +6,7 @@ import type { TrainingSection } from '@/types/education';
 import { SectionCard } from '../SectionCard';
 import { SectionForm } from '../SectionForm';
 import { Plus } from 'lucide-react';
-import useCabinet from '@/lib/api/queries/Education/useCabinet';
+import useEducationCabinet from '@/lib/api/queries/Education/useEducationCabinet';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import {
 	Breadcrumb,
@@ -27,7 +27,7 @@ interface CabinetPageProps {
 export const CabinetPage = ({ cabinetId }: CabinetPageProps) => {
 	const [showForm, setShowForm] = useState(false);
 	const { isAdmin } = useAuth();
-	const { data: cabinet } = useCabinet(cabinetId);
+	const { data: cabinet } = useEducationCabinet(cabinetId);
 	const { mutateAsync: createSection } = useCreateSection();
 	const { mutateAsync: deleteSection } = useDeleteSection();
 	const { mutateAsync: addMaterial, isPending: materialLoading } =

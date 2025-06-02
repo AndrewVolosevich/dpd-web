@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 type CompanyNewsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const HomePageNews = ({ className }: CompanyNewsProps) => {
-	const { data } = useNewsList({ page: 1, limit: 4 });
+	const { data } = useNewsList({ page: 1, limit: 4, published: 'true' });
 
 	return (
 		<div className={cn(className)}>

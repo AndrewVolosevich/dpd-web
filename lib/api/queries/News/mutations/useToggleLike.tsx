@@ -3,22 +3,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
-import { NewsModel } from '@/types/entities';
 
-export function useUpdateNews() {
+export function useToggleLike() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (newsData: Partial<NewsModel>) => {
-			return api.post(`/news/update`, {
-				...newsData,
+		mutationFn: async (commentData: { newsId: string }) => {
+			return api.post(`/news/like`, {
+				...commentData,
 			});
 		},
 		onError: (error) => {
 			toast({
-				title: 'Неудачное обновление новости',
+				title: 'Что-то пошло не так с вашим лайком',
 				variant: 'destructive',
 				description: error.message,
 			});
@@ -27,7 +26,7 @@ export function useUpdateNews() {
 			queryClient.invalidateQueries({ queryKey: ['news'] });
 			queryClient.invalidateQueries({ queryKey: ['news-list'] });
 			toast({
-				title: 'Новость успешно обновлена',
+				title: 'Лайк добавлен',
 				variant: 'default',
 			});
 		},

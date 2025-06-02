@@ -22,18 +22,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useNonAdminRedirect } from '@/hooks/useNonAdminRedirect';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UploadNewsModal from '@/components/pages/News/UploadNewsModal';
 import { useCreateNews } from '@/lib/api/queries/News/mutations/useCreateNews';
 import { useUpdateNews } from '@/lib/api/queries/News/mutations/useUpdateNews';
+import { Switch } from '@/components/ui/switch';
 
 const formSchema = z.object({
 	title: z.string().max(120).min(1, 'Заголовок не может быть пустым'),
 	description: z.string().max(200).optional(),
 	content: z.any().optional(),
 	isMain: z.boolean().optional(),
+	isPublished: z.boolean().optional(),
 });
 
 interface EditNewsFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -62,6 +63,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 			description: news?.description ?? '',
 			content: news?.content ?? '',
 			isMain: news?.isMain ?? false,
+			isPublished: news?.isPublished ?? false,
 		},
 	});
 
@@ -119,7 +121,7 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 									return (
 										<FormItem className={'flex flex-row items-center'}>
 											<FormControl>
-												<Checkbox
+												<Switch
 													checked={field.value}
 													onCheckedChange={field.onChange}
 												/>
@@ -128,6 +130,27 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 												<FormLabel>
 													Использовать в качестве главной новости
 												</FormLabel>
+											</div>
+										</FormItem>
+									);
+								}}
+							/>
+						</div>
+						<div className="grid gap-1">
+							<FormField
+								control={form.control}
+								name="isPublished"
+								render={({ field }) => {
+									return (
+										<FormItem className={'flex flex-row items-center'}>
+											<FormControl>
+												<Switch
+													checked={field.value}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+											<div className="leading-none ml-2 !mt-0">
+												<FormLabel>Опубликовать</FormLabel>
 											</div>
 										</FormItem>
 									);
