@@ -331,11 +331,11 @@ export default function AdaptationTab({
 					<TableBody>
 						{templates?.map((t) => (
 							<TableRow key={t.url}>
-								<Link href={t.url}>
-									<TableCell>
+								<TableCell>
+									<Link href={t.url}>
 										<div>{t.name}</div>
-									</TableCell>
-								</Link>
+									</Link>
+								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

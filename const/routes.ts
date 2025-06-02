@@ -86,7 +86,7 @@ export const NavLinks = [
 		href: `${Routes.ADMIN}/structure`,
 		items: [
 			{
-				title: 'Должностная структура',
+				title: 'Штатная структура',
 				href: `${Routes.ADMIN}/structure`,
 			},
 			{
