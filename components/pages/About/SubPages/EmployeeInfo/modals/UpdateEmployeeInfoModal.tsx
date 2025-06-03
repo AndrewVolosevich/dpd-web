@@ -6,18 +6,18 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { TopOfficial } from '@/types/content';
-import { TopOfficialForm } from '@/components/pages/About/SubPages/TopOfficials/TopOfficialForm';
+import { EmployeeInfoCard } from '@/types/content';
+import { EmployeeInfoForm } from '@/components/pages/About/SubPages/EmployeeInfo/EmployeeInfoForm';
 
 interface UpdateTopOfficialModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSubmit: (file: File | null, data: Partial<TopOfficial>) => void;
+	onSubmit: (file: File | null, data: Partial<EmployeeInfoCard>) => void;
 	isLoading: boolean;
-	topOfficial?: TopOfficial | null;
+	topOfficial?: EmployeeInfoCard | null;
 }
 
-export const UpdateTopOfficialModal = ({
+export const UpdateEmployeeInfoModal = ({
 	isOpen,
 	onClose,
 	onSubmit,
@@ -34,7 +34,7 @@ export const UpdateTopOfficialModal = ({
 				<DialogHeader>
 					<DialogTitle>Редактирование данных первых лиц</DialogTitle>
 				</DialogHeader>
-				<TopOfficialForm
+				<EmployeeInfoForm
 					onSubmit={onSubmit}
 					onCancel={handleClose}
 					isLoading={isLoading}

@@ -60,7 +60,7 @@ export const NavLinks = [
 				href: `${Routes.CORPORATE_LIFE}/best-employees`,
 			},
 			{
-				title: 'Благодарности',
+				title: 'Спасибо',
 				href: `${Routes.CORPORATE_LIFE}/thanks`,
 			},
 			{

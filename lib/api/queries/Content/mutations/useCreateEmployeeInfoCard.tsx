@@ -4,14 +4,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { useToast } from '@/hooks/use-toast';
 
-export function useCreateTopOfficial() {
+export function useCreateEmployeeInfoCard() {
 	const { toast } = useToast();
 	const api = useApi();
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: async (formData: FormData) => {
-			return api.post(`/content/top-official`, formData, {
+			return api.post(`/content/employee-info-card`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -26,7 +26,7 @@ export function useCreateTopOfficial() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['top-officials'],
+				queryKey: ['employee-info-card'],
 			});
 			toast({
 				title: 'Запись успешно создана',

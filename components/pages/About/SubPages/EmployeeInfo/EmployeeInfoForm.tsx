@@ -7,22 +7,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import FileSelector from '@/components/common/FileSelector';
-import { TopOfficial } from '@/types/content';
+import { EmployeeInfoCard } from '@/types/content';
 import { Textarea } from '@/components/ui/textarea';
 
-interface TopOfficialFormProps {
-	onSubmit: (file: File | null, data: Partial<TopOfficial>) => void;
+interface EmployeeInfoFormProps {
+	onSubmit: (file: File | null, data: Partial<EmployeeInfoCard>) => void;
 	onCancel: () => void;
-	initialData?: Partial<TopOfficial> | null;
+	initialData?: Partial<EmployeeInfoCard> | null;
 	isLoading: boolean;
 }
 
-export const TopOfficialForm = ({
+export const EmployeeInfoForm = ({
 	onSubmit,
 	onCancel,
 	initialData,
 	isLoading,
-}: TopOfficialFormProps) => {
+}: EmployeeInfoFormProps) => {
 	const [name, setName] = useState(initialData?.name || '');
 	const [jobTitle, setJobTitle] = useState(initialData?.jobTitle || '');
 	const [content, setContent] = useState(initialData?.content || '');

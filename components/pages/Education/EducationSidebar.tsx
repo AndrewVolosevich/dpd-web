@@ -65,7 +65,7 @@ export function EducationSidebar({ className }: EducationSidebarProps) {
 	return (
 		<div
 			className={cn(
-				'max-w-64 border-r h-[calc(100vh-64px)] bg-background',
+				'max-w-64 border-r h-[calc(100vh-250px)] bg-background',
 				className,
 			)}
 		>

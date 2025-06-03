@@ -16,7 +16,7 @@ interface DeleteTopOfficialModalProps {
 	onConfirm: () => void;
 }
 
-export const DeleteTopOfficialModal = ({
+export const DeleteEmployeeInfoModal = ({
 	isOpen,
 	onClose,
 	onConfirm,

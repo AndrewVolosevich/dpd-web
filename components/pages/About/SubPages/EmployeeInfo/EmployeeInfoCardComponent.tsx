@@ -2,16 +2,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { TopOfficial } from '@/types/content';
+import { EmployeeInfoCard } from '@/types/content';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 
 interface ProfileCardProps {
-	data: TopOfficial;
+	data: EmployeeInfoCard;
 	onEdit?: () => void;
 	onDelete?: () => void;
 }
 
-const TopOfficialCard = ({ data, onEdit, onDelete }: ProfileCardProps) => {
+const EmployeeInfoCardComponent = ({
+	data,
+	onEdit,
+	onDelete,
+}: ProfileCardProps) => {
 	const { isAdmin } = useAuth();
 	return (
 		<Card className="w-full mb-6">
@@ -68,4 +72,4 @@ const TopOfficialCard = ({ data, onEdit, onDelete }: ProfileCardProps) => {
 	);
 };
 
-export default TopOfficialCard;
+export default EmployeeInfoCardComponent;

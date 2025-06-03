@@ -27,11 +27,11 @@ const ThanksPage = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Благодарности</BreadcrumbPage>
+						<BreadcrumbPage>Спасибо</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div>Благодарности</div>
+			<div>Спасибо</div>
 			<ContentPage contentPageTitle={'thanks'} />
 		</div>
 	);
