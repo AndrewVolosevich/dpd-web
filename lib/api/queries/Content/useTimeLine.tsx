@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import useApi from '@/hooks/useApi';
 import { TimeLine } from '@/types/content';
 
-const useTopOfficials = () => {
+const useTimeLine = () => {
 	const api = useApi();
 
 	return useQuery({
@@ -16,4 +16,4 @@ const useTopOfficials = () => {
 	});
 };
 
-export default useTopOfficials;
+export default useTimeLine;

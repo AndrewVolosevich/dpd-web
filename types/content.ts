@@ -7,12 +7,13 @@ export interface ContentPage {
 	updatedAt?: string;
 }
 
-export interface TopOfficial {
+export interface EmployeeInfoCard {
 	id?: string;
 	name: string;
 	jobTitle?: string;
 	content?: string;
 	imgUrl?: string;
+	isTop?: boolean;
 
 	createdAt?: string;
 	updatedAt?: string;

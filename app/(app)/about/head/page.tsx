@@ -1,9 +1,9 @@
-import HeadPage from '@/components/pages/About/SubPages/TopOfficials/HeadPage';
+import EmployeeInfoPage from '@/components/pages/About/SubPages/EmployeeInfo/EmployeeInfoPage';
 
 export default function Head() {
 	return (
 		<div>
-			<HeadPage />
+			<EmployeeInfoPage isTopOfficial />
 		</div>
 	);
 }
