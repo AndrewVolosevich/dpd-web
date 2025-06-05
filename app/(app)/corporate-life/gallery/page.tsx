@@ -1,4 +1,4 @@
-import GalleryPage from '@/components/pages/CorporateLife/GalleryPage';
+import GalleryPage from '@/components/pages/CorporateLife/Gallery/GalleryPage';
 
 export default function Gallery() {
 	return (

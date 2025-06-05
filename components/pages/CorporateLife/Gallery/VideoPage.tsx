@@ -10,13 +10,13 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Routes } from '@/const/routes';
 
-const GalleryPage = () => {
+const VideoPage = () => {
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
 			<Breadcrumb>
 				<BreadcrumbList className="p-0 list-none">
 					<BreadcrumbItem>
-						<BreadcrumbLink href="/">Главная</BreadcrumbLink>
+						<BreadcrumbLink href="/public">Главная</BreadcrumbLink>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
@@ -26,14 +26,21 @@ const GalleryPage = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Галерея</BreadcrumbPage>
+						<BreadcrumbLink href={`${Routes.CORPORATE_LIFE}/gallery`}>
+							Галерея
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+					<BreadcrumbSeparator />
+					<BreadcrumbItem>
+						<BreadcrumbPage>Видео</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div>Галерея</div>
-			<div>Скоро</div>
+			<div className={'flex items-center justify-between'}>
+				<div>Видео - скоро</div>
+			</div>
 		</div>
 	);
 };
 
-export default GalleryPage;
+export default VideoPage;

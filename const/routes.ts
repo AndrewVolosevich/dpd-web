@@ -67,14 +67,6 @@ export const NavLinks = [
 				title: 'Новости',
 				href: `${Routes.CORPORATE_LIFE}/news`,
 			},
-			{
-				title: 'Фото',
-				href: `${Routes.CORPORATE_LIFE}/photo`,
-			},
-			{
-				title: 'Видео',
-				href: `${Routes.CORPORATE_LIFE}/video`,
-			},
 		],
 	},
 	{

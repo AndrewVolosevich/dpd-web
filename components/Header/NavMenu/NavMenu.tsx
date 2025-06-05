@@ -56,10 +56,13 @@ const NavMenu = ({ className, isOpen, onChange }: NavMenuProps) => {
 									link?.items?.map((item) => (
 										<Link
 											key={item?.title}
-											href={item?.title}
+											href={item?.href}
 											className={
 												'self-start ml-5 mb-1 hover:text-primary text-base'
 											}
+											onClick={() => {
+												onChange();
+											}}
 										>
 											{item?.title}
 										</Link>

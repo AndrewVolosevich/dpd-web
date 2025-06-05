@@ -6,7 +6,7 @@ const useEmployeeInfoCard = (isTop?: boolean) => {
 	const api = useApi();
 
 	return useQuery({
-		queryKey: ['employee-info-card'],
+		queryKey: ['employee-info-card', isTop],
 		queryFn: async (): Promise<EmployeeInfoCard[]> => {
 			const url = `/content/employee-info-card/${isTop ? 'isTop' : 'isEmployee'}`;
 			const resp = await api.get(url);

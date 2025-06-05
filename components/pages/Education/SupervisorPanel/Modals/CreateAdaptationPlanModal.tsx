@@ -49,6 +49,12 @@ export function CreateAdaptationPlanModal({
 		setFile(null);
 		setDueDate(new Date(new Date().setMonth(new Date().getMonth() + 3)));
 	};
+
+	const handleClose = () => {
+		onClose();
+		handleRefreshValues();
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
@@ -62,16 +68,15 @@ export function CreateAdaptationPlanModal({
 
 			assignAdaptationPlan(formData, {
 				onSuccess: () => {
-					handleRefreshValues();
-					onClose();
+					handleClose();
 				},
 			});
 		}
 	};
 
 	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[500px]">
+		<Dialog open={isOpen} onOpenChange={handleClose}>
+			<DialogContent className="sm:max-w-[500px] overflow-hidden">
 				<DialogHeader>
 					<DialogTitle>Добавить план адаптации</DialogTitle>
 				</DialogHeader>
@@ -141,8 +146,8 @@ export function CreateAdaptationPlanModal({
 						) : (
 							<div className="flex items-center justify-between p-2 border rounded-md">
 								<div className="flex items-center">
-									<div className="ml-2 truncate">
-										<p className="text-sm font-medium">{file.name}</p>
+									<div className="ml-2 max-w-[380px]">
+										<p className="text-sm font-medium truncate">{file.name}</p>
 										<p className="text-xs text-muted-foreground">
 											{(file.size / 1024 / 1024).toFixed(2)} МБ
 										</p>
@@ -161,7 +166,7 @@ export function CreateAdaptationPlanModal({
 					</div>
 
 					<DialogFooter>
-						<Button type="button" variant="outline" onClick={onClose}>
+						<Button type="button" variant="outline" onClick={handleClose}>
 							Отмена
 						</Button>
 						<Button type="submit" disabled={!file || !dueDate || isPending}>

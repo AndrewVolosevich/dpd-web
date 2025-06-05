@@ -24,3 +24,9 @@ export interface TimeLine {
 	year: number;
 	content: string[];
 }
+
+export interface EventPhoto {
+	id?: string;
+	title: string;
+	urls: string[];
+}
