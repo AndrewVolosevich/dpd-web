@@ -30,3 +30,10 @@ export interface EventPhoto {
 	title: string;
 	urls: string[];
 }
+
+export interface CompanyVideo {
+	id?: string;
+	title: string;
+	url?: string;
+	link?: string;
+}

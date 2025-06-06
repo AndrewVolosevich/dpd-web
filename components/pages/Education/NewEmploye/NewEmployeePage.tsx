@@ -72,10 +72,10 @@ const NewEmployeePage = () => {
 		<div className="w-full py-12">
 			<div className="max-w-7xl mx-auto px-6">
 				<div>
-					<h2 className="text-3xl font-light text-gray-600 text-center">
+					<h2 className="text-3xl font-light text-primary">
 						Добро пожаловать в команду DPD!
 					</h2>
-					<div className={'text-md my-8 text-center'}>
+					<div className={'text-md my-8'}>
 						На этой странице мы собрали полезную информацию, чтобы тебе было
 						легче погрузиться в новую среду. Сегодня DPD в Беларуси — одна из
 						ведущих транспортно-экспедиционных компаний в стране по

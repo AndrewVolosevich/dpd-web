@@ -8,7 +8,7 @@ import type React from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { Loader2, Upload } from 'lucide-react';
 import { DialogFooter } from '@/components/ui/dialog';
-import { useAddEventPhoto } from '@/lib/api/queries/Content/mutations/useAddEventPhoto';
+import { useAddEventPhoto } from '@/lib/api/queries/Content/mutations/photo/useAddEventPhoto';
 
 interface UploadPhotosFormProps {
 	onCancel: () => void;
@@ -102,7 +102,7 @@ export const UploadPhotosForm = ({ onCancel }: UploadPhotosFormProps) => {
 					disabled={isPending || isSubmitDisabled}
 					variant="default"
 				>
-					{isPending && <Loader2 />}
+					{isPending && <Loader2 className="animate-spin mr-2" />}
 					Создать
 				</Button>
 			</DialogFooter>

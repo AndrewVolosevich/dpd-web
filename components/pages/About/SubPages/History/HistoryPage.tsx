@@ -15,11 +15,11 @@ import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import { ContextButton, ContextIcons } from '@/components/ui/context-button';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { UpdateTimeLineModal } from '@/components/pages/About/SubPages/History/modals/UpdateTimeLineModal';
-import { useCreateTimeLine } from '@/lib/api/queries/Content/mutations/useCreateTimeLine';
-import { useUpdateTimeLine } from '@/lib/api/queries/Content/mutations/useUpdateTimeLine';
+import { useCreateTimeLine } from '@/lib/api/queries/Content/mutations/time-line/useCreateTimeLine';
+import { useUpdateTimeLine } from '@/lib/api/queries/Content/mutations/time-line/useUpdateTimeLine';
 import timeLine from '@/components/pages/About/SubPages/History/TimeLine';
 import { DeleteTimeLineModal } from '@/components/pages/About/SubPages/History/modals/DeleteTimeLineModal';
-import { useDeleteTimeLine } from '@/lib/api/queries/Content/mutations/useDeleteTimeLine';
+import { useDeleteTimeLine } from '@/lib/api/queries/Content/mutations/time-line/useDeleteTimeLine';
 
 const HistoryPage = () => {
 	const { isAdmin } = useAuth();
