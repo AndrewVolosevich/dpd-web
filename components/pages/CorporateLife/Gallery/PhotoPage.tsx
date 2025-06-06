@@ -25,7 +25,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import Image from 'next/image';
 import useEventPhoto from '@/lib/api/queries/Content/useEventPhoto';
 import { EventPhoto } from '@/types/content';
-import { useDeleteEventPhoto } from '@/lib/api/queries/Content/mutations/useDeleteEventPhoto';
+import { useDeleteEventPhoto } from '@/lib/api/queries/Content/mutations/photo/useDeleteEventPhoto';
 import { AlertDialog, AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import {
 	AlertDialogAction,
@@ -144,14 +144,16 @@ const PhotoPage = () => {
 								<p className="text-gray-600">
 									{section.urls.length} фотографий
 								</p>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="absolute top-4 right-4 text-gray-400 hover:text-red-600 hover:bg-red-50"
-									onClick={() => confirmDeleteSection(section?.id || '')}
-								>
-									<Trash2 className="w-5 h-5" />
-								</Button>
+								{isAdmin && (
+									<Button
+										variant="ghost"
+										size="icon"
+										className="absolute top-4 right-4 text-gray-400 hover:text-red-600 hover:bg-red-50"
+										onClick={() => confirmDeleteSection(section?.id || '')}
+									>
+										<Trash2 className="w-5 h-5" />
+									</Button>
+								)}
 							</CardHeader>
 							<CardContent>
 								<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -288,30 +290,35 @@ const PhotoPage = () => {
 				</DialogContent>
 			</Dialog>
 			{/* Delete Confirmation Dialog */}
-			<AlertDialog open={sectionToDelete !== null} onOpenChange={cancelDelete}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Удалить раздел?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Вы уверены, что хотите удалить раздел &#34;
-							{sectionToDelete !== null &&
-								photos?.find((photo) => photo.id === sectionToDelete)?.title}
-							&#34;? Это действие нельзя отменить.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Отмена</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={deleteSection}
-							disabled={deleteLoading}
-							className="bg-red-600 hover:bg-red-700"
-						>
-							{deleteLoading && <Loader2 />}
-							Удалить
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			{isAdmin && (
+				<AlertDialog
+					open={sectionToDelete !== null}
+					onOpenChange={cancelDelete}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Удалить раздел?</AlertDialogTitle>
+							<AlertDialogDescription>
+								Вы уверены, что хотите удалить раздел &#34;
+								{sectionToDelete !== null &&
+									photos?.find((photo) => photo.id === sectionToDelete)?.title}
+								&#34;? Это действие нельзя отменить.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Отмена</AlertDialogCancel>
+							<AlertDialogAction
+								onClick={deleteSection}
+								disabled={deleteLoading}
+								className="bg-red-600 hover:bg-red-700"
+							>
+								{deleteLoading && <Loader2 className="animate-spin mr-2" />}
+								Удалить
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			)}
 		</div>
 	);
 };

@@ -99,7 +99,7 @@ export const SelfDevelopmentPage = () => {
 						disabled={createLoading}
 					>
 						{createLoading ? (
-							<Loader2 />
+							<Loader2 className="animate-spin mr-2" />
 						) : (
 							<PlusCircle className="mr-2 h-4 w-4" />
 						)}

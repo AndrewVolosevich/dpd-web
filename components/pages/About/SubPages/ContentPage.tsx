@@ -7,8 +7,8 @@ import useGetContentPage from '@/lib/api/queries/Content/useContentPage';
 import OutputBlock from '@/components/Editor/OutputBlock';
 import EditorBlock from '@/components/Editor/EditorBlock';
 import { EDITOR_INITIAL_DATA } from '@/const/editor';
-import { useCreateContentPage } from '@/lib/api/queries/Content/mutations/useCreateContentPage';
-import { useUpdateContentPage } from '@/lib/api/queries/Content/mutations/useUpdateContentPage';
+import { useCreateContentPage } from '@/lib/api/queries/Content/mutations/content-page/useCreateContentPage';
+import { useUpdateContentPage } from '@/lib/api/queries/Content/mutations/content-page/useUpdateContentPage';
 
 const containerClasses = 'container mx-auto p-4 h-full';
 
