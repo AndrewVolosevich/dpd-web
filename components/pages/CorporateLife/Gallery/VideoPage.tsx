@@ -44,7 +44,7 @@ const VideoPage = () => {
 			return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 		}
 		// Для локальных видео используем placeholder
-		return null;
+		return '/images/dpd-image.jpg';
 	};
 
 	const handleDeleteVideo = () => {

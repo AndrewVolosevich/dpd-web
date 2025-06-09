@@ -27,11 +27,6 @@ const sidebarItems = [
 		icon: FileText,
 	},
 	{
-		title: 'Материалы для саморазвития',
-		href: `${Routes.EDUCATION}/self-development`,
-		icon: Book,
-	},
-	{
 		title: 'Мое обучение',
 		href: `${Routes.EDUCATION}/my-training`,
 		icon: GraduationCap,
@@ -45,6 +40,11 @@ const sidebarItems = [
 		title: 'Ежегодная оценка',
 		href: `${Routes.EDUCATION}/assessment`,
 		icon: LineChart,
+	},
+	{
+		title: 'Материалы для саморазвития',
+		href: `${Routes.EDUCATION}/self-development`,
+		icon: Book,
 	},
 	{
 		title: 'Панель руководителя',

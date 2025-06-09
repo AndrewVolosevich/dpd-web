@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/common/Loader/Loader';
@@ -21,10 +21,12 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import { format, isAfter, isBefore } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { ExtendedUserData } from '@/types/entities';
 import { exportDataToCsv } from '@/lib/exportToCsv';
+import { DateRangePicker } from '@/components/common/DateRangePicker/DateRangePicker';
+import { DateRange } from 'react-day-picker';
 
 // Define types for report data
 interface TestReportItem {
@@ -32,13 +34,13 @@ interface TestReportItem {
 	employee: string;
 	department: string;
 	position: string;
-	startDate: string;
 	testName: string;
 	score: number | null;
 	percentage: number | null;
 	status: 'Назначен' | 'В процессе' | 'Пройден' | 'Не пройден';
+	assignmentDate: string | null;
+	completionDate: string | null;
 	testType: 'Незавершенный тест' | 'Завершенный тест';
-	activationDate: string;
 }
 
 interface AdaptationReportItem {
@@ -47,8 +49,8 @@ interface AdaptationReportItem {
 	department: string;
 	position: string;
 	startDate: string;
-	assignmentDate: string;
-	endDate: string;
+	assignmentDate: string | null;
+	completionDate: string | null;
 	status: 'Адаптация завершена' | 'Адаптация в процессе';
 }
 
@@ -57,33 +59,33 @@ interface MaterialReportItem {
 	employee: string;
 	department: string;
 	position: string;
-	startDate: string;
 	materialName: string;
 	assignmentDate: string | null;
 	completionDate: string | null;
+	status: 'Изучен' | 'Не изучен';
 }
 
 const testColumnsConfig = [
 	{ key: 'employee', title: 'ФИО сотрудника' },
 	{ key: 'department', title: 'Подразделение' },
 	{ key: 'position', title: 'Должность' },
-	{ key: 'startDate', title: 'Дата приема' },
 	{ key: 'testName', title: 'Название теста' },
 	{ key: 'score', title: 'Баллы' },
 	{ key: 'percentage', title: '%' },
-	{ key: 'status', title: 'Статус' },
 	{ key: 'testType', title: 'Тип теста' },
-	{ key: 'activationDate', title: 'Дата активации' },
+	{ key: 'assignmentDate', title: 'Дата назначения' },
+	{ key: 'completionDate', title: 'Дата завершения' },
+	{ key: 'status', title: 'Статус' },
 ];
 
 const materialColumnsConfig = [
 	{ key: 'employee', title: 'ФИО сотрудника' },
 	{ key: 'department', title: 'Подразделение' },
 	{ key: 'position', title: 'Должность' },
-	{ key: 'startDate', title: 'Дата приема' },
 	{ key: 'materialName', title: 'Название уч.материала/ЛД' },
 	{ key: 'assignmentDate', title: 'Дата назначения' },
 	{ key: 'completionDate', title: 'Дата завершения' },
+	{ key: 'status', title: 'Статус' },
 ];
 
 const adaptationColumnsConfig = [
@@ -92,11 +94,17 @@ const adaptationColumnsConfig = [
 	{ key: 'position', title: 'Должность' },
 	{ key: 'startDate', title: 'Дата приема' },
 	{ key: 'assignmentDate', title: 'Дата назначения' },
-	{ key: 'endDate', title: 'Дата окончания' },
+	{ key: 'completionDate', title: 'Дата завершения' },
 	{ key: 'status', title: 'Статус' },
 ];
 
 type ReportType = 'tests' | 'materials' | 'adaptation';
+type StatusType = 'in_progress' | 'finished' | 'all';
+const statusOptions: { title: string; value: StatusType }[] = [
+	{ title: 'Все', value: 'all' as StatusType },
+	{ title: 'В процессе', value: 'in_progress' as StatusType },
+	{ title: 'Завершено', value: 'finished' as StatusType },
+];
 
 export default function ReportsTab({
 	departmentUsers,
@@ -106,7 +114,14 @@ export default function ReportsTab({
 	isLoading: boolean;
 }) {
 	const [reportType, setReportType] = useState<ReportType>('tests');
+	const [selectedStatus, setSelectedStatus] = useState<StatusType>('all');
 	const [selectedUser, setSelectedUser] = useState('all');
+
+	const state = useState<DateRange | undefined>({
+		from: undefined,
+		to: undefined,
+	});
+
 	const userOptions = useMemo(() => {
 		if (!departmentUsers || departmentUsers.length === 0) return [];
 
@@ -134,10 +149,36 @@ export default function ReportsTab({
 				user.userPanel.assignments.length > 0
 			) {
 				// Filter assignments with surveys
-				const surveyAssignments = user.userPanel.assignments.filter(
-					(assignment) =>
-						assignment.surveyId !== null && assignment.survey !== null,
-				);
+				const surveyAssignments = user.userPanel.assignments
+					.filter(
+						(assignment) =>
+							assignment.surveyId !== null && assignment.survey !== null,
+					)
+					.filter((a) => {
+						if (selectedStatus === 'all') {
+							return true;
+						}
+						if (selectedStatus === 'in_progress' && !a.completedAt) {
+							return true;
+						}
+						return !!(selectedStatus === 'finished' && a.completedAt);
+					})
+					.filter((a) => {
+						if (!state[0]?.from || !state[0]?.to) {
+							return true;
+						}
+						if (
+							a?.createdAt &&
+							state[0]?.from &&
+							isAfter(a?.createdAt, state[0]?.from) &&
+							a?.dueDate &&
+							state[0]?.to &&
+							isBefore(a?.dueDate, state[0]?.to)
+						) {
+							return true;
+						}
+						return false;
+					});
 
 				if (surveyAssignments.length > 0) {
 					// Process each survey assignment
@@ -148,11 +189,6 @@ export default function ReportsTab({
 							employee: fullName,
 							department: user.department?.title || '',
 							position: user.position?.title || '',
-							startDate: user?.startDate
-								? format(new Date(user?.startDate), 'dd.MM.yyyy', {
-										locale: ru,
-									})
-								: '',
 							testName: assignment.survey?.title || 'Неизвестный тест',
 							score: assignment?.survey?.testResults?.score || null,
 							percentage: assignment?.survey?.testResults?.score || null,
@@ -164,8 +200,13 @@ export default function ReportsTab({
 							testType: assignment.completedAt
 								? 'Завершенный тест'
 								: 'Незавершенный тест',
-							activationDate: assignment?.createdAt
+							assignmentDate: assignment?.createdAt
 								? format(new Date(assignment?.createdAt), 'dd.MM.yyyy', {
+										locale: ru,
+									})
+								: '',
+							completionDate: assignment?.dueDate
+								? format(new Date(assignment?.dueDate), 'dd.MM.yyyy', {
 										locale: ru,
 									})
 								: '',
@@ -176,7 +217,7 @@ export default function ReportsTab({
 		});
 
 		return testData;
-	}, [departmentUsers, selectedUser]);
+	}, [departmentUsers, selectedUser, state]);
 	const adaptationReportData = useMemo<AdaptationReportItem[]>(() => {
 		if (!departmentUsers || departmentUsers.length === 0) return [];
 		const adaptationData: AdaptationReportItem[] = [];
@@ -192,11 +233,37 @@ export default function ReportsTab({
 				user.userPanel.assignments.length > 0
 			) {
 				// Filter assignments with adaptation plans
-				const adaptationAssignments = user.userPanel.assignments.filter(
-					(assignment) =>
-						assignment.adaptationPlanId !== null &&
-						assignment.adaptationPlan !== null,
-				);
+				const adaptationAssignments = user.userPanel.assignments
+					.filter(
+						(assignment) =>
+							assignment.adaptationPlanId !== null &&
+							assignment.adaptationPlan !== null,
+					)
+					.filter((a) => {
+						if (selectedStatus === 'all') {
+							return true;
+						}
+						if (selectedStatus === 'in_progress' && !a.completedAt) {
+							return true;
+						}
+						return !!(selectedStatus === 'finished' && a.completedAt);
+					})
+					.filter((a) => {
+						if (!state[0]?.from || !state[0]?.to) {
+							return true;
+						}
+						if (
+							a?.startDate &&
+							state[0]?.from &&
+							isAfter(a?.startDate, state[0]?.from) &&
+							a?.dueDate &&
+							state[0]?.to &&
+							isBefore(a?.dueDate, state[0]?.to)
+						) {
+							return true;
+						}
+						return false;
+					});
 
 				if (adaptationAssignments.length > 0) {
 					// Process each adaptation assignment
@@ -216,7 +283,7 @@ export default function ReportsTab({
 										locale: ru,
 									})
 								: '',
-							endDate: assignment?.dueDate
+							completionDate: assignment?.dueDate
 								? format(new Date(assignment?.dueDate), 'dd.MM.yyyy', {
 										locale: ru,
 									})
@@ -231,7 +298,8 @@ export default function ReportsTab({
 		});
 
 		return adaptationData;
-	}, [departmentUsers, selectedUser]);
+	}, [departmentUsers, selectedStatus, selectedUser, state]);
+
 	const materialsReportData = useMemo<MaterialReportItem[]>(() => {
 		if (!departmentUsers || departmentUsers.length === 0) return [];
 		const materialsData: MaterialReportItem[] = [];
@@ -248,10 +316,36 @@ export default function ReportsTab({
 				user.userPanel.assignments.length > 0
 			) {
 				// Filter assignments with materials
-				const materialAssignments = user.userPanel.assignments.filter(
-					(assignment) =>
-						assignment.materialId !== null && assignment.material !== null,
-				);
+				const materialAssignments = user.userPanel.assignments
+					.filter(
+						(assignment) =>
+							assignment.materialId !== null && assignment.material !== null,
+					)
+					.filter((a) => {
+						if (selectedStatus === 'all') {
+							return true;
+						}
+						if (selectedStatus === 'in_progress' && !a.completedAt) {
+							return true;
+						}
+						return !!(selectedStatus === 'finished' && a.completedAt);
+					})
+					.filter((a) => {
+						if (!state[0]?.from || !state[0]?.to) {
+							return true;
+						}
+						if (
+							a?.startDate &&
+							state[0]?.from &&
+							isAfter(a?.startDate, state[0]?.from) &&
+							a?.dueDate &&
+							state[0]?.to &&
+							isBefore(a?.dueDate, state[0]?.to)
+						) {
+							return true;
+						}
+						return false;
+					});
 
 				if (materialAssignments.length > 0) {
 					// Process each material assignment
@@ -261,11 +355,6 @@ export default function ReportsTab({
 							employee: fullName,
 							department: user.department?.title || '',
 							position: user.position?.title || '',
-							startDate: user?.startDate
-								? format(new Date(user?.startDate), 'dd.MM.yyyy', {
-										locale: ru,
-									})
-								: '',
 							materialName:
 								assignment.material?.title || 'Неизвестный материал',
 							assignmentDate: assignment?.createdAt
@@ -273,19 +362,19 @@ export default function ReportsTab({
 										locale: ru,
 									})
 								: '',
-							completionDate: assignment?.completedAt
-								? format(new Date(assignment?.completedAt), 'dd.MM.yyyy', {
+							completionDate: assignment?.dueDate
+								? format(new Date(assignment?.dueDate), 'dd.MM.yyyy', {
 										locale: ru,
 									})
 								: '',
+							status: assignment?.completedAt ? 'Изучен' : 'Не изучен',
 						});
 					});
 				}
 			}
 		});
-
 		return materialsData;
-	}, [departmentUsers, selectedUser]);
+	}, [departmentUsers, selectedUser, state]);
 
 	const handleExportReport = () => {
 		if (reportType === 'tests') {
@@ -367,6 +456,33 @@ export default function ReportsTab({
 									</SelectContent>
 								</Select>
 							</div>
+
+							<div className="w-[250px]">
+								<label className="text-sm font-medium mb-1 block">Статус</label>
+								<Select
+									value={selectedStatus}
+									onValueChange={(value) =>
+										setSelectedStatus(value as StatusType)
+									}
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Выберите статус" />
+									</SelectTrigger>
+									<SelectContent>
+										{statusOptions.map((status) => (
+											<SelectItem key={status.value} value={status.value}>
+												{status.title}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="w-[250px]">
+								<label className="text-sm font-medium mb-1 block">
+									Диапазон
+								</label>
+								<DateRangePicker state={state} />
+							</div>
 						</div>
 					</CardContent>
 				</Card>
@@ -396,18 +512,18 @@ export default function ReportsTab({
 											</TableHead>
 											<TableHead className="font-semibold">Должность</TableHead>
 											<TableHead className="font-semibold">
-												Дата приема
-											</TableHead>
-											<TableHead className="font-semibold">
 												Название теста
 											</TableHead>
 											<TableHead className="font-semibold">Баллы</TableHead>
 											<TableHead className="font-semibold">%</TableHead>
-											<TableHead className="font-semibold">Статус</TableHead>
 											<TableHead className="font-semibold">Тип теста</TableHead>
 											<TableHead className="font-semibold">
 												Дата назначения
 											</TableHead>
+											<TableHead className="font-semibold">
+												Дата завершения
+											</TableHead>
+											<TableHead className="font-semibold">Статус</TableHead>
 										</TableRow>
 									</TableHeader>
 									<TableBody>
@@ -416,10 +532,12 @@ export default function ReportsTab({
 												<TableCell>{item.employee}</TableCell>
 												<TableCell>{item.department}</TableCell>
 												<TableCell>{item.position}</TableCell>
-												<TableCell>{item.startDate}</TableCell>
 												<TableCell>{item.testName}</TableCell>
 												<TableCell>{item.score || '-'}</TableCell>
 												<TableCell>{item.percentage || '-'}</TableCell>
+												<TableCell>{item.testType}</TableCell>
+												<TableCell>{item.assignmentDate}</TableCell>
+												<TableCell>{item.completionDate}</TableCell>
 												<TableCell>
 													<Badge
 														className={
@@ -435,8 +553,6 @@ export default function ReportsTab({
 														{item.status}
 													</Badge>
 												</TableCell>
-												<TableCell>{item.testType}</TableCell>
-												<TableCell>{item.activationDate}</TableCell>
 											</TableRow>
 										))}
 									</TableBody>
@@ -463,7 +579,7 @@ export default function ReportsTab({
 												Дата назначения
 											</TableHead>
 											<TableHead className="font-semibold">
-												Дата окончания
+												Дата завершения
 											</TableHead>
 											<TableHead className="font-semibold">Статус</TableHead>
 										</TableRow>
@@ -476,7 +592,7 @@ export default function ReportsTab({
 												<TableCell>{item.position}</TableCell>
 												<TableCell>{item.startDate}</TableCell>
 												<TableCell>{item.assignmentDate}</TableCell>
-												<TableCell>{item.endDate}</TableCell>
+												<TableCell>{item.completionDate}</TableCell>
 												<TableCell>
 													<Badge
 														className={
@@ -508,9 +624,6 @@ export default function ReportsTab({
 											</TableHead>
 											<TableHead className="font-semibold">Должность</TableHead>
 											<TableHead className="font-semibold">
-												Дата приема
-											</TableHead>
-											<TableHead className="font-semibold">
 												Название уч.материала/ЛД
 											</TableHead>
 											<TableHead className="font-semibold">
@@ -519,6 +632,7 @@ export default function ReportsTab({
 											<TableHead className="font-semibold">
 												Дата завершения
 											</TableHead>
+											<TableHead className="font-semibold">Статус</TableHead>
 										</TableRow>
 									</TableHeader>
 									<TableBody>
@@ -527,13 +641,23 @@ export default function ReportsTab({
 												<TableCell>{item.employee}</TableCell>
 												<TableCell>{item.department}</TableCell>
 												<TableCell>{item.position}</TableCell>
-												<TableCell>{item.startDate}</TableCell>
 												<TableCell>{item.materialName}</TableCell>
 												<TableCell>
 													{item.assignmentDate ? item.assignmentDate : '-'}
 												</TableCell>
 												<TableCell>
 													{item.completionDate ? item.completionDate : '-'}
+												</TableCell>
+												<TableCell>
+													<Badge
+														className={
+															item.status === 'Изучен'
+																? 'bg-green-100 text-green-800 hover:bg-green-100'
+																: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
+														}
+													>
+														{item.status}
+													</Badge>
 												</TableCell>
 											</TableRow>
 										))}
