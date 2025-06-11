@@ -24,6 +24,9 @@ export function useFinishMaterial() {
 			queryClient.invalidateQueries({
 				queryKey: ['education-cabinet'],
 			});
+			queryClient.invalidateQueries({
+				queryKey: ['user-assignments'],
+			});
 			toast({
 				title: 'Вы ознакомились',
 				variant: 'default',

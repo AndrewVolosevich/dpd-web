@@ -23,7 +23,7 @@ const GalleryPage = () => {
 				'Коллекция фотографий с мероприятий и повседневной жизни компании',
 			href: `${Routes.CORPORATE_LIFE}/gallery/photo`,
 			icon: <Camera className="w-6 h-6 text-white" />,
-			imageSrc: '/placeholder.svg',
+			imageSrc: '/images/gallery/photo.jpg',
 			imageAlt: 'Фотогалерея',
 		},
 		{
@@ -32,7 +32,7 @@ const GalleryPage = () => {
 			description: 'Видеоматериалы о компании, интервью и презентации',
 			href: `${Routes.CORPORATE_LIFE}/gallery/video`,
 			icon: <Video className="w-6 h-6 text-white" />,
-			imageSrc: '/placeholder.svg',
+			imageSrc: '/images/gallery/video.jpg',
 			imageAlt: 'Видеогалерея',
 		},
 	];
@@ -71,7 +71,6 @@ const GalleryPage = () => {
 										className="object-cover transition-transform duration-300 group-hover:scale-105"
 										sizes="(max-width: 768px) 100vw, 50vw"
 									/>
-									<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 									<div className="absolute top-4 left-4 bg-red-600 rounded-full p-2">
 										{item.icon}
 									</div>
