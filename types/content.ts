@@ -1,3 +1,5 @@
+import { UserData } from '@/types/entities';
+
 export interface ContentPage {
 	id?: string;
 	pageTitle: string;
@@ -23,6 +25,19 @@ export interface TimeLine {
 	id?: string;
 	year: number;
 	content: string[];
+
+	createdAt?: string;
+	updatedAt?: string;
+}
+
+export interface Nomination {
+	id?: string;
+	title: string;
+	description?: string;
+	nominants: UserData[];
+
+	createdAt?: string;
+	updatedAt?: string;
 }
 
 export interface EventPhoto {

@@ -1,9 +1,9 @@
-import EmployeeInfoPage from '@/components/pages/About/SubPages/EmployeeInfo/EmployeeInfoPage';
+import BestEmployeesPage from '@/components/pages/CorporateLife/BestEmployees/BestEmployeesPage';
 
 export default function BestEmployees() {
 	return (
 		<div>
-			<EmployeeInfoPage />
+			<BestEmployeesPage />
 		</div>
 	);
 }

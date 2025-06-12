@@ -37,20 +37,22 @@ const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
 						</div>
 					)}
 				</div>
-				<div className={'flex flex-col'}>
+				<div className={'flex flex-col justify-center'}>
 					<Link
 						href={`/profile/${user?.id}`}
 						className={
-							'font-medium text-base mb-1 truncate self-center text-primary'
+							'font-medium text-base mb-1 truncate self-center text-primary cursor-pointer'
 						}
 					>
-						<h3 className="">{user?.name + ' ' + user?.surname}</h3>
+						<h3 className="flex justify-center">
+							{user?.name + ' ' + user?.surname}
+						</h3>
+						{user?.position && (
+							<p className="text-sm text-muted-foreground truncate self-center">
+								{user?.position?.title}
+							</p>
+						)}
 					</Link>
-					{user?.position && (
-						<p className="text-sm text-muted-foreground truncate self-center">
-							{user?.position?.title}
-						</p>
-					)}
 				</div>
 			</div>
 		);
