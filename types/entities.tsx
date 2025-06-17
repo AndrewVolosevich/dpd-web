@@ -14,6 +14,7 @@ export type CommentModel = {
 };
 export type LikeModel = {
 	id: string;
+	isLike?: boolean;
 	userId: string;
 	user?: UserData;
 

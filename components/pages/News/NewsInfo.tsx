@@ -5,7 +5,7 @@ import { NewsModel } from '@/types/entities';
 import CommentsSection from '@/components/pages/News/CommentsSection';
 import { LikeButton } from '@/components/pages/News/LikeButton';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { useToggleLike } from '@/lib/api/queries/News/mutations/useToggleLike';
+import { useToggleLike } from '@/lib/api/queries/Socials/useToggleLike';
 
 interface NewsInfoProps extends React.HTMLAttributes<HTMLDivElement> {
 	news: NewsModel;
@@ -27,12 +27,12 @@ const NewsInfo = ({ news, className, ...props }: NewsInfoProps) => {
 						news.likes?.some((like) => like.userId === user?.id) || false
 					}
 					onToggleLike={() => {
-						toggleLike({ newsId: news.id });
+						toggleLike({ newsId: news.id, isLike: true });
 					}}
 					disabled={toggleLikeLoading}
 				/>
 			)}
-			{news && <CommentsSection news={news} />}
+			{news && <CommentsSection data={news} dataType={'news'} />}
 		</div>
 	);
 };

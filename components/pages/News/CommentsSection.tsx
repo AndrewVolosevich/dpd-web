@@ -2,24 +2,35 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { NewsModel } from '@/types/entities';
-import { useAddComment } from '@/lib/api/queries/News/mutations/useAddComment';
+import { useAddComment } from '@/lib/api/queries/Socials/useAddComment';
 import { Button } from '@/components/ui/button';
-import { useDeleteComment } from '@/lib/api/queries/News/mutations/useDeleteComment';
+import { useDeleteComment } from '@/lib/api/queries/Socials/useDeleteComment';
 import { MessageSquare, Send, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { QuestionToDirector } from '@/types/content';
 
-const CommentsSection = ({ news }: { news: NewsModel }) => {
+interface CommentsSectionProps {
+	data: NewsModel | QuestionToDirector;
+	dataType: 'news' | 'questionToDirector';
+}
+
+const CommentsSection = ({ data, dataType }: CommentsSectionProps) => {
 	const { user, isAdmin } = useAuth();
 	const [content, setContent] = useState('');
 	const { mutate: addComment, isPending: addCommentLoading } = useAddComment();
 	const { mutate: deleteComment, isPending: deleteCommentLoading } =
 		useDeleteComment();
 	const handleAddComment = () => {
-		addComment(
-			{ newsId: news.id, content },
-			{ onSuccess: () => setContent('') },
-		);
+		const payload = {
+			content,
+			...(dataType === 'news' && { newsId: (data as NewsModel).id }),
+			...(dataType === 'questionToDirector' && {
+				questionToDirectorId: (data as QuestionToDirector).id,
+			}),
+		};
+
+		addComment(payload, { onSuccess: () => setContent('') });
 	};
 
 	const handleDeleteComment = (id: string) => {
@@ -35,13 +46,13 @@ const CommentsSection = ({ news }: { news: NewsModel }) => {
 
 			{/* Scrollable comments area */}
 			<div className="flex-1 overflow-y-auto p-4 space-y-4">
-				{news?.comments?.length === 0 ? (
+				{data?.comments?.length === 0 ? (
 					<div className="flex flex-col items-center justify-center h-full text-muted-foreground">
 						<MessageSquare className="h-12 w-12 mb-2 opacity-20" />
 						<p>Нет комментариев</p>
 					</div>
 				) : (
-					news?.comments?.map((comment) => (
+					data?.comments?.map((comment) => (
 						<Card
 							key={comment.id}
 							className="p-4 relative hover:shadow-md transition-shadow"

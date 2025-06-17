@@ -94,7 +94,7 @@ const NominationsList = ({ nominations }: { nominations: Nomination[] }) => {
 										key={nominant.id}
 										className="flex items-center gap-3 p-3 rounded-lg border bg-gray-50 hover:bg-gray-100 transition-colors"
 									>
-										<UserCard user={nominant as UserData} full />
+										<UserCard user={nominant as UserData} full lg />
 									</div>
 								))}
 							</div>

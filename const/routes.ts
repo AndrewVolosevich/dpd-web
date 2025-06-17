@@ -67,6 +67,10 @@ export const NavLinks = [
 				title: 'Новости',
 				href: `${Routes.CORPORATE_LIFE}/news`,
 			},
+			{
+				title: 'Вопрос директору',
+				href: `${Routes.CORPORATE_LIFE}/question-to-director`,
+			},
 		],
 	},
 	{
