@@ -67,7 +67,7 @@ const ProfilePage = ({ id }: { id?: string }) => {
 						<UserCard
 							user={anotherUser}
 							full
-							big
+							lg
 							onEdit={isAdmin ? () => setOpenPhoto(true) : undefined}
 						/>
 					</CardContent>

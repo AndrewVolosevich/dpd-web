@@ -163,10 +163,10 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 								name="title"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel className={'sr-only'}>Title</FormLabel>
+										<FormLabel>Заголовок</FormLabel>
 										<FormControl>
 											<Input
-												placeholder={'Заголовок'}
+												placeholder={'Введите текст заголовка'}
 												maxLength={120}
 												{...field}
 											/>
@@ -182,10 +182,10 @@ const EditNewsForm = ({ news, className, ...props }: EditNewsFormProps) => {
 								name="description"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel className={'sr-only'}>Description</FormLabel>
+										<FormLabel>Описание</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder={'Описание'}
+												placeholder={'Введите текст описания'}
 												className="resize-none"
 												maxLength={200}
 												{...field}

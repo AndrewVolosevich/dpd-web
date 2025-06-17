@@ -1,4 +1,4 @@
-import { UserData } from '@/types/entities';
+import { CommentModel, LikeModel, UserData } from '@/types/entities';
 
 export interface ContentPage {
 	id?: string;
@@ -51,4 +51,32 @@ export interface CompanyVideo {
 	title: string;
 	url?: string;
 	link?: string;
+}
+
+export enum QuestionToDirectorStatus {
+	APPROVED = 'APPROVED',
+	MODERATION = 'MODERATION',
+	REJECTED = 'REJECTED',
+	ANSWERED = 'ANSWERED',
+}
+
+export interface QuestionToDirector {
+	id: string;
+	title: string;
+	description: string;
+	category: string;
+
+	directorAnswer?: string;
+	answeredAt?: string;
+
+	userId: string;
+	user?: UserData;
+
+	comments?: CommentModel[];
+	likes?: LikeModel[];
+
+	status: QuestionToDirectorStatus;
+
+	createdAt: string;
+	updatedAt?: string;
 }

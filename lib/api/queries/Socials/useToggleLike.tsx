@@ -10,8 +10,12 @@ export function useToggleLike() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (commentData: { newsId: string }) => {
-			return api.post(`/news/like`, {
+		mutationFn: async (commentData: {
+			newsId?: string;
+			questionToDirectorId?: string;
+			isLike?: boolean;
+		}) => {
+			return api.post(`/socials/like`, {
 				...commentData,
 			});
 		},
@@ -22,9 +26,20 @@ export function useToggleLike() {
 				description: error.message,
 			});
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['news'] });
-			queryClient.invalidateQueries({ queryKey: ['news-list'] });
+		onSuccess: (resp) => {
+			if (resp.data?.questionToDirectorId) {
+				queryClient.invalidateQueries({
+					queryKey: ['questions-to-director'],
+				});
+				queryClient.invalidateQueries({
+					queryKey: ['question-to-director'],
+				});
+			}
+			if (resp.data?.newsId) {
+				queryClient.invalidateQueries({ queryKey: ['news'] });
+				queryClient.invalidateQueries({ queryKey: ['news-list'] });
+			}
+
 			toast({
 				title: 'Лайк добавлен',
 				variant: 'default',

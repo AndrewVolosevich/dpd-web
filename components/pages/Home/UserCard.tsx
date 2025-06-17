@@ -8,16 +8,16 @@ import { Pencil } from 'lucide-react';
 type UserCardProps = React.HTMLAttributes<HTMLDivElement> & {
 	user: UserData;
 	full?: boolean;
-	big?: boolean;
+	lg?: boolean;
 	onEdit?: () => void;
 };
 
-const UserCard = ({ className, user, full, big, onEdit }: UserCardProps) => {
+const UserCard = ({ className, user, full, lg, onEdit }: UserCardProps) => {
 	if (full) {
 		return (
 			<div className={cn('w-full', className)}>
 				<div
-					className={cn('relative w-24 h-24 mx-auto mb-4', big && 'w-36 h-36')}
+					className={cn('relative w-24 h-24 mx-auto mb-4', lg && 'w-36 h-36')}
 				>
 					<Avatar className={'w-full h-full'}>
 						<AvatarImage src={user?.photo} alt={user?.name} />
