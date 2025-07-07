@@ -117,24 +117,24 @@ export default function DirectorQuestionPage({ id }: { id: string }) {
 								<div className="flex items-center gap-4">
 									<Button
 										variant={'ghost'}
-										size="sm"
+										size="lg"
 										onClick={() => handleVote('like')}
 										className={
-											'text-green-600 hover:text-green-700 hover:bg-green-50'
+											'text-green-600 hover:text-green-700 hover:bg-green-50 py-8 text-2xl'
 										}
 									>
-										<ThumbsUp className="w-4 h-4 mr-1" />
+										<ThumbsUp className="w-12 h-12 mr-4" />
 										{getLikesCount(question?.likes)}
 									</Button>
 									<Button
 										variant={'ghost'}
-										size="sm"
+										size="lg"
 										onClick={() => handleVote('dislike')}
 										className={
-											'text-primary hover:text-red-700 hover:bg-red-50'
+											'text-primary hover:text-red-700 hover:bg-red-50 py-8 text-2xl'
 										}
 									>
-										<ThumbsDown className="w-4 h-4 mr-1" />
+										<ThumbsDown className="w-12 h-12 mr-4" />
 										{getDislikesCount(question?.likes)}
 									</Button>
 									{likeLoading && <Loader2 className={'animate-spin'} />}
