@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-import { ArrowDownToLine, Loader2, Pencil, Plus } from 'lucide-react';
+import { Activity, ArrowDownToLine, Loader2, Pencil, Plus } from 'lucide-react';
 import {
 	Tooltip,
 	TooltipContent,
@@ -18,13 +18,12 @@ const contextButtonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+				default: 'bg-primary text-primary-foreground hover:brightness-90',
 				destructive:
-					'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+					'bg-destructive text-destructive-foreground hover:brightness-90',
 				outline:
-					'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-				secondary:
-					'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+					'border border-input bg-background hover:bg-accent hover:brightness-90',
+				secondary: 'bg-secondary text-secondary-foreground hover:brightness-90',
 				ghost: 'hover:bg-accent hover:text-accent-foreground',
 				link: 'text-primary underline-offset-4 hover:underline',
 			},
@@ -45,6 +44,7 @@ export enum ContextIcons {
 	CREATE,
 	SAVE,
 	EDIT,
+	MOOD,
 }
 
 export interface ContextButtonProps
@@ -91,6 +91,9 @@ const ContextButton = React.forwardRef<HTMLButtonElement, ContextButtonProps>(
 						)}
 						{iconVariant === ContextIcons.EDIT && (
 							<Pencil className={'w-[50%] h-[50%]'} />
+						)}
+						{iconVariant === ContextIcons.MOOD && (
+							<Activity className={'w-[50%] h-[50%]'} />
 						)}
 					</>
 				)}

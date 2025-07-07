@@ -20,6 +20,14 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 import { QuestionToDirector, QuestionToDirectorStatus } from '@/types/content';
 import { useEditQuestionToDirector } from '@/lib/api/queries/Content/mutations/question-to-director/useEditQuestionToDirector';
 import { Loader2 } from 'lucide-react';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import { categories } from '@/const/content';
 
 interface AskQuestionEditProps extends React.HTMLAttributes<HTMLDivElement> {
 	question: QuestionToDirector | null;
@@ -124,11 +132,21 @@ const QuestionToDirectorForm = ({
 										<FormItem>
 											<FormLabel>Сфера деятельности</FormLabel>
 											<FormControl>
-												<Input
-													placeholder={'Введите сферу деятельности'}
-													maxLength={120}
-													{...field}
-												/>
+												<Select
+													onValueChange={(value) => field.onChange(value)}
+													defaultValue={field.value}
+												>
+													<SelectTrigger>
+														<SelectValue placeholder="Выберите сферу деятельности" />
+													</SelectTrigger>
+													<SelectContent>
+														{categories.map((category) => (
+															<SelectItem key={category} value={category}>
+																{category}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
 											</FormControl>
 											<FormMessage />
 										</FormItem>

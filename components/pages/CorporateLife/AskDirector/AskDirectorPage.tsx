@@ -56,11 +56,11 @@ const getTextForStatus = (value: Status) => {
 		case QuestionToDirectorStatus.MODERATION:
 			return 'На модерации';
 		case QuestionToDirectorStatus.APPROVED:
-			return 'Одобрен';
+			return 'Опубликован';
 		case QuestionToDirectorStatus.REJECTED:
 			return 'Отклонен';
 		case QuestionToDirectorStatus.ANSWERED:
-			return 'Отвечен';
+			return 'Есть ответ директора';
 		default:
 			return value;
 	}
@@ -223,7 +223,11 @@ export default function AskDirectorPage() {
 										</div>
 									</div>
 									<div className="flex items-center gap-2 ml-4">
-										{getStatusBadge(question.status)}
+										<Link
+											href={`${Routes.CORPORATE_LIFE}/question-to-director/${question.id}`}
+										>
+											{getStatusBadge(question.status)}
+										</Link>
 
 										{isAdmin && (
 											<div className="flex gap-1">
@@ -232,6 +236,7 @@ export default function AskDirectorPage() {
 													size="icon"
 													onClick={() => setEditingQuestion(question)}
 													className="h-8 w-8 text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+													tooltip={'Редактировать'}
 												>
 													<Edit className="w-4 h-4" />
 												</Button>
@@ -248,6 +253,7 @@ export default function AskDirectorPage() {
 																});
 															}}
 															className="h-8 w-8 text-gray-400"
+															tooltip={'Одобрить к публикации'}
 														>
 															<Check className="w-4 h-4" />
 														</Button>
@@ -261,6 +267,7 @@ export default function AskDirectorPage() {
 																});
 															}}
 															className="h-8 w-8 text-gray-400"
+															tooltip={'Отклонить'}
 														>
 															<X className="w-4 h-4" />
 														</Button>
@@ -271,6 +278,7 @@ export default function AskDirectorPage() {
 													size="icon"
 													onClick={() => setDeletingQuestion(question)}
 													className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50"
+													tooltip={'Удалить'}
 												>
 													<Trash2 className="w-4 h-4" />
 												</Button>
@@ -289,25 +297,25 @@ export default function AskDirectorPage() {
 										<div className="flex items-center gap-2">
 											<Button
 												variant="ghost"
-												size="sm"
-												className="text-green-600 hover:text-green-700 hover:bg-green-50"
+												size="lg"
+												className="text-green-600 hover:text-green-700 hover:bg-green-50 px-4"
 												onClick={() => handleVote(question.id, 'like')}
 											>
-												<ThumbsUp className="w-4 h-4 mr-1" />
+												<ThumbsUp className="w-6 h-6 mr-2" />
 												{getLikesCount(question?.likes)}
 											</Button>
 											<Button
 												variant="ghost"
-												size="sm"
-												className="text-primary hover:text-primary hover:bg-red-50"
+												size="lg"
+												className="text-primary hover:text-primary hover:bg-red-50 px-4"
 												onClick={() => handleVote(question.id, 'dislike')}
 											>
-												<ThumbsDown className="w-4 h-4 mr-1" />
+												<ThumbsDown className="w-6 h-6 mr-2" />
 												{getDislikesCount(question?.likes)}
 											</Button>
 										</div>
-										<div className="flex items-center gap-1 text-gray-500">
-											<MessageSquare className="w-4 h-4" />
+										<div className="flex items-center gap-1 text-gray-500 px-4">
+											<MessageSquare className="w-6 h-6" />
 											<span className="text-sm">
 												{question.comments?.length || 0}
 											</span>

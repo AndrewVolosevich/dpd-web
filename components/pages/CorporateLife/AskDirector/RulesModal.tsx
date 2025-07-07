@@ -8,6 +8,7 @@ import {
 	DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { categories } from '@/const/content';
 
 interface RulesModalProps {
 	isOpen: boolean;
@@ -15,22 +16,6 @@ interface RulesModalProps {
 }
 
 export function RulesModal({ isOpen, onClose }: RulesModalProps) {
-	const categories = [
-		'Работа с документами',
-		'Производственные процессы',
-		'Юридические вопросы',
-		'Продажи и поддержка клиентов',
-		'Маркетинг и реклама',
-		'ИТ продукты (CRM, 1С, Аргис и др.)',
-		'Кадровый документооборот',
-		'Корпоративная культура, внутренние коммуникации',
-		'Подбор и развитие персонала',
-		'Компенсации и льготы',
-		'Экономика и финансы',
-		'Безопасность',
-		'Идеи новых проектов для компании',
-	];
-
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
