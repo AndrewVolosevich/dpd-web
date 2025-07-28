@@ -19,7 +19,9 @@ import useQuestionToDirector from '@/lib/api/queries/Content/useQuestionToDirect
 import { getDislikesCount, getLikesCount, getStatusBadge } from '@/lib/socials';
 import { useToggleLike } from '@/lib/api/queries/Socials/useToggleLike';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
-import CommentsSection from '@/components/pages/News/CommentsSection';
+import CommentsSection, {
+	CommentData,
+} from '@/components/pages/News/CommentsSection';
 
 export default function DirectorQuestionPage({ id }: { id: string }) {
 	const { data: question, isLoading } = useQuestionToDirector(id);
@@ -168,7 +170,10 @@ export default function DirectorQuestionPage({ id }: { id: string }) {
 				)}
 
 				{question && (
-					<CommentsSection data={question} dataType={'questionToDirector'} />
+					<CommentsSection
+						data={question as CommentData}
+						dataType={'questionToDirector'}
+					/>
 				)}
 			</div>
 		</div>

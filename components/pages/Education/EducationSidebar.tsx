@@ -22,6 +22,11 @@ const sidebarItems = [
 		icon: UserPlus,
 	},
 	{
+		title: 'Адаптация',
+		href: `${Routes.EDUCATION}/adaptation`,
+		icon: BookOpen,
+	},
+	{
 		title: 'Учебные кабинеты',
 		href: `${Routes.EDUCATION}/materials`,
 		icon: FileText,
@@ -30,11 +35,6 @@ const sidebarItems = [
 		title: 'Мое обучение',
 		href: `${Routes.EDUCATION}/my-training`,
 		icon: GraduationCap,
-	},
-	{
-		title: 'Адаптация',
-		href: `${Routes.EDUCATION}/adaptation`,
-		icon: BookOpen,
 	},
 	{
 		title: 'Ежегодная оценка',
@@ -64,10 +64,7 @@ export function EducationSidebar({ className }: EducationSidebarProps) {
 
 	return (
 		<div
-			className={cn(
-				'max-w-64 border-r h-[calc(100vh-250px)] bg-background',
-				className,
-			)}
+			className={cn('max-w-64 border-r bg-background min-h-[78vh]', className)}
 		>
 			<div className="flex flex-col gap-1 p-4">
 				{sidebarItems

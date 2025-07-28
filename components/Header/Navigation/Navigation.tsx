@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { NavLinks, Routes } from '@/const/routes';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, HelpCircle } from 'lucide-react';
 
 export function Navigation({ className }: { className?: string }) {
 	const { isAdmin } = useAuth();
@@ -38,7 +38,13 @@ export function Navigation({ className }: { className?: string }) {
 
 	const links = NavLinks.filter((link) => link.href !== Routes.PROFILE);
 	return (
-		<nav ref={navRef} className={cn('container mx-auto', className)}>
+		<nav
+			ref={navRef}
+			className={cn(
+				'container mx-auto flex flex-row justify-between',
+				className,
+			)}
+		>
 			<div className="group flex p-0">
 				{links.map((link, index) => {
 					if (link.title === 'Администратор' && !isAdmin) {
@@ -95,6 +101,20 @@ export function Navigation({ className }: { className?: string }) {
 						</div>
 					);
 				})}
+			</div>
+			<div className="p-2 flex justify-center">
+				<Link
+					href={`${Routes.CORPORATE_LIFE}/question-to-director`}
+					className="bg-primary hover:brightness-90 text-white px-6 py-3 rounded-xl flex items-center gap-3 text-base font-medium min-w-[200px] lg:min-w-[280px] justify-between transition-colors duration-200 no-underline"
+				>
+					<div className="flex items-center gap-3">
+						<HelpCircle className="w-6 h-6" />
+						<span>Задать вопрос</span>
+					</div>
+					<div className="bg-white rounded-full p-1.5">
+						<ArrowUpRight className="w-4 h-4 text-primary hover:brightness-90 transition-colors" />
+					</div>
+				</Link>
 			</div>
 		</nav>
 	);

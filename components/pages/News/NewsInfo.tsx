@@ -2,7 +2,9 @@
 import React from 'react';
 import OutputBlock from '@/components/Editor/OutputBlock';
 import { NewsModel } from '@/types/entities';
-import CommentsSection from '@/components/pages/News/CommentsSection';
+import CommentsSection, {
+	CommentData,
+} from '@/components/pages/News/CommentsSection';
 import { LikeButton } from '@/components/pages/News/LikeButton';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useToggleLike } from '@/lib/api/queries/Socials/useToggleLike';
@@ -32,7 +34,7 @@ const NewsInfo = ({ news, className, ...props }: NewsInfoProps) => {
 					disabled={toggleLikeLoading}
 				/>
 			)}
-			{news && <CommentsSection data={news} dataType={'news'} />}
+			{news && <CommentsSection data={news as CommentData} dataType={'news'} />}
 		</div>
 	);
 };

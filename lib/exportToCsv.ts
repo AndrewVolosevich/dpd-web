@@ -2,7 +2,7 @@ import { Question, Survey, SurveyResponse } from '@/types/entities';
 /**
  * Преобразует значение ответа в строку для CSV с учётом кириллицы и экранирования
  */
-const formatValueForCsv = (value: any): string => {
+export const formatValueForCsv = (value: any): string => {
 	if (value === null || value === undefined) {
 		return '""';
 	}

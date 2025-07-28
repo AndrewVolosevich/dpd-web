@@ -31,6 +31,9 @@ export function getStartDateISO(date: Date | undefined): string | undefined {
 		: undefined;
 }
 
-export const formatBornDate = (dateString: string) => {
+export const formatMonthYearDate = (dateString?: string) => {
+	if (!dateString) {
+		return '';
+	}
 	return format(new Date(dateString), 'dd MMMM', { locale: ru });
 };

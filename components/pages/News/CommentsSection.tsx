@@ -1,18 +1,28 @@
 'use client';
 import React, { useState } from 'react';
 import { useAuth } from '@/components/providers/global/AuthProvider';
-import { NewsModel } from '@/types/entities';
+import { CommentModel } from '@/types/entities';
 import { useAddComment } from '@/lib/api/queries/Socials/useAddComment';
 import { Button } from '@/components/ui/button';
 import { useDeleteComment } from '@/lib/api/queries/Socials/useDeleteComment';
 import { MessageSquare, Send, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { QuestionToDirector } from '@/types/content';
+
+export interface CommentData {
+	id: string;
+	comments: CommentModel[];
+}
 
 interface CommentsSectionProps {
-	data: NewsModel | QuestionToDirector;
-	dataType: 'news' | 'questionToDirector';
+	data: CommentData;
+	dataType:
+		| 'news'
+		| 'questionToDirector'
+		| 'prevGoal'
+		| 'nextGoal'
+		| 'competency'
+		| 'mastery';
 }
 
 const CommentsSection = ({ data, dataType }: CommentsSectionProps) => {
@@ -24,9 +34,21 @@ const CommentsSection = ({ data, dataType }: CommentsSectionProps) => {
 	const handleAddComment = () => {
 		const payload = {
 			content,
-			...(dataType === 'news' && { newsId: (data as NewsModel).id }),
+			...(dataType === 'news' && { newsId: data.id }),
 			...(dataType === 'questionToDirector' && {
-				questionToDirectorId: (data as QuestionToDirector).id,
+				questionToDirectorId: data.id,
+			}),
+			...(dataType === 'prevGoal' && {
+				assessmentLastYearId: data.id,
+			}),
+			...(dataType === 'nextGoal' && {
+				assessmentNextYearId: data.id,
+			}),
+			...(dataType === 'competency' && {
+				assessmentCompetenciesId: data.id,
+			}),
+			...(dataType === 'mastery' && {
+				assessmentMasteryId: data.id,
 			}),
 		};
 

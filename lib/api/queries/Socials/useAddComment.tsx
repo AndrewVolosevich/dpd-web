@@ -35,6 +35,12 @@ export function useAddComment() {
 			queryClient.invalidateQueries({
 				queryKey: ['question-to-director'],
 			});
+			queryClient.invalidateQueries({
+				queryKey: ['assessment'],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['current-assessment'],
+			});
 			toast({
 				title: 'Комментарий успешно добавлен',
 				variant: 'default',

@@ -18,7 +18,7 @@ import {
 	Clock,
 } from 'lucide-react';
 import { UserData } from '@/types/entities';
-import { formatBornDate } from '@/lib/date/helpers';
+import { formatMonthYearDate } from '@/lib/date/helpers';
 import { formatPhoneNumber } from '@/lib/phone';
 
 interface ViewEmployeeModalProps {
@@ -89,7 +89,7 @@ export function ViewEmployeeModal({
 									<div className="flex items-center gap-2">
 										<Calendar className="h-4 w-4 text-muted-foreground" />
 										<span>
-											Дата рождения: {formatBornDate(employee?.bornDate)}
+											Дата рождения: {formatMonthYearDate(employee?.bornDate)}
 										</span>
 									</div>
 								)}
@@ -97,7 +97,7 @@ export function ViewEmployeeModal({
 									<div className="flex items-center gap-2">
 										<Clock className="h-4 w-4 text-muted-foreground" />
 										<span>
-											Работает с: {formatBornDate(employee?.startDate)}
+											Работает с: {formatMonthYearDate(employee?.startDate)}
 										</span>
 									</div>
 								)}

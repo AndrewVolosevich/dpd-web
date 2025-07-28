@@ -13,6 +13,7 @@ import { Routes } from '@/const/routes';
 import { usePathname, useRouter } from 'next/navigation';
 import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '@/const/common';
 import { useToast } from '@/hooks/use-toast';
+import { getQueryClient } from '@/lib/getQueryClient';
 
 export interface LoginProps {
 	tel: string;
@@ -72,6 +73,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [token, setToken] = useState<string>('');
 	const [user, setUser] = useState<AuthUser | null>(null);
 	const { toast } = useToast();
+	const queryClient = getQueryClient();
 
 	const isAdmin = useMemo(() => {
 		return user?.roles?.some((r) => r === 'ADMIN');
@@ -85,6 +87,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		setUser(null);
 		localStorage.setItem(REFRESH_TOKEN, '');
 		localStorage.setItem(ACCESS_TOKEN, '');
+		queryClient?.clear();
 	};
 
 	const login = useCallback(

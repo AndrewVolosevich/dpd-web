@@ -30,7 +30,7 @@ const contextButtonVariants = cva(
 			size: {
 				default: 'w-14 h-14',
 				sm: 'w-12 h-12',
-				lg: 'w-16 h-16',
+				lg: 'w-24 h-24',
 			},
 		},
 		defaultVariants: {
