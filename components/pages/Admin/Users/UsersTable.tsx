@@ -28,7 +28,7 @@ import DeleteAlert from '@/components/common/DeleteAlert/DeleteAlert';
 import Link from 'next/link';
 import { useDeleteUser } from '@/lib/api/queries/Users/mutations/useDeleteUser';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
-import { formatBornDate } from '@/lib/date/helpers';
+import { formatMonthYearDate } from '@/lib/date/helpers';
 import { formatPhoneNumber } from '@/lib/phone';
 
 const limit = 20;
@@ -149,7 +149,9 @@ export default function UsersTable() {
 												{formatPhoneNumber(user?.internalPhone)}
 											</TableCell>
 											<TableCell>
-												{user?.bornDate ? formatBornDate(user?.bornDate) : ''}
+												{user?.bornDate
+													? formatMonthYearDate(user?.bornDate)
+													: ''}
 											</TableCell>
 
 											<TableCell className="flex flex-row justify-end">

@@ -31,6 +31,8 @@ export const HomePage = () => {
 					tooltip="Опрос настроения"
 					onClick={() => setMoodModalOpen(true)}
 					iconVariant={ContextIcons.MOOD}
+					className={'border-2 border-white bottom-24'}
+					size={'lg'}
 				/>
 				<MoodSurveyModal open={moodModalOpen} onOpenChange={setMoodModalOpen} />
 			</>

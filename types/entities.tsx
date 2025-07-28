@@ -1,5 +1,7 @@
 import { Department, Position } from '@/types/structure';
 import { UserPanel } from '@/types/education';
+import { Assessment, CompetencyWithRatings } from '@/types/assessment';
+import { QuestionToDirector } from '@/types/content';
 
 export type CommentModel = {
 	id: string;
@@ -8,6 +10,14 @@ export type CommentModel = {
 	user?: UserData;
 	newsId: string;
 	news?: NewsModel;
+	questionToDirectorId: string;
+	questionToDirector?: QuestionToDirector;
+	assessmentLastYearId: string;
+	assessmentLastYear?: Assessment;
+	assessmentNextYearId: string;
+	assessmentNextYear?: NewsModel;
+	competencyWithRatingsId: string;
+	competencyWithRatings?: CompetencyWithRatings;
 
 	createdAt: string;
 	updatedAt?: string;
@@ -72,6 +82,8 @@ export interface UserData {
 
 	photo?: string;
 	presentation?: any;
+
+	assessment?: Assessment[];
 }
 
 export interface ExtendedUserData extends UserData {
