@@ -47,9 +47,10 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 				'Этап оценки',
 				'Итоговый балл',
 				'Уровень проф.мастерства',
-				'Заключение рук-ля (мотивация)',
-				'Заключение рук-ля (кадровый резерв)',
-				'Заключение рук-ля (зоны для развития)',
+				'Цели на следующий год',
+				'Рекомендации рук-ля (мотивация)',
+				'Рекомендации рук-ля (кадровый резерв)',
+				'Рекомендации рук-ля (зоны для развития)',
 			]
 				.map(formatValueForCsv)
 				.join(','),
@@ -69,6 +70,16 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 			}
 		};
 
+		const getNextGoals = (assessment: Assessment) => {
+			if (assessment.type === 'FULL') {
+				return assessment.goalsNextYear
+					.map((g, index) => ` ${index + 1}. ${g.title}`)
+					.join(', ');
+			} else {
+				return 'нет';
+			}
+		};
+
 		// Добавляем данных сотрудников из текущего подразделения
 		filteredAssessments
 			.filter((assessment) => assessment.user?.departmentId === departmentId)
@@ -81,6 +92,7 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 						getAssessmentStatusText(assessment.status),
 						getFinalScore(assessment),
 						`${assessment.averageMasterySupervisor || 'Нет данных'}`,
+						getNextGoals(assessment),
 						assessment?.recommendations?.find(
 							(r: any) => r.title === 'Уровень мотивации',
 						)?.recommendation || 'Нет данных',

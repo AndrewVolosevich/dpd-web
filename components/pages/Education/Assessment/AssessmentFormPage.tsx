@@ -10,7 +10,7 @@ import {
 	fullAssessmentSteps,
 	simplifiedAssessmentSteps,
 } from '@/const/assessment';
-import { AssessmentType } from '@/types/assessment';
+import { AssessmentStatus, AssessmentType } from '@/types/assessment';
 import FullPageLoader from '@/components/common/Loader/FullPageLoader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import PrevGoalTab from '@/components/pages/Education/Assessment/common/Tabs/PrevGoalTab';
@@ -21,7 +21,10 @@ import { getAssessmentStatusByStep } from '@/components/pages/Education/Assessme
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import MasteryTab from '@/components/pages/Education/Assessment/common/Tabs/MasteryTab';
-import GetIsReadyForNextStep from '@/components/pages/Education/Assessment/common/getIsReadyForNextStep';
+import {
+	getIsReadyForNextStep,
+	getIsReadyForPrevStep,
+} from '@/components/pages/Education/Assessment/common/prevAndNextSteps';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { UserData } from '@/types/entities';
 import { getMasteryLevelRating } from '@/components/pages/Education/Assessment/common/getMasteryLevelText';
@@ -63,7 +66,7 @@ export const AssessmentFormPage = ({
 		if (assessment) {
 			updateStep({
 				id: assessment?.id,
-				status: getAssessmentStatusByStep(step),
+				status: getAssessmentStatusByStep(step, assessment.type),
 			});
 		}
 	};
@@ -76,7 +79,12 @@ export const AssessmentFormPage = ({
 		);
 	}
 
-	const isNextReady = GetIsReadyForNextStep(
+	const isNextReady = getIsReadyForNextStep(
+		assessment,
+		currentUser as UserData,
+	);
+
+	const isPrevReady = getIsReadyForPrevStep(
 		assessment,
 		currentUser as UserData,
 	);
@@ -134,6 +142,7 @@ export const AssessmentFormPage = ({
 						onStepChange={handleStepChange}
 						isLoading={updateStepLoading}
 						isNextDisabled={!isNextReady}
+						isPrevDisabled={!isPrevReady}
 					/>
 				</CardContent>
 			</Card>
@@ -206,23 +215,30 @@ export const AssessmentFormPage = ({
 					<TabsTrigger value="mastery" className="text-xs">
 						Проф. мастерство
 					</TabsTrigger>
-					<TabsTrigger value="recomendations" className="text-xs">
-						Рекомендации
-					</TabsTrigger>
+					{(assessment.status === AssessmentStatus.COMPLETED ||
+						assessment.status === AssessmentStatus.SUPERVISOR_CONCLUSION) && (
+						<TabsTrigger value="recomendations" className="text-xs">
+							Рекомендации
+						</TabsTrigger>
+					)}
 					<TabsTrigger value="general" className="text-xs">
 						Согласованная оценка
 					</TabsTrigger>
 				</TabsList>
 
-				<PrevGoalTab assessment={assessment} />
-
+				{assessment.type === AssessmentType.FULL && (
+					<>
+						<PrevGoalTab assessment={assessment} />
+						<CompetencyTab assessment={assessment} />
+						<NextGoalTab assessment={assessment} />
+					</>
+				)}
 				<MasteryTab assessment={assessment} />
 
-				<CompetencyTab assessment={assessment} />
-
-				<NextGoalTab assessment={assessment} />
-
-				<RecommendationsTab assessment={assessment} />
+				{(assessment.status === AssessmentStatus.COMPLETED ||
+					assessment.status === AssessmentStatus.SUPERVISOR_CONCLUSION) && (
+					<RecommendationsTab assessment={assessment} />
+				)}
 
 				<TabsContent value="general" className="space-y-4">
 					<Card>

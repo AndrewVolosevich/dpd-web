@@ -105,11 +105,11 @@ export function Navigation({ className }: { className?: string }) {
 			<div className="p-2 flex justify-center">
 				<Link
 					href={`${Routes.CORPORATE_LIFE}/question-to-director`}
-					className="bg-primary hover:brightness-90 text-white px-6 py-3 rounded-xl flex items-center gap-3 text-base font-medium min-w-[200px] lg:min-w-[280px] justify-between transition-colors duration-200 no-underline"
+					className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl flex items-center gap-3 text-base font-medium min-w-[200px] lg:min-w-[280px] justify-between transition-colors duration-200 no-underline"
 				>
 					<div className="flex items-center gap-3">
 						<HelpCircle className="w-6 h-6" />
-						<span>Задать вопрос</span>
+						<span>Вопрос директору</span>
 					</div>
 					<div className="bg-white rounded-full p-1.5">
 						<ArrowUpRight className="w-4 h-4 text-primary hover:brightness-90 transition-colors" />

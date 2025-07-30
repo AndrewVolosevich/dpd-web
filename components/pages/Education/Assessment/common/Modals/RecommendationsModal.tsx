@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Dialog,
 	DialogContent,
@@ -11,7 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, MessageSquare } from 'lucide-react';
-import { AssessmentRecommendation } from '@/types/assessment';
+import {
+	Assessment,
+	AssessmentRecommendation,
+	AssessmentStatus,
+} from '@/types/assessment';
 
 import { useUpdateRecommendations } from '@/lib/api/queries/Assessment/mutations/useUpdateRecommendations';
 
@@ -19,6 +23,7 @@ interface RecommendationsModalProps {
 	assessmentId: string;
 	isOpen: boolean;
 	onClose: () => void;
+	assessment?: Assessment;
 	recommendations: AssessmentRecommendation[];
 }
 
@@ -26,6 +31,7 @@ export const RecommendationsModal = ({
 	isOpen,
 	assessmentId,
 	onClose,
+	assessment,
 	recommendations,
 }: RecommendationsModalProps) => {
 	const [formData, setFormData] = useState<AssessmentRecommendation[]>([]);
@@ -56,6 +62,15 @@ export const RecommendationsModal = ({
 			prev.map((item) =>
 				item.id === id ? { ...item, recommendation: value } : item,
 			),
+		);
+	};
+
+	const getIsAvailable = () => {
+		return (
+			!!formData[0]?.recommendation?.length &&
+			!!formData[1]?.recommendation?.length &&
+			!!formData[2]?.recommendation?.length &&
+			assessment?.status === AssessmentStatus.SUPERVISOR_CONCLUSION
 		);
 	};
 
@@ -94,7 +109,11 @@ export const RecommendationsModal = ({
 					<Button variant="outline" onClick={onClose}>
 						Отмена
 					</Button>
-					<Button type={'button'} disabled={isLoading} onClick={handleSubmit}>
+					<Button
+						type={'button'}
+						disabled={isLoading && !getIsAvailable()}
+						onClick={handleSubmit}
+					>
 						{isLoading && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
 						Сохранить рекомендации
 					</Button>
