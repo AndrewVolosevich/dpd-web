@@ -3,13 +3,13 @@ import { TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Edit, MessageSquare } from 'lucide-react';
 import { Assessment } from '@/types/assessment';
-import { defaultReccomendations } from '@/const/assessment';
+import { defaultRecommendations } from '@/const/assessment';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RecommendationsModal } from '@/components/pages/Education/Assessment/common/Modals/RecommendationsModal';
 
 const RecommendationsTab = ({ assessment }: { assessment: Assessment }) => {
 	const recommendations = useMemo(() => {
-		return assessment?.recommendations || defaultReccomendations;
+		return assessment?.recommendations || defaultRecommendations;
 	}, [assessment?.recommendations]);
 	const [isRecommendationsModalOpen, setIsRecommendationsModalOpen] =
 		useState(false);
@@ -54,6 +54,7 @@ const RecommendationsTab = ({ assessment }: { assessment: Assessment }) => {
 					isOpen={isRecommendationsModalOpen}
 					onClose={() => setIsRecommendationsModalOpen(false)}
 					recommendations={recommendations}
+					assessment={assessment}
 				/>
 			)}
 		</TabsContent>

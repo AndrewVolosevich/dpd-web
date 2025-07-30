@@ -21,6 +21,12 @@ export const fullAssessmentSteps = [
 	},
 	{
 		id: 3,
+		title: 'Заключение руководителя',
+		description: '',
+		status: AssessmentStatus.SUPERVISOR_CONCLUSION,
+	},
+	{
+		id: 4,
 		title: 'Оценка Завершена',
 		description: '',
 		status: AssessmentStatus.COMPLETED,
@@ -206,7 +212,7 @@ export const defaultMasteryData = [
 	},
 ];
 
-export const defaultReccomendations = [
+export const defaultRecommendations = [
 	{
 		id: '1',
 		title: 'Уровень мотивации',
@@ -216,7 +222,7 @@ export const defaultReccomendations = [
 	},
 	{
 		id: '2',
-		title: 'Темы для обучения',
+		title: 'Зоны развития',
 		recommendation: '',
 		description:
 			'Указать возможные темы для обучения и области для развития сотрудника',
@@ -226,7 +232,7 @@ export const defaultReccomendations = [
 		title: 'Кадровый резерв',
 		recommendation: '',
 		description:
-			'Указать, если работник рекомендован для внесения в кадровый резерв и на какие должности',
+			'Указать, если работник рекомендован для внесения в кадровый резерв и на какие должности (рекомендован/не рекомендован и перечислить на какие должности)',
 	},
 	{
 		id: '4',

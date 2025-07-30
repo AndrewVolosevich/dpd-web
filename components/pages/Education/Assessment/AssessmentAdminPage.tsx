@@ -140,7 +140,10 @@ export const AssessmentAdminPage = () => {
 			userIds: selectedUserIds,
 			type: bulkEvaluationType,
 			year: selectedYear,
-			status: AssessmentStatus.SELF_ASSESSMENT,
+			status:
+				bulkEvaluationType === AssessmentType.FULL
+					? AssessmentStatus.SELF_ASSESSMENT
+					: AssessmentStatus.SUPERVISOR_ASSESSMENT,
 			startDate,
 			dueDate,
 		});

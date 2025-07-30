@@ -18,6 +18,7 @@ interface StepperProps {
 	onStepChange?: (step: number) => void;
 	isLoading?: boolean;
 	isNextDisabled?: boolean;
+	isPrevDisabled?: boolean;
 }
 
 export function Stepper({
@@ -26,6 +27,7 @@ export function Stepper({
 	onStepChange,
 	isLoading,
 	isNextDisabled,
+	isPrevDisabled,
 }: StepperProps) {
 	const progress = ((currentStep - 1) / (steps.length - 1)) * 100;
 
@@ -93,7 +95,7 @@ export function Stepper({
 					<Button
 						variant="outline"
 						onClick={() => onStepChange?.(currentStep - 1)}
-						disabled={currentStep === 1 || isLoading}
+						disabled={currentStep === 1 || isLoading || isPrevDisabled}
 					>
 						Назад
 					</Button>

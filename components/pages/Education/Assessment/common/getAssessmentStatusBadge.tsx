@@ -1,4 +1,4 @@
-import { AssessmentStatus } from '@/types/assessment';
+import { AssessmentStatus, AssessmentType } from '@/types/assessment';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Calendar, CheckCircle, Clock } from 'lucide-react';
 import React from 'react';
@@ -43,17 +43,38 @@ export const getAssessmentStatusBadge = (status?: AssessmentStatus) => {
 	}
 };
 
-export const getAssessmentStatusByStep = (step: number) => {
-	switch (step) {
-		case 4:
-			return AssessmentStatus.COMPLETED;
-		case 3:
-			return AssessmentStatus.EMPLOYEE_ACKNOWLEDGEMENT;
-		case 2:
-			return AssessmentStatus.SUPERVISOR_ASSESSMENT;
-		case 1:
-			return AssessmentStatus.SELF_ASSESSMENT;
-		default:
-			return AssessmentStatus.SELF_ASSESSMENT;
+export const getAssessmentStatusByStep = (
+	step: number,
+	type: AssessmentType,
+) => {
+	if (type === AssessmentType.FULL) {
+		switch (step) {
+			case 5:
+				return AssessmentStatus.COMPLETED;
+			case 4:
+				return AssessmentStatus.SUPERVISOR_CONCLUSION;
+			case 3:
+				return AssessmentStatus.EMPLOYEE_ACKNOWLEDGEMENT;
+			case 2:
+				return AssessmentStatus.SUPERVISOR_ASSESSMENT;
+			case 1:
+				return AssessmentStatus.SELF_ASSESSMENT;
+			default:
+				return AssessmentStatus.SELF_ASSESSMENT;
+		}
 	}
+	if (type === AssessmentType.SIMPLIFIED) {
+		switch (step) {
+			case 3:
+				return AssessmentStatus.COMPLETED;
+			case 2:
+				return AssessmentStatus.EMPLOYEE_ACKNOWLEDGEMENT;
+			case 1:
+				return AssessmentStatus.SUPERVISOR_ASSESSMENT;
+			default:
+				return AssessmentStatus.SUPERVISOR_ASSESSMENT;
+		}
+	}
+
+	return AssessmentStatus.SELF_ASSESSMENT;
 };

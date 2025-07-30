@@ -60,7 +60,7 @@ const VideoPage = () => {
 			<Breadcrumb>
 				<BreadcrumbList className="p-0 list-none">
 					<BreadcrumbItem>
-						<BreadcrumbLink href="/public">Главная</BreadcrumbLink>
+						<BreadcrumbLink href="/">Главная</BreadcrumbLink>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>

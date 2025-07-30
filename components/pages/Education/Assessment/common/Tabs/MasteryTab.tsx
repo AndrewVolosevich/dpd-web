@@ -48,7 +48,7 @@ const MasteryTab = ({ assessment }: { assessment?: Assessment }) => {
 									Общий балл сотрудника
 								</div>
 								<div className="text-2xl font-bold text-gray-500">
-									{assessment?.averageMasteryUser}/12
+									{assessment?.averageMasteryUser || '0'}/12
 								</div>
 								<div className="text-xl text-gray-500">
 									{userMasteryResult?.title}
@@ -61,7 +61,7 @@ const MasteryTab = ({ assessment }: { assessment?: Assessment }) => {
 									Общий балл руководителя
 								</div>
 								<div className="text-2xl font-bold text-red-500">
-									{assessment?.averageMasterySupervisor}/12
+									{assessment?.averageMasterySupervisor || '0'}/12
 								</div>
 								<div className="text-xl text-red-500">
 									{supervisorMasteryResult?.title}
