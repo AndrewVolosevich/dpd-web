@@ -94,3 +94,46 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* Медленная ping анимация - 3 секунды */
+@keyframes ping-slow {
+	75%,
+	100% {
+		transform: scale(2);
+		opacity: 0;
+	}
+}
+
+/* Очень медленная ping анимация - 4 секунды */
+@keyframes ping-slower {
+	75%,
+	100% {
+		transform: scale(2);
+		opacity: 0;
+	}
+}
+
+/* Сверх медленная ping анимация - 6 секунд */
+@keyframes ping-slowest {
+	75%,
+	100% {
+		transform: scale(2);
+		opacity: 0;
+	}
+}
+
+.animate-ping-slow {
+	animation: ping-slow 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-ping-slower {
+	animation: ping-slower 1.5s cubic-bezier(0, 0, 0.2, 1) infinite 1s;
+}
+
+.animate-ping-slowest {
+	animation: ping-slowest 4s cubic-bezier(0, 0, 0.2, 1) infinite 2s;
+}
+
+.shadow-3xl {
+	box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
