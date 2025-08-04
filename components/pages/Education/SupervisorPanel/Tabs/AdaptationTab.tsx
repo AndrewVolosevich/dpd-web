@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
 	Table,
 	TableBody,
@@ -32,6 +32,9 @@ import { ExtendedUserData } from '@/types/entities';
 import { Assignment } from '@/types/education';
 import useTemplatesList from '@/lib/api/queries/Education/useTemplatesList';
 import Link from 'next/link';
+import { useCreateTemplate } from '@/lib/api/queries/Education/mutations/templates/useCreateTemplate';
+import { useAuth } from '@/components/providers/global/AuthProvider';
+import { useDeleteTemplate } from '@/lib/api/queries/Education/mutations/templates/useDeleteTemplate';
 
 export default function AdaptationTab({
 	departmentUsers,
@@ -40,6 +43,7 @@ export default function AdaptationTab({
 	departmentUsers: ExtendedUserData[] | undefined;
 	isLoading: boolean;
 }) {
+	const { isAdmin } = useAuth();
 	const [expandedEmployees, setExpandedEmployees] = useState<
 		Record<string, boolean>
 	>({});
@@ -47,7 +51,18 @@ export default function AdaptationTab({
 		useState<ExtendedUserData | null>(null);
 	const [selectedAssignment, setSelectedAssignment] =
 		useState<Assignment | null>(null);
+	const [searchTerm, setSearchTerm] = useState('');
+
 	const { data: templates } = useTemplatesList();
+	const { mutate: createTemplate } = useCreateTemplate();
+	const { mutate: deleteTemplate } = useDeleteTemplate();
+
+	const filteredTemplates = useMemo(() => {
+		return templates?.filter((t) =>
+			t.name.toLowerCase().includes(searchTerm.toLowerCase()),
+		);
+	}, [templates, searchTerm]);
+
 	const getAdaptationUserAssignments = (employee: ExtendedUserData) => {
 		return employee?.userPanel?.assignments?.filter((a) => !!a?.adaptationPlan);
 	};
@@ -104,6 +119,7 @@ export default function AdaptationTab({
 			return <Badge className="bg-blue-500">В процессе</Badge>;
 		}
 	};
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	if (isLoading) {
 		return (
@@ -327,19 +343,76 @@ export default function AdaptationTab({
 			})}
 
 			<Card className={'mt-4 p-4'}>
-				<Table>
-					<TableBody>
-						{templates?.map((t) => (
-							<TableRow key={t.url}>
-								<TableCell>
-									<Link href={t.url}>
-										<div>{t.name}</div>
-									</Link>
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+				<div className={'flex justify-between items-center'}>
+					<h3 className={'mb-2'}>Шаблоны адаптационных планов</h3>
+					{isAdmin && (
+						<div>
+							<label htmlFor="upload-template" className="cursor-pointer">
+								<Button
+									variant="outline"
+									onClick={() => fileInputRef.current?.click()}
+								>
+									<Plus className="h-4 w-4 mr-2" />
+									Добавить шаблон
+								</Button>
+							</label>
+							<input
+								ref={fileInputRef}
+								id="upload-template"
+								type="file"
+								className="hidden"
+								accept=".csv,.xlsx,.doc,.docx"
+								onChange={(e) => {
+									const file = e.target.files?.[0];
+									if (file) {
+										const formData = new FormData();
+										formData.append('file', file, file.name);
+										createTemplate(formData);
+									}
+								}}
+							/>
+						</div>
+					)}
+				</div>
+				<div className={'mt-2 mb-4 text-gray-500 text-sm'}>Описание</div>
+				<div className={'mb-4'}>
+					<input
+						type="text"
+						placeholder="Введите имя для поиска..."
+						className="border border-gray-300 rounded px-4 py-2 text-sm w-[50%]"
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+					/>
+				</div>
+				<div className="max-h-64 overflow-y-auto">
+					<Table>
+						<TableBody>
+							{filteredTemplates?.map((t) => (
+								<TableRow key={t.url}>
+									<TableCell>
+										<Link href={t.url}>
+											<div>{t.name}</div>
+										</Link>
+									</TableCell>
+									<TableCell className="text-right">
+										{isAdmin && (
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={() => {
+													deleteTemplate(t.url);
+												}}
+												className="text-gray-500 hover:text-red-500"
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										)}
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</div>
 			</Card>
 
 			{/* Modals */}

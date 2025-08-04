@@ -60,7 +60,7 @@ export function CreateAdaptationPlanModal({
 		const formData = new FormData();
 
 		if (user?.positionId && dueDate && startDate && file) {
-			formData.append('file', file);
+			formData.append('file', file, file.name);
 			formData.append('userPanelId', employee?.userPanelId || '');
 			formData.append('startDate', startDate.toISOString());
 			formData.append('dueDate', dueDate.toISOString());

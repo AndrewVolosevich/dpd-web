@@ -34,7 +34,7 @@ export const UploadPhotosForm = ({ onCancel }: UploadPhotosFormProps) => {
 			const formData = new FormData();
 
 			files.forEach((file) => {
-				formData.append('files', file);
+				formData.append('files', file, file.name);
 			});
 			formData.append('title', title);
 
