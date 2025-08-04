@@ -39,7 +39,9 @@ const EmployeeInfoPage = ({ isTopOfficial }: { isTopOfficial?: boolean }) => {
 		data: Partial<EmployeeInfoCard>,
 	) => {
 		const formData = new FormData();
-		formData.append('file', file || '');
+		if (file) {
+			formData.append('file', file, file?.name);
+		}
 		formData.append('name', data?.name || '');
 		formData.append('jobTitle', data?.jobTitle || '');
 		formData.append('content', data?.content || '');
