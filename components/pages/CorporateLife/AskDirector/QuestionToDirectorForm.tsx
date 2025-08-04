@@ -37,7 +37,7 @@ interface AskQuestionEditProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const formSchema = z.object({
 	title: z.string().max(120).min(1, 'Заголовок не может быть пустым'),
-	description: z.string().max(200).min(1, 'Описание не может быть пустым'),
+	description: z.string().min(1, 'Описание не может быть пустым'),
 	category: z.string().min(1, 'Категория не может быть пустой'),
 	directorAnswer: z.string().optional(),
 });
@@ -169,7 +169,6 @@ const QuestionToDirectorForm = ({
 													placeholder={
 														'Подробно опишите ваш вопрос или предложение...'
 													}
-													maxLength={120}
 													{...field}
 												/>
 											</FormControl>

@@ -15,12 +15,15 @@ type UserCardProps = React.HTMLAttributes<HTMLDivElement> & {
 const UserCard = ({ className, user, full, lg, onEdit }: UserCardProps) => {
 	if (full) {
 		return (
-			<div className={cn('w-full', className)}>
+			<div className={cn('w-full overflow-hidden', className)}>
 				<div
 					className={cn('relative w-24 h-24 mx-auto mb-4', lg && 'w-36 h-36')}
 				>
 					<Avatar className={'w-full h-full'}>
-						<AvatarImage src={user?.photo} alt={user?.name} />
+						<AvatarImage
+							src={user?.photo || '/placeholder.svg'}
+							alt={user?.name}
+						/>
 						<AvatarFallback className="bg-muted text-2xl">
 							{user?.name?.[0]?.toUpperCase() +
 								user?.surname?.[0]?.toUpperCase()}
@@ -37,20 +40,20 @@ const UserCard = ({ className, user, full, lg, onEdit }: UserCardProps) => {
 						</div>
 					)}
 				</div>
-				<div className={'flex flex-col justify-center'}>
+				<div
+					className={'flex flex-col justify-center items-center w-full px-2'}
+				>
 					<Link
 						href={`/profile/${user?.id}`}
-						className={
-							'font-medium text-base mb-1 truncate self-center text-primary cursor-pointer'
-						}
+						className={'text-center w-full block'}
 					>
-						<h3 className="flex justify-center">
+						<h3 className="font-medium text-base mb-1 text-primary truncate">
 							{user?.name + ' ' + user?.surname}
 						</h3>
 						{user?.position && (
-							<p className="text-sm text-muted-foreground truncate self-center">
+							<div className="text-sm text-muted-foreground line-clamp-2 break-words">
 								{user?.position?.title}
-							</p>
+							</div>
 						)}
 					</Link>
 				</div>

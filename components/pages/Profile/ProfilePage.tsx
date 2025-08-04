@@ -73,25 +73,25 @@ const ProfilePage = ({ id }: { id?: string }) => {
 					</CardContent>
 				</Card>
 
-				<Card className="col-span-1 md:col-span-2 pt-6">
+				<Card className="col-span-1 md:col-span-2 pt-6 ">
 					<CardContent>
 						<div className="space-y-4">
 							<div className="flex items-center">
-								<Building className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">
+								<Building className="mr-2 h-4 w-4 " />
+								<span className="text-sm font-bold">
 									{anotherUser?.department?.title ?? ''}
 								</span>
 							</div>
 							<div className="flex items-center">
-								<GraduationCap className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">
+								<GraduationCap className="mr-2 h-4 w-4 " />
+								<span className="text-sm font-bold">
 									{anotherUser?.position?.title ?? ''}
 								</span>
 							</div>
 							{isAdmin && (
 								<div className="flex items-center">
 									<Phone className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">
+									<span className="text-sm text-gray-500">
 										{formatPhoneNumber(anotherUser?.tel)}
 									</span>
 								</div>
@@ -99,7 +99,7 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							{anotherUser?.internalPhone && (
 								<div className="flex items-center">
 									<BookUser className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">
+									<span className="text-sm text-gray-500">
 										{formatPhoneNumber(anotherUser?.internalPhone)}
 									</span>
 								</div>
@@ -107,7 +107,7 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							{anotherUser?.phone && (
 								<div className="flex items-center">
 									<Smartphone className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">
+									<span className="text-sm text-gray-500">
 										{formatPhoneNumber(anotherUser?.phone)}
 									</span>
 								</div>
@@ -115,12 +115,14 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							{anotherUser?.email && (
 								<div className="flex items-center">
 									<Mail className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">{anotherUser?.email}</span>
+									<span className="text-sm text-gray-500">
+										{anotherUser?.email}
+									</span>
 								</div>
 							)}
 							<div className="flex items-center">
 								<Calendar className="mr-2 h-4 w-4 text-gray-400" />
-								<span className="text-sm">
+								<span className="text-sm text-gray-500">
 									День рождения:{' '}
 									{anotherUser?.bornDate
 										? format(anotherUser?.bornDate, 'dd MMMM', { locale: ru })
@@ -129,8 +131,10 @@ const ProfilePage = ({ id }: { id?: string }) => {
 							</div>
 							{anotherUser?.badge && (
 								<div className="flex items-center">
-									<Award className="mr-2 h-4 w-4 text-gray-400" />
-									<span className="text-sm">{anotherUser?.badge}</span>
+									<Award className="mr-2 h-4 w-4 text-primary" />
+									<span className="text-sm text-primary">
+										{anotherUser?.badge}
+									</span>
 								</div>
 							)}
 							{isAdmin && (
