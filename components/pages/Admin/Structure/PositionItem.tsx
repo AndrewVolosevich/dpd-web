@@ -61,14 +61,16 @@ const PositionItem = ({ position }: { position: Position }) => {
 					<Settings className="h-4 w-4 mr-1" />
 					<span className="text-xs">Панель руководителя</span>
 				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => setAssigningPosition(position.id)}
-					tooltip={'Назначить на должность'}
-				>
-					<User className="h-4 w-4" />
-				</Button>
+				{!position?.userId && (
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => setAssigningPosition(position.id)}
+						tooltip={'Назначить на должность'}
+					>
+						<User className="h-4 w-4" />
+					</Button>
+				)}
 				{position?.userId && (
 					<Button
 						variant="ghost"

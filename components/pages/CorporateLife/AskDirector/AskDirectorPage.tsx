@@ -39,17 +39,25 @@ import { getDislikesCount, getLikesCount, getStatusBadge } from '@/lib/socials';
 import { useToggleLike } from '@/lib/api/queries/Socials/useToggleLike';
 import { useEditQuestionToDirector } from '@/lib/api/queries/Content/mutations/question-to-director/useEditQuestionToDirector';
 
-const statuses = [
-	'ALL',
-	QuestionToDirectorStatus.MODERATION,
-	QuestionToDirectorStatus.APPROVED,
-	QuestionToDirectorStatus.REJECTED,
-	QuestionToDirectorStatus.ANSWERED,
-] as const;
+type Status = QuestionToDirectorStatus | 'ALL';
 
-type Status = (typeof statuses)[number];
+const getAvailableStatuses = (isAdmin?: boolean) => {
+	if (isAdmin) {
+		return [
+			'ALL',
+			QuestionToDirectorStatus.MODERATION,
+			QuestionToDirectorStatus.APPROVED,
+			QuestionToDirectorStatus.REJECTED,
+			QuestionToDirectorStatus.ANSWERED,
+		] as Status[];
+	}
+	return [
+		QuestionToDirectorStatus.APPROVED,
+		QuestionToDirectorStatus.ANSWERED,
+	] as Status[];
+};
 
-const getTextForStatus = (value: Status) => {
+export const getTextForStatus = (value: Status) => {
 	switch (value) {
 		case 'ALL':
 			return 'Все статусы';
@@ -68,7 +76,9 @@ const getTextForStatus = (value: Status) => {
 
 export default function AskDirectorPage() {
 	const { isAdmin } = useAuth();
-	const [questionStatus, setQuestionStatus] = useState('ALL');
+	const [questionStatus, setQuestionStatus] = useState(
+		isAdmin ? 'ALL' : 'APPROVED',
+	);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isAskModalOpen, setIsAskModalOpen] = useState(false);
 	const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
@@ -104,6 +114,8 @@ export default function AskDirectorPage() {
 	const getInitials = (name?: string, surname?: string) => {
 		return `${name?.charAt(0)}${surname?.charAt(0)}`.toUpperCase();
 	};
+
+	const availableStatuses = getAvailableStatuses(isAdmin);
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
@@ -163,21 +175,20 @@ export default function AskDirectorPage() {
 							className="pl-10"
 						/>
 					</div>
-					{isAdmin && (
-						<div className="relative flex-1">
-							<select
-								value={questionStatus}
-								onChange={(e) => setQuestionStatus(e.target.value)}
-								className="px-3 py-2 border border-gray-300 rounded-md bg-transparent w-full "
-							>
-								{statuses.map((status) => (
-									<option key={status} value={status}>
-										{getTextForStatus(status)}
-									</option>
-								))}
-							</select>
-						</div>
-					)}
+
+					<div className="relative flex-1">
+						<select
+							value={questionStatus}
+							onChange={(e) => setQuestionStatus(e.target.value)}
+							className="px-3 py-2 border border-gray-300 rounded-md bg-transparent w-full "
+						>
+							{availableStatuses.map((status) => (
+								<option key={status} value={status}>
+									{getTextForStatus(status)}
+								</option>
+							))}
+						</select>
+					</div>
 				</div>
 
 				<div className="space-y-6">
@@ -288,7 +299,7 @@ export default function AskDirectorPage() {
 								</div>
 							</CardHeader>
 							<CardContent>
-								<p className="text-gray-600 mb-4 line-clamp-2">
+								<p className="text-gray-600 mb-4 line-clamp-4">
 									{question.description}
 								</p>
 

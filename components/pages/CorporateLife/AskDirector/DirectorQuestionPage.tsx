@@ -110,7 +110,7 @@ export default function DirectorQuestionPage({ id }: { id: string }) {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<p className="text-gray-700 mb-6 leading-relaxed">
+							<p className="text-gray-700 mb-6 leading-relaxed overflow-hidden overflow-ellipsis whitespace-wrap">
 								{question?.description}
 							</p>
 

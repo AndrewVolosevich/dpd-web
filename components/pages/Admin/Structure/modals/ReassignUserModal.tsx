@@ -81,7 +81,7 @@ export default function ReassignUserModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="sm:max-w-[500px]">
 				<DialogHeader>
 					<DialogTitle>Переместить сотрудника на новую должность</DialogTitle>
 				</DialogHeader>
@@ -99,11 +99,20 @@ export default function ReassignUserModal({
 											variant="outline"
 											role="combobox"
 											aria-expanded={open}
-											className="w-full justify-between"
+											className="w-full justify-between whitespace-normal break-words text-left"
 										>
-											{selectedPosition?.id && selectedPosition?.title
-												? `${selectedPosition?.title}`
-												: 'Выберите позицию'}
+											{selectedPosition?.id && selectedPosition?.title ? (
+												<div className={'inline-block'}>
+													<span className={'mr-2'}>
+														{selectedPosition?.title}
+													</span>
+													<span className={'text-sm text-gray-500'}>
+														({selectedPosition?.department?.title})
+													</span>
+												</div>
+											) : (
+												'Выберите позицию'
+											)}
 											<ChevronsUpDown
 												size={16}
 												className="opacity-50 w-4 ml-2"
@@ -141,7 +150,14 @@ export default function ReassignUserModal({
 																	'flex flex-row items-center justify-between cursor-pointer p-2'
 																}
 															>
-																{position?.title}
+																<div className={'inline-block'}>
+																	<span className={'mr-2'}>
+																		{position?.title}
+																	</span>
+																	<span className={'text-sm text-gray-500'}>
+																		({position?.department?.title})
+																	</span>
+																</div>
 																<Check
 																	className={cn(
 																		'ml-auto',

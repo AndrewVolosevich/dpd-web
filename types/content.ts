@@ -80,3 +80,14 @@ export interface QuestionToDirector {
 	createdAt: string;
 	updatedAt?: string;
 }
+
+export interface ThanksTo {
+	id: string;
+	title: string;
+	description: string;
+	imageUrl: string;
+	from: string;
+
+	createdAt?: string;
+	updatedAt?: string;
+}
