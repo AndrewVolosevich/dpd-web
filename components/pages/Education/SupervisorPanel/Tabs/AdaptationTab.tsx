@@ -58,9 +58,9 @@ export default function AdaptationTab({
 	const { mutate: deleteTemplate } = useDeleteTemplate();
 
 	const filteredTemplates = useMemo(() => {
-		return templates?.filter((t) =>
-			t.name.toLowerCase().includes(searchTerm.toLowerCase()),
-		);
+		return templates
+			?.filter((t) => t.name.toLowerCase().includes(searchTerm.toLowerCase()))
+			.sort((a, b) => a.name.localeCompare(b.name));
 	}, [templates, searchTerm]);
 
 	const getAdaptationUserAssignments = (employee: ExtendedUserData) => {

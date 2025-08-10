@@ -53,10 +53,6 @@ export function MagazineItem({ magazine }: { magazine: MagazineModel }) {
 			<div className="flex flex-col justify-between h-[198px] flex-1 w-full">
 				<div>
 					<h3 className="text-lg font-medium">{magazine.title}</h3>
-					{/*<p className="text-sm text-muted-foreground">*/}
-					{/*	Дата публикации:{' '}*/}
-					{/*	{format(magazine.createdAt, 'dd MMMM yyyy', { locale: ru })}*/}
-					{/*</p>*/}
 				</div>
 				<div className="flex gap-2 flex-row justify-end mt-4 md:mt-0">
 					<Dialog>

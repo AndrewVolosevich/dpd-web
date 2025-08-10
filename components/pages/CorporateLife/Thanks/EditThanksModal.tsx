@@ -187,7 +187,10 @@ export const EditThanksModal: React.FC<EditThanksModalProps> = ({
 					<Button variant="outline" onClick={handleClose}>
 						Отмена
 					</Button>
-					<Button onClick={handleSubmit} disabled={isPending}>
+					<Button
+						onClick={handleSubmit}
+						disabled={isPending || !validateForm()}
+					>
 						{isPending ? <Loader2 className="animate-spin mr-2" /> : null}
 						Сохранить изменения
 					</Button>

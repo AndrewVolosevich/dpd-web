@@ -179,7 +179,10 @@ export const CreateThanksModal: React.FC<CreateThanksModalProps> = ({
 					<Button variant="outline" onClick={handleClose}>
 						Отмена
 					</Button>
-					<Button onClick={handleSubmit} disabled={isPending}>
+					<Button
+						onClick={handleSubmit}
+						disabled={isPending || !validateForm()}
+					>
 						{isPending ? <Loader2 className="animate-spin mr-2" /> : null}
 						Создать благодарность
 					</Button>
