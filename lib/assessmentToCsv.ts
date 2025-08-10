@@ -35,7 +35,7 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 	visibleDepartments.forEach((departmentName, departmentId) => {
 		// Добавляем название подразделения как заголовок блока
 		rows.push(
-			[`Подразделение: ${departmentName}`].map(formatValueForCsv).join(','),
+			[`Подразделение: ${departmentName}`].map(formatValueForCsv).join(';'),
 		);
 
 		// Добавляем заголовки колонок
@@ -53,7 +53,7 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 				'Рекомендации рук-ля (зоны для развития)',
 			]
 				.map(formatValueForCsv)
-				.join(','),
+				.join(';'),
 		);
 
 		const getFinalScore = (assessment: Assessment) => {
@@ -104,7 +104,7 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 						)?.recommendation || 'Нет данных',
 					]
 						.map(formatValueForCsv)
-						.join(','),
+						.join(';'),
 				);
 			});
 
