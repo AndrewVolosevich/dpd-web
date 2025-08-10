@@ -30,6 +30,8 @@ import { useDeleteUser } from '@/lib/api/queries/Users/mutations/useDeleteUser';
 import EditUserPhotoModal from '@/components/pages/Profile/EditUserPhotoModal';
 import { formatMonthYearDate } from '@/lib/date/helpers';
 import { formatPhoneNumber } from '@/lib/phone';
+import Search from '@/components/common/Search/Search';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const limit = 20;
 
@@ -37,6 +39,8 @@ export default function UsersTable() {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = React.useState(false);
 	const [openPhoto, setOpenPhoto] = useState(false);
+	const [search, setSearch] = useState('');
+	const debouncedSearch = useDebounce(search, 1000);
 
 	const [updatedUser, setUpdatedUser] = useState<undefined | UserData>(
 		undefined,
@@ -44,7 +48,11 @@ export default function UsersTable() {
 	const [updatedPhotoUser, setUpdatedPhotoUser] = useState<
 		undefined | UserData
 	>(undefined);
-	const { data, isLoading } = usePaginatedUsers({ limit, page });
+	const { data, isLoading } = usePaginatedUsers({
+		limit,
+		page,
+		search: debouncedSearch,
+	});
 	const { isAdmin, user } = useAuth();
 
 	const handlePrev = () => {
@@ -66,18 +74,7 @@ export default function UsersTable() {
 		return <FullPageLoader />;
 	}
 
-	// Группировка данных по отделам
-	const groupedUsers = data?.data.reduce(
-		(acc: Record<string, UserData[]>, user) => {
-			const departmentTitle = user.department?.title || 'Без отдела';
-			if (!acc[departmentTitle]) {
-				acc[departmentTitle] = [];
-			}
-			acc[departmentTitle].push(user);
-			return acc;
-		},
-		{},
-	);
+	const users = data?.data;
 
 	return (
 		<div className="flex-grow container mx-auto px-4 py-8">
@@ -94,6 +91,9 @@ export default function UsersTable() {
 					</Button>
 				)}
 			</div>
+			<div className={'mb-4'}>
+				<Search searchState={[search, setSearch]} className={'mb-2 md:mb-0'} />
+			</div>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
@@ -102,7 +102,7 @@ export default function UsersTable() {
 							<TableHead>Отдел</TableHead>
 							<TableHead>Должность</TableHead>
 							<TableHead>Почта</TableHead>
-							<TableHead>Телефон моб.</TableHead>
+							<TableHead>Телефон</TableHead>
 							<TableHead>Телефон вн.</TableHead>
 							<TableHead>Дата рожд</TableHead>
 						</TableRow>
@@ -121,72 +121,57 @@ export default function UsersTable() {
 								</TableCell>
 							</TableRow>
 						) : (
-							// Рендеринг пользователей с заголовками отделов
-							Object.entries(groupedUsers || {}).map(([department, users]) => (
-								<React.Fragment key={department}>
-									{/* Заголовок отдела */}
-									<TableRow>
-										<TableCell
-											colSpan={5}
-											className="bg-gray-100 font-bold text-primary"
-										>
-											{department}
+							<>
+								{users?.map((user) => (
+									<TableRow key={user.id}>
+										<TableCell>
+											<Link href={`/profile/${user.id}`}>
+												{user.surname} {user.name}
+											</Link>
+										</TableCell>
+										<TableCell>{user.department?.title || '-'}</TableCell>
+										<TableCell>{user.position?.title || '-'}</TableCell>
+										<TableCell>{user.email || '-'}</TableCell>
+										<TableCell>{formatPhoneNumber(user?.tel)}</TableCell>
+										<TableCell>
+											{formatPhoneNumber(user?.internalPhone)}
+										</TableCell>
+										<TableCell>
+											{user?.bornDate
+												? formatMonthYearDate(user?.bornDate)
+												: ''}
+										</TableCell>
+
+										<TableCell className="flex flex-row justify-end">
+											{isAdmin && (
+												<div className="flex gap-2">
+													<Button
+														variant="ghost"
+														size="icon"
+														onClick={() => {
+															setUpdatedPhotoUser(user);
+															setOpenPhoto(true);
+														}}
+													>
+														<Image className="h-4 w-4" />
+													</Button>
+													<Button
+														variant="ghost"
+														size="icon"
+														onClick={() => {
+															setUpdatedUser(user);
+															setOpen(true);
+														}}
+													>
+														<Pencil className="h-4 w-4" />
+													</Button>
+													<DeleteAlert onProceed={() => deleteUser(user.id)} />
+												</div>
+											)}
 										</TableCell>
 									</TableRow>
-									{/* Список пользователей из отдела */}
-									{users.map((user) => (
-										<TableRow key={user.id}>
-											<TableCell>
-												<Link href={`/profile/${user.id}`}>
-													{user.surname} {user.name}
-												</Link>
-											</TableCell>
-											<TableCell>{user.department?.title || '-'}</TableCell>
-											<TableCell>{user.position?.title || '-'}</TableCell>
-											<TableCell>{user.email || '-'}</TableCell>
-											<TableCell>{formatPhoneNumber(user?.phone)}</TableCell>
-											<TableCell>
-												{formatPhoneNumber(user?.internalPhone)}
-											</TableCell>
-											<TableCell>
-												{user?.bornDate
-													? formatMonthYearDate(user?.bornDate)
-													: ''}
-											</TableCell>
-
-											<TableCell className="flex flex-row justify-end">
-												{isAdmin && (
-													<div className="flex gap-2">
-														<Button
-															variant="ghost"
-															size="icon"
-															onClick={() => {
-																setUpdatedPhotoUser(user);
-																setOpenPhoto(true);
-															}}
-														>
-															<Image className="h-4 w-4" />
-														</Button>
-														<Button
-															variant="ghost"
-															size="icon"
-															onClick={() => {
-																setUpdatedUser(user);
-																setOpen(true);
-															}}
-														>
-															<Pencil className="h-4 w-4" />
-														</Button>
-														<DeleteAlert
-															onProceed={() => deleteUser(user.id)}
-														/>
-													</div>
-												)}
-											</TableCell>
-										</TableRow>
-									))}
-								</React.Fragment>
-							))
+								))}
+							</>
 						)}
 					</TableBody>
 				</Table>

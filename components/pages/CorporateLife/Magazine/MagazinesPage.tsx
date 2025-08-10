@@ -25,14 +25,15 @@ const MagazinesPage = () => {
 				</Button>
 			)}
 
-			<section className="bg-white rounded-lg shadow p-6 mb-6">
-				<div className="divide-y">
-					{data &&
-						data?.map((magazine) => (
+			{!!data?.length && (
+				<section className="bg-white rounded-lg shadow p-6 mb-6">
+					<div className="divide-y">
+						{data?.map((magazine) => (
 							<MagazineItem key={magazine.id} magazine={magazine} />
 						))}
-				</div>
-			</section>
+					</div>
+				</section>
+			)}
 			{isAdmin && (
 				<UploadMagazineModal open={open} onClose={() => setOpen(false)} />
 			)}

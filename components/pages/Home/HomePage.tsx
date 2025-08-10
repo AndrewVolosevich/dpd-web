@@ -13,6 +13,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
+import QuestionToDirectorBlock from '@/components/pages/Home/QuestionToDirectorBlock';
 
 export const HomePage = () => {
 	const { token } = useAuth();
@@ -31,6 +32,7 @@ export const HomePage = () => {
 				<PersonalBirthdays className="w-full lg:w-4/12" />
 			</div>
 			<ActiveSurveys />
+			<QuestionToDirectorBlock />
 			<PersonalChanges className={'w-full mt-4 container mx-auto'} />
 			<>
 				<TooltipProvider delayDuration={200}>

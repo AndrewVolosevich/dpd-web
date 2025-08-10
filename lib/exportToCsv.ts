@@ -120,11 +120,11 @@ export const exportSurveyToCsv = (survey: Survey): void => {
 			response,
 			survey.questions,
 			survey.type === 'ANONYMOUS',
-		).join(','),
+		).join(';'),
 	);
 
 	// Содержание CSV (добавляем BOM для корректной кодировки)
-	const csvContent = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+	const csvContent = '\uFEFF' + headers.join(';') + '\n' + rows.join('\n');
 
 	// Создаем и скачиваем CSV-файл
 	const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -166,7 +166,7 @@ export const exportDataToCsv = (
 
 	// Заголовки
 	csv +=
-		columns.map((col) => `"${col.title.replace(/"/g, '""')}"`).join(',') + '\n';
+		columns.map((col) => `"${col.title.replace(/"/g, '""')}"`).join(';') + '\n';
 
 	// Данные
 	data.forEach((row) => {
@@ -176,7 +176,7 @@ export const exportDataToCsv = (
 			if (value === null) value = '';
 			return `"${String(value).replace(/"/g, '""')}"`;
 		});
-		csv += rowValues.join(',') + '\n';
+		csv += rowValues.join(';') + '\n';
 	});
 
 	// Создаем Blob с правильной кодировкой
@@ -198,9 +198,7 @@ export const exportStructureToCsv = (data: any[], fileName: string) => {
 
 	// Заголовки
 	const headers = [
-		'ID департамента ',
 		'Название департамента',
-		'ID позиции',
 		'Название позиции',
 		'Имя пользователя',
 		'Фамилия пользователя',
@@ -208,7 +206,7 @@ export const exportStructureToCsv = (data: any[], fileName: string) => {
 		'Внутренний телефон',
 		'Email пользователя',
 	];
-	rows.push(headers.map(formatValueForCsv).join(','));
+	rows.push(headers.map(formatValueForCsv).join(';'));
 
 	// Рекурсивный обход данных
 	data.forEach((department) => {
@@ -219,9 +217,7 @@ export const exportStructureToCsv = (data: any[], fileName: string) => {
 				: '';
 
 			const row = [
-				department?.id || '',
 				department?.title || '',
-				position?.id || '',
 				position?.title || '',
 				position?.user?.name || '',
 				position?.user?.surname || '',
@@ -229,7 +225,7 @@ export const exportStructureToCsv = (data: any[], fileName: string) => {
 				internalPhone,
 				position?.user?.email || '',
 			];
-			rows.push(row.map(formatValueForCsv).join(','));
+			rows.push(row.map(formatValueForCsv).join(';'));
 		});
 	});
 
