@@ -106,7 +106,7 @@ export const MaterialForm = ({ onSubmit, onCancel }: MaterialFormProps) => {
 						id="material-file"
 						type="file"
 						onChange={handleFileChange}
-						accept="*/*"
+						accept=".pdf"
 						required={uploadType === 'file'}
 					/>
 					{file && (
