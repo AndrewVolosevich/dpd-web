@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { FileText, X } from 'lucide-react';
 import { ExtendedUserData } from '@/types/entities';
-import { Assignment } from '@/types/education';
+import { AdaptationStatus, Assignment } from '@/types/education';
 import { getFileNameFromUrl } from '@/lib/getFileNameFromUrl';
 import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useUpdateAdaptationTask } from '@/lib/api/queries/Education/mutations/assign/useUpdateAdaptationTask';
@@ -67,6 +67,10 @@ export function EditAdaptationPlanModal({
 			formData.append('dueDate', dueDate.toISOString());
 			formData.append('planId', assignment?.adaptationPlan?.id || '');
 			formData.append('supervisorPositionId', user?.positionId);
+			formData.append(
+				'status',
+				assignment?.adaptationPlan?.status || AdaptationStatus.ASSIGNED,
+			);
 
 			updatePlan(formData, {
 				onSuccess: () => {

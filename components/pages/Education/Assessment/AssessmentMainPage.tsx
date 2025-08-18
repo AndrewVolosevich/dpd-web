@@ -12,11 +12,7 @@ import { useAuth } from '@/components/providers/global/AuthProvider';
 import { useSubordinateUserAssessments } from '@/lib/api/queries/Assessment/useSubordinateUserAssessments';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAssessmentStatusBadge } from '@/components/pages/Education/Assessment/common/getAssessmentStatusBadge';
-import {
-	Assessment,
-	AssessmentStatus,
-	AssessmentType,
-} from '@/types/assessment';
+import { Assessment, AssessmentType } from '@/types/assessment';
 import { exportGeneralAssessmentGroupedByDepartment } from '@/lib/assessmentToCsv';
 
 export const AssessmentMainPage = () => {
@@ -161,9 +157,7 @@ export const AssessmentMainPage = () => {
 
 												<div className="flex items-center space-x-4">
 													<div className="flex flex-row space-x-1">
-														{getAssessmentStatusBadge(
-															AssessmentStatus.COMPLETED,
-														)}
+														{getAssessmentStatusBadge(assessment?.status)}
 														{getAssessmentTypeBadge(assessment?.type)}
 													</div>
 

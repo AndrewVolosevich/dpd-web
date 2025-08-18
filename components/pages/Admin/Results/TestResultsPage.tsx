@@ -92,7 +92,7 @@ const TestResultsPage = ({ id }: { id: string }) => {
 								{new Date(response.createdAt).toLocaleDateString()}
 							</p>
 							<p>
-								<b>Результат:</b> {response?.testResults?.score}% (
+								<b>Результат:</b> {response?.testResults?.score?.toFixed(2)} % (
 								{response?.testResults?.correctAnswers} из{' '}
 								{response?.testResults?.totalQuestions})
 							</p>

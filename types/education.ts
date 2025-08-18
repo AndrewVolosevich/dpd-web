@@ -8,6 +8,13 @@ export type MaterialType =
 	| 'webinar'
 	| 'other';
 
+export enum AdaptationStatus {
+	ASSIGNED = 'ASSIGNED',
+	ACKNOWLEDGED = 'ACKNOWLEDGED',
+	READY = 'READY',
+	COMPLETED = 'COMPLETED',
+}
+
 export interface TrainingMaterial {
 	id: string;
 	title: string;
@@ -44,6 +51,7 @@ export interface AdaptationPlan {
 	id: string;
 	fileUrl: string;
 	supervisorComment: string;
+	status: AdaptationStatus;
 
 	createdAt?: string;
 	updatedAt?: string;
