@@ -3,7 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Edit, Plus, Target, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TabsContent } from '@/components/ui/tabs';
-import { Assessment, AssessmentType, Goal } from '@/types/assessment';
+import {
+	Assessment,
+	AssessmentStatus,
+	AssessmentType,
+	Goal,
+} from '@/types/assessment';
 import getGoalText from '@/components/pages/Education/Assessment/common/getGoalText';
 import { PrevGoalModal } from '@/components/pages/Education/Assessment/common/Modals/PrevGoalModal';
 import { formatMonthYearDate } from '@/lib/date/helpers';
@@ -11,6 +16,7 @@ import { DeleteGoalModal } from '@/components/pages/Education/Assessment/common/
 import { useDeleteGoal } from '@/lib/api/queries/Assessment/mutations/useDeleteGoal';
 import CommentsSection from '@/components/pages/News/CommentsSection';
 import { getRatingBadge } from '@/components/pages/Education/Assessment/common/getRatingBadge';
+import { useAuth } from '@/components/providers/global/AuthProvider';
 
 const PrevGoalTab = ({ assessment }: { assessment: Assessment }) => {
 	const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
@@ -31,6 +37,18 @@ const PrevGoalTab = ({ assessment }: { assessment: Assessment }) => {
 		setDeletingGoalId(id);
 	};
 	const { mutate: deleteGoal, isPending: deleteGoalLoading } = useDeleteGoal();
+
+	const { user } = useAuth();
+	const isSelfReady =
+		(assessment?.status === AssessmentStatus.SELF_ASSESSMENT ||
+			assessment?.status === AssessmentStatus.EMPLOYEE_ACKNOWLEDGEMENT) &&
+		user?.id === assessment?.user?.id;
+
+	const isSupervisorReady =
+		assessment?.status === AssessmentStatus.SUPERVISOR_ASSESSMENT &&
+		user?.id === assessment?.evaluator?.id;
+
+	const isReadyForUpdate = isSelfReady || isSupervisorReady;
 
 	if (!assessment || assessment.type !== AssessmentType.FULL) {
 		return null;
@@ -159,7 +177,7 @@ const PrevGoalTab = ({ assessment }: { assessment: Assessment }) => {
 			</Card>
 
 			<div className="flex justify-end space-x-2">
-				<Button onClick={handleAddGoal}>
+				<Button disabled={!isReadyForUpdate} onClick={handleAddGoal}>
 					<Plus className="w-4 h-4 mr-2" />
 					Добавить цель
 				</Button>

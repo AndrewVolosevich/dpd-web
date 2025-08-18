@@ -533,8 +533,10 @@ export default function ReportsTab({
 												<TableCell>{item.department}</TableCell>
 												<TableCell>{item.position}</TableCell>
 												<TableCell>{item.testName}</TableCell>
-												<TableCell>{item.score || '-'}</TableCell>
-												<TableCell>{item.percentage || '-'}</TableCell>
+												<TableCell>{item.score?.toFixed(2) || '-'}</TableCell>
+												<TableCell>
+													{item.percentage?.toFixed(2) || '-'}
+												</TableCell>
 												<TableCell>{item.testType}</TableCell>
 												<TableCell>{item.assignmentDate}</TableCell>
 												<TableCell>{item.completionDate}</TableCell>

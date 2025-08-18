@@ -37,6 +37,12 @@ export function useBulkAssessment() {
 			await queryClient.invalidateQueries({
 				queryKey: ['assessments-users'],
 			});
+			await queryClient.invalidateQueries({
+				queryKey: ['subordinate-assessments'],
+			});
+			await queryClient.invalidateQueries({
+				queryKey: ['current-assessment'],
+			});
 			toast({
 				title: 'Оценки успешно обновлены',
 				variant: 'default',

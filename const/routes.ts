@@ -89,6 +89,10 @@ export const NavLinks = [
 				title: 'Опросы и тесты',
 				href: `${Routes.ADMIN}/surveys`,
 			},
+			{
+				title: 'Обучение',
+				href: `${Routes.ADMIN}/education`,
+			},
 		],
 	},
 ];

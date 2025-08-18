@@ -12,25 +12,29 @@ const getIsReadyForNextStep = (assessment: Assessment, user?: UserData) => {
 	const lastYearSupervisorReady =
 		assessment?.goalsLastYear?.filter((goal) => goal?.supervisorRating != null)
 			.length >= 3;
-	const nextYearReady = assessment.goalsNextYear.length >= 3;
+	const nextYearReady = assessment?.goalsNextYear?.length >= 3;
 	const competencyWithRatingUser = assessment?.competencies?.filter(
 		(c) => c.employeeRating != null,
 	);
 	const competencyWithRatingSupervisor = assessment?.competencies?.filter(
 		(c) => c.supervisorRating != null,
 	);
-	const competencyUserReady = user?.roles?.some((r) => r === 'SUPERVISOR')
+	const competencyUserReady = assessment?.user?.roles?.some(
+		(r) => r === 'SUPERVISOR',
+	)
 		? competencyWithRatingUser?.length >= 6
 		: competencyWithRatingUser?.length >= 5;
-	const competencySupervisorReady = user?.roles?.some((r) => r === 'SUPERVISOR')
+	const competencySupervisorReady = assessment?.user?.roles?.some(
+		(r) => r === 'SUPERVISOR',
+	)
 		? competencyWithRatingSupervisor?.length >= 6
 		: competencyWithRatingSupervisor?.length >= 5;
 
 	const recommendationsReady =
 		Array.isArray(assessment?.recommendations) &&
-		!!assessment.recommendations[0]?.recommendation?.length &&
-		!!assessment.recommendations[1]?.recommendation?.length &&
-		!!assessment.recommendations[2]?.recommendation?.length;
+		!!assessment?.recommendations[0]?.recommendation?.length &&
+		!!assessment?.recommendations[1]?.recommendation?.length &&
+		!!assessment?.recommendations[2]?.recommendation?.length;
 
 	const masteryUserReady =
 		assessment?.mastery?.filter((m) => m.employeeRating).length >= 4;
@@ -88,6 +92,18 @@ const getIsReadyForNextStep = (assessment: Assessment, user?: UserData) => {
 		);
 	}
 	if (assessment?.status === AssessmentStatus.SUPERVISOR_CONCLUSION) {
+		console.log(
+			'===',
+			lastYearUserReady,
+			lastYearSupervisorReady,
+			nextYearReady,
+			competencyUserReady,
+			competencySupervisorReady,
+			masteryUserReady,
+			masterySupervisorReady,
+			recommendationsReady,
+			assessment?.evaluator?.id === user?.id,
+		);
 		return (
 			lastYearUserReady &&
 			lastYearSupervisorReady &&

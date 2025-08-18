@@ -29,7 +29,7 @@ import { EditAdaptationPlanModal } from '../Modals/EditAdaptationPlanModal';
 import { DeleteAdaptationPlanModal } from '../Modals/DeleteAdaptationPlanModal';
 import { CompleteAdaptationModal } from '../Modals/CompleteAdaptationModal';
 import { ExtendedUserData } from '@/types/entities';
-import { Assignment } from '@/types/education';
+import { AdaptationStatus, Assignment } from '@/types/education';
 import useTemplatesList from '@/lib/api/queries/Education/useTemplatesList';
 import Link from 'next/link';
 import { useCreateTemplate } from '@/lib/api/queries/Education/mutations/templates/useCreateTemplate';
@@ -112,13 +112,42 @@ export default function AdaptationTab({
 	};
 
 	const getStatusBadge = (assignment: Assignment) => {
-		if (!assignment) return null;
-		if (assignment?.completedAt) {
-			return <Badge className="bg-green-500">Завершен</Badge>;
-		} else {
-			return <Badge className="bg-blue-500">В процессе</Badge>;
+		if (!assignment?.adaptationPlan) return null;
+
+		const status = assignment?.adaptationPlan?.status;
+		let badgeColor: string;
+		let badgeLabel: string;
+
+		switch (status) {
+			case AdaptationStatus.ASSIGNED:
+				badgeColor = 'bg-gray-500';
+				badgeLabel = 'Назначен';
+				break;
+
+			case AdaptationStatus.ACKNOWLEDGED:
+				badgeColor = 'bg-blue-500';
+				badgeLabel = 'Ознакомлен';
+				break;
+
+			case AdaptationStatus.READY:
+				badgeColor = 'bg-yellow-500';
+				badgeLabel = 'Готов';
+				break;
+
+			case AdaptationStatus.COMPLETED:
+				badgeColor = 'bg-green-500';
+				badgeLabel = 'Завершен';
+				break;
+
+			default:
+				badgeColor = 'bg-gray-100';
+				badgeLabel = 'Нет данных';
+				break;
 		}
+
+		return <Badge className={badgeColor}>{badgeLabel}</Badge>;
 	};
+
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	if (isLoading) {

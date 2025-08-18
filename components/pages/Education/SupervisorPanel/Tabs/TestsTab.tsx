@@ -142,7 +142,9 @@ export default function TestsTab({
 																: '-'}
 														</TableCell>
 														<TableCell>
-															{assignment?.survey?.testResults?.score}
+															{assignment?.survey?.testResults?.score?.toFixed(
+																2,
+															)}
 														</TableCell>
 													</TableRow>
 												))}
