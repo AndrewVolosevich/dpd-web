@@ -20,13 +20,29 @@ export function MagazineItem({ magazine }: { magazine: MagazineModel }) {
 	const { mutate: deleteMagazine } = useDeleteMagazine();
 
 	const handleDownload = () => {
-		// Create an anchor element and trigger download
-		const link = document.createElement('a');
-		link.href = magazine.contentUrl;
-		link.download = `${magazine.title}.pdf`;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+		// Используем fetch для загрузки бинарного содержимого
+		fetch(magazine.contentUrl)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Ошибка загрузки файла');
+				}
+				return response.blob();
+			})
+			.then((blob) => {
+				// Генерируем URL для содержимого файла
+				const blobUrl = window.URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.href = blobUrl;
+				link.download = `${magazine.title}.pdf`;
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				// Удаляем временный blob URL
+				window.URL.revokeObjectURL(blobUrl);
+			})
+			.catch((err) => {
+				console.error('Ошибка загрузки файла:', err.message);
+			});
 	};
 
 	return (
