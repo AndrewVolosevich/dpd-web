@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
 	Dialog,
 	DialogContent,
@@ -34,6 +34,15 @@ export const CreateThanksModal: React.FC<CreateThanksModalProps> = ({
 	const [file, setFile] = useState<File | null>(null);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const { mutate: createThanksTo, isPending } = useCreateThanksTo();
+
+	// Use useMemo to compute form validity without causing re-renders
+	const isFormValid = useMemo(() => {
+		return (
+			formData.title.trim() &&
+			formData.description.trim() &&
+			formData.from.trim()
+		);
+	}, [formData.title, formData.description, formData.from]);
 
 	const handleInputChange = (field: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
@@ -68,6 +77,7 @@ export const CreateThanksModal: React.FC<CreateThanksModalProps> = ({
 
 	const handleClose = () => {
 		setFormData({ title: '', description: '', from: '' });
+		setFile(null);
 		setErrors({});
 		onClose();
 	};
@@ -179,10 +189,7 @@ export const CreateThanksModal: React.FC<CreateThanksModalProps> = ({
 					<Button variant="outline" onClick={handleClose}>
 						Отмена
 					</Button>
-					<Button
-						onClick={handleSubmit}
-						disabled={isPending || !validateForm()}
-					>
+					<Button onClick={handleSubmit} disabled={isPending || !isFormValid}>
 						{isPending ? <Loader2 className="animate-spin mr-2" /> : null}
 						Создать благодарность
 					</Button>

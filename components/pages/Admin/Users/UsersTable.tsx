@@ -32,6 +32,14 @@ import { formatMonthYearDate } from '@/lib/date/helpers';
 import { formatPhoneNumber } from '@/lib/phone';
 import Search from '@/components/common/Search/Search';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useDepartments } from '@/lib/api/queries/Structure/useDepartments';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 
 const limit = 20;
 
@@ -41,6 +49,8 @@ export default function UsersTable() {
 	const [openPhoto, setOpenPhoto] = useState(false);
 	const [search, setSearch] = useState('');
 	const debouncedSearch = useDebounce(search, 1000);
+	const [departmentId, setDepartmentId] = useState('');
+	const debouncedDepartmentId = useDebounce(departmentId, 1000);
 
 	const [updatedUser, setUpdatedUser] = useState<undefined | UserData>(
 		undefined,
@@ -52,8 +62,10 @@ export default function UsersTable() {
 		limit,
 		page,
 		search: debouncedSearch,
+		departmentId: debouncedDepartmentId,
 	});
 	const { isAdmin, user } = useAuth();
+	const { data: departments } = useDepartments();
 
 	const handlePrev = () => {
 		if (page <= 1) {
@@ -91,8 +103,31 @@ export default function UsersTable() {
 					</Button>
 				)}
 			</div>
-			<div className={'mb-4'}>
+			<div className={'mb-4 flex items-center gap-4'}>
 				<Search searchState={[search, setSearch]} className={'mb-2 md:mb-0'} />
+				{/* Селектор для департаментов */}
+				{departments && (
+					<div className="w-64">
+						<Select
+							value={departmentId}
+							onValueChange={(value) =>
+								setDepartmentId(value === 'all' ? '' : value)
+							}
+						>
+							<SelectTrigger>
+								<SelectValue placeholder="Выберите департамент" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="all">Все департаменты</SelectItem>{' '}
+								{departments?.map((dept) => (
+									<SelectItem key={dept.id} value={dept.id}>
+										{dept.title}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				)}
 			</div>
 			<div className="rounded-md border">
 				<Table>

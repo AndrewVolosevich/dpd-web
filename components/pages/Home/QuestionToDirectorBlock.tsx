@@ -1,14 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
@@ -36,7 +29,7 @@ const QuestionToDirectorBlock = () => {
 	return (
 		<section className="w-full mt-4 container mx-auto">
 			<Card className={` shadow-md`}>
-				<CardHeader className="pb-3">
+				<CardHeader className="pb-3 mb-4">
 					<div className="flex items-center justify-between">
 						<CardTitle className="text-xl font-bold flex items-center">
 							<MessageCircle className="mr-2 h-5 w-5" />
@@ -45,15 +38,11 @@ const QuestionToDirectorBlock = () => {
 						<Link
 							href={`${Routes.CORPORATE_LIFE}/question-to-director`}
 							passHref
+							className="w-auto"
 						>
-							<Button variant="link" className="text-primary">
-								Все вопросы
-							</Button>
+							<Button className="w-full">Проголосовать</Button>
 						</Link>
 					</div>
-					<CardDescription>
-						Задайте вопрос руководству компании и получите ответ
-					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="space-y-4">
@@ -70,17 +59,6 @@ const QuestionToDirectorBlock = () => {
 						))}
 					</div>
 				</CardContent>
-				<CardFooter>
-					<div className="flex justify-end w-full">
-						<Link
-							href={`${Routes.CORPORATE_LIFE}/question-to-director`}
-							passHref
-							className="w-auto"
-						>
-							<Button className="w-full">Задать вопрос</Button>
-						</Link>
-					</div>
-				</CardFooter>
 			</Card>
 		</section>
 	);

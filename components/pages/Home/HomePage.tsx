@@ -32,8 +32,8 @@ export const HomePage = () => {
 				<PersonalBirthdays className="w-full lg:w-4/12" />
 			</div>
 			<ActiveSurveys />
-			<QuestionToDirectorBlock />
 			<PersonalChanges className={'w-full mt-4 container mx-auto'} />
+			<QuestionToDirectorBlock />
 			<>
 				<TooltipProvider delayDuration={200}>
 					<Tooltip>
