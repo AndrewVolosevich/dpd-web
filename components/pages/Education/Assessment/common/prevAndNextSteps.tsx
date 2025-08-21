@@ -92,18 +92,6 @@ const getIsReadyForNextStep = (assessment: Assessment, user?: UserData) => {
 		);
 	}
 	if (assessment?.status === AssessmentStatus.SUPERVISOR_CONCLUSION) {
-		console.log(
-			'===',
-			lastYearUserReady,
-			lastYearSupervisorReady,
-			nextYearReady,
-			competencyUserReady,
-			competencySupervisorReady,
-			masteryUserReady,
-			masterySupervisorReady,
-			recommendationsReady,
-			assessment?.evaluator?.id === user?.id,
-		);
 		return (
 			lastYearUserReady &&
 			lastYearSupervisorReady &&

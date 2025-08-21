@@ -6,7 +6,7 @@ export const formatValueForCsv = (value: any): string => {
 	if (value === null || value === undefined) {
 		return '""';
 	}
-	return `"${String(value)
+	return `"\t${String(value)
 		.replace(/"/g, '""')
 		.replace(/\n/g, ' ')
 		.replace(/\r/g, '')}"`;

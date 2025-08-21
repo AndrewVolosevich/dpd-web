@@ -4,7 +4,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
@@ -84,11 +83,6 @@ const AboutPage = () => {
 					</Button>
 				</div>
 			</CardContent>
-			<CardFooter className="flex justify-between">
-				<Button variant="link" size="sm">
-					Забыли пароль?
-				</Button>
-			</CardFooter>
 		</Card>
 	);
 };

@@ -100,7 +100,7 @@ export const exportGeneralAssessmentGroupedByDepartment = (
 							(r: any) => r.title === 'Кадровый резерв',
 						)?.recommendation || 'Нет данных',
 						assessment?.recommendations?.find(
-							(r: any) => r.title === 'Темы для обучения',
+							(r: any) => r.title === 'Зоны развития',
 						)?.recommendation || 'Нет данных',
 					]
 						.map(formatValueForCsv)
