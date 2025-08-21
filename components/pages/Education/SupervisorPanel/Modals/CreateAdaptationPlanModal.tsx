@@ -37,6 +37,8 @@ export function CreateAdaptationPlanModal({
 		new Date(new Date().setMonth(new Date().getMonth() + 1)),
 	);
 
+	const [error, setError] = useState<string | null>(null);
+
 	const { mutate: assignAdaptationPlan, isPending } = useAssignAdaptationTask();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +50,7 @@ export function CreateAdaptationPlanModal({
 	const handleRefreshValues = () => {
 		setFile(null);
 		setDueDate(new Date(new Date().setMonth(new Date().getMonth() + 3)));
+		setError(null);
 	};
 
 	const handleClose = () => {
@@ -57,9 +60,23 @@ export function CreateAdaptationPlanModal({
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!startDate || !dueDate) {
+			setError('Укажите дату начала и окончания.');
+			return;
+		}
+
+		// Здесь происходит проверка длительности адаптации
+		const adaptationDuration =
+			(dueDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+		if (adaptationDuration < 30) {
+			setError('Срок адаптации должен быть не менее 1 месяца.');
+			return;
+		}
+
 		const formData = new FormData();
 
-		if (user?.positionId && dueDate && startDate && file) {
+		if (user?.positionId && file) {
 			formData.append('file', file, file.name);
 			formData.append('userPanelId', employee?.userPanelId || '');
 			formData.append('startDate', startDate.toISOString());
@@ -101,6 +118,7 @@ export function CreateAdaptationPlanModal({
 							onChange={(e) => {
 								if (e) {
 									setStartDate(e);
+									setError(null);
 								}
 							}}
 						/>
@@ -115,10 +133,13 @@ export function CreateAdaptationPlanModal({
 							onChange={(e) => {
 								if (e) {
 									setDueDate(e);
+									setError(null);
 								}
 							}}
 						/>
 					</div>
+
+					{error && <p className="text-sm text-red-500">{error}</p>}
 
 					<div className="space-y-2">
 						<Label htmlFor="file">Файл плана адаптации</Label>

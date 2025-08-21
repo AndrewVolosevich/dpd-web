@@ -11,7 +11,7 @@ export type MaterialType =
 export enum AdaptationStatus {
 	ASSIGNED = 'ASSIGNED',
 	ACKNOWLEDGED = 'ACKNOWLEDGED',
-	READY = 'READY',
+	ASSESSMENT = 'ASSESSMENT',
 	COMPLETED = 'COMPLETED',
 }
 

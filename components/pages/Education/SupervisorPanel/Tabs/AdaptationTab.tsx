@@ -12,13 +12,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-	Plus,
-	FileText,
-	Pencil,
-	Trash2,
 	CheckCircle,
 	Eye,
 	EyeOff,
+	FileText,
+	Pencil,
+	Plus,
+	Trash2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Loader } from '@/components/common/Loader/Loader';
@@ -129,7 +129,7 @@ export default function AdaptationTab({
 				badgeLabel = 'Ознакомлен';
 				break;
 
-			case AdaptationStatus.READY:
+			case AdaptationStatus.ASSESSMENT:
 				badgeColor = 'bg-yellow-500';
 				badgeLabel = 'Готов';
 				break;
@@ -241,6 +241,30 @@ export default function AdaptationTab({
 			{departmentUsers?.map((employee) => {
 				if (!expandedEmployees[employee.id]) return null;
 				const userAssignments = getAdaptationUserAssignments(employee);
+				const lastAdaptationAssignment =
+					userAssignments[userAssignments.length - 1];
+
+				const getMemo: () => string = () => {
+					if (
+						lastAdaptationAssignment?.adaptationPlan?.status ===
+						AdaptationStatus.ASSIGNED
+					) {
+						return 'Ожидаем ознакомления сотрудника';
+					}
+					if (
+						lastAdaptationAssignment?.adaptationPlan?.status ===
+						AdaptationStatus.ACKNOWLEDGED
+					) {
+						return 'Обратите внимание - когда до завершения адаптационного периода сотрудника останется 10 дней и менее вам будет необходимо назначить встречу с сотрудником для подведения итогов испытательного срока/обучения. Во время беседы оцените уровень необходимых знаний и навыков для самостоятельной работы, успешность выполнения каждой задачи, а также уровень мотивации сотрудника к работе в компании.';
+					}
+					if (
+						lastAdaptationAssignment?.adaptationPlan?.status ===
+						AdaptationStatus.ASSESSMENT
+					) {
+						return 'После проведения оценочной беседы с сотрудником внесите все оценки в бланк адаптации и нажмите на кнопку «Завершить адаптацию».   ';
+					}
+					return 'Вы можете подготовить программу адаптации для вашего нового сотрудника на основе существующих шаблонов. Внесите в бланк актуальные данные (фио сотрудника, руководителя, задачи и сроки), сохраните и загрузите файл на портал и отправьте его сотруднику для ознакомления, нажав на кнопку «Добавить план».';
+				};
 				return (
 					<Card
 						key={`expanded-${employee.id}`}
@@ -250,6 +274,8 @@ export default function AdaptationTab({
 							<h3 className="text-sm font-medium mb-2">
 								Планы адаптации для {employee.surname} {employee.name}
 							</h3>
+
+							<div className={'text-sm text-gray-500 mb-4'}>{getMemo()}</div>
 
 							{userAssignments?.length > 0 ? (
 								<Table>
@@ -311,11 +337,12 @@ export default function AdaptationTab({
 																anchor.download = `план_адаптации_${employee?.name}_${employee?.surname}`;
 																anchor.click();
 															}}
-															title="Скачать файл"
+															tooltip={'Скачать файл'}
 														>
 															<FileText className="h-4 w-4" />
 														</Button>
-														{!assignment?.completedAt && (
+														{assignment?.adaptationPlan?.status !==
+															AdaptationStatus.COMPLETED && (
 															<Button
 																variant="outline"
 																size="sm"
@@ -323,12 +350,13 @@ export default function AdaptationTab({
 																	e.stopPropagation();
 																	handleEditPlan(employee, assignment);
 																}}
-																title="Редактировать план"
+																tooltip="Редактировать план"
 															>
 																<Pencil className="h-4 w-4" />
 															</Button>
 														)}
-														{!assignment?.completedAt && (
+														{assignment?.adaptationPlan?.status ===
+															AdaptationStatus.ASSESSMENT && (
 															<Button
 																variant="outline"
 																size="sm"
@@ -337,7 +365,7 @@ export default function AdaptationTab({
 																	e.stopPropagation();
 																	handleCompletePlan(employee, assignment);
 																}}
-																title="Завершить адаптацию"
+																tooltip="Завершить адаптацию"
 															>
 																<CheckCircle className="h-4 w-4" />
 															</Button>
@@ -350,7 +378,7 @@ export default function AdaptationTab({
 																e.stopPropagation();
 																handleDeletePlan(employee, assignment);
 															}}
-															title="Удалить план"
+															tooltip="Удалить план"
 														>
 															<Trash2 className="h-4 w-4" />
 														</Button>
